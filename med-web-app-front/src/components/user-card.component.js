@@ -18,21 +18,13 @@ class UserCard extends Component {
         const {classes} = this.props;
         return (
             <React.Fragment>
-                {this.user.initials !== null &&
                 <TableCell className={classes.cells}>
                         {this.user.initials + " "}
-                </TableCell>}
-                {this.user.initials !== null &&
+                </TableCell>
+
                 <TableCell className={classes.cells} align="right">
                     {this.user.username}
                 </TableCell>
-                }
-
-                {this.user.initials === null &&
-                <TableCell className={classes.cells} colSpan={2} align="right">
-                    {this.user.username}
-                </TableCell>
-                }
 
                 <TableCell className={classes.cells} align="right">
                     {this.user.role}

@@ -91,7 +91,6 @@ class reviewComponent extends Component {
         let str = e.target.value
         str = str.replace(/ {2,}/g, ' ').trim();
         str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r');
-        // str = str.replace(/[\n\r]{3,}/g, '\n\r\n\r');
         if (str.charCodeAt(0) > 32) {
             this.setState({
                 content: e.target.value,

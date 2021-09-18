@@ -5,6 +5,7 @@ import "./App.css";
 
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
+import Chat from "./components/chat.component";
 import Search from "./components/search.component";
 import ViewAttachmentsComponent from "./components/view-attachments.component";
 import UploadAttachmentsComponent from "./components/upload-attachments.component";
@@ -41,6 +42,7 @@ import BallotIcon from '@material-ui/icons/Ballot';
 import ForumIcon from '@material-ui/icons/Forum';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
+
 
 const drawerWidth = 240;
 
@@ -174,6 +176,33 @@ class App extends Component {
                     }
                 )
         }
+
+        // console.log('Component did mount');
+        // The compat mode syntax is totally different, converting to v5 syntax
+        // Client is imported from '@stomp/stompjs'
+        // this.client = new Client();
+
+        // this.client.configure({
+        //     brokerURL: 'ws://localhost:8081/msg',
+        //     onConnect: () => {
+        //         console.log('onConnect');
+        //
+        //         // this.client.subscribe('/queue/now', message => {
+        //         //     console.log(message);
+        //         //     this.setState({serverTime: message.body});
+        //         // });
+        //
+        //         this.client.subscribe('/topic/messages/' + AuthService.getCurrentUser().username, message => {
+        //             alert(message.body);
+        //         });
+        //     },
+        //     // Helps during debugging, remove in production
+        //     debug: (str) => {
+        //         console.log(new Date(), str);
+        //     }
+        // });
+        //
+        // this.client.activate();
     }
 
     logOut() {
@@ -233,6 +262,11 @@ class App extends Component {
                 text: 'Поиск',
                 icon: <SearchIcon color="secondary"/>,
                 path: '/search'
+            },
+            {
+                text: 'Сообщения',
+                icon: <SearchIcon color="secondary"/>,
+                path: '/chat'
             },
         ];
 
@@ -366,6 +400,7 @@ class App extends Component {
                                 <Route exact path="/login" component={Login}/>
                                 <Route exact path="/register" component={Register}/>
                                 <Route exact path="/search" component={Search}/>
+                                <Route exact path="/chat" component={Chat}/>
                                 <Route exact path="/profile/:username" component={Profile}/>
                                 <Route exact path="/pipelines/create" component={PipelinesComponent}/>
                                 <Route exact path="/pipelines/results" component={PipelineResultsComponent}/>
