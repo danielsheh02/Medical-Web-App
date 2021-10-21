@@ -1,49 +1,75 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
 import RecordService from "../services/record.service";
-import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import Select from 'react-select';
-import RecordCardNew from "./record-card-new.component";
-import Topic from "./topic.component"
+import SelectReact from 'react-select';
+import RecordCard from "./record-card.component";
+// import Topic from "./topic.component"
 import TopicService from "../services/topic.service";
-import {Card, Grid, withStyles} from "@material-ui/core";
+import {Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import SearchIcon from "@material-ui/icons/Search";
+import Input from "@material-ui/core/Input";
+import Chip from "@material-ui/core/Chip";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
 
 const useStyles = theme => ({
     button: {
         width: 200,
         margin: theme.spacing(1),
         backgroundColor: '#f50057',
-        color: '#fff',
+        color: '#ffffff',
         '&:hover': {
             backgroundColor: '#ff5983',
-            color: '#fff',
+            color: '#ffffff',
         }
     },
-    selector: {
-        width: 760,
-
-    },
-    paper2: {
-        margin: theme.spacing(3),
-        padding: theme.spacing(3),
-        color: "black",
-    },
-    grid: {
-        margin: theme.spacing(1),
+    paper: {
+        height: 42,
+        padding: '2px 4px',
+        display: 'flex',
         alignItems: 'center',
-        flexDirection: 'column',
-        display: 'flex',
+        width: 800,
     },
-    mainGrid: {
-        display: 'flex',
-        minWidth: 1000,
+    input: {
+        marginLeft: theme.spacing(1),
+        flex: 1,
     },
-    gridXs8:{
-        marginTop: theme.spacing(3)
-    }
+    iconButton: {
+        padding: 10,
+    },
+    selectForm: {
+        "& .MuiFormLabel-root": {
+            margin: 0
+        },
+        width: 800,
+    },
+    topicPaper: {
+        width: 200,
+        margin: theme.spacing(1),
+        padding: theme.spacing(3),
+    },
+    topicTitle: {
+        whiteSpace: 'pre-wrap',
+        wordWrap: 'break-word',
+    },
+    reset: {
+        fontSize: 15,
+        textAlign: "right",
+        color: '#f50057',
+    },
 })
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
 class ViewRecordsList extends Component {
     constructor(props) {
@@ -54,7 +80,8 @@ class ViewRecordsList extends Component {
         this.displayRecordThread = this.displayRecordThread.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
-        this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
+        // this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
+        this.handleTopics = this.handleTopics.bind(this);
 
 
         this.state = {
@@ -70,7 +97,8 @@ class ViewRecordsList extends Component {
             showTopics: true,
             availableTopics: [],
             selectedTopic: null,
-            selectedTopicValue: null,
+            selectedTopicValue: "",
+            selectedTopicID: null,
         };
 
         this.pageSizes = [{value: 2, label: '2'}, {value: 4, label: '4'}, {value: 10, label: '10'}];
@@ -102,18 +130,30 @@ class ViewRecordsList extends Component {
         });
     }
 
-    onTopicsDropdownSelected(selectedTopic) {
-        this.setState({
-            selectedTopic: selectedTopic.value,
-            selectedTopicValue: selectedTopic
+    // onTopicsDropdownSelected(selectedTopic) {
+    //     this.setState({
+    //         selectedTopic: selectedTopic.value,
+    //         selectedTopicValue: selectedTopic
+    //     });
+    // }
+
+
+    handleTopics(e) {
+        let topicId;
+        this.state.availableTopics.map(topic => {
+            if (e.target.value.indexOf(topic.label) !== -1) {
+                topicId = topic.value;
+            }
         });
+        this.setState({
+            selectedTopicId: topicId,
+            selectedTopicValue: e.target.value
+        })
     }
 
-
     getRecords() {
-        const { searchTitle, page, pageSize, selectedTopic } = this.state;
-
-        RecordService.getAll(page, pageSize, searchTitle, selectedTopic)
+        const { searchTitle, page, pageSize, selectedTopicValue } = this.state;
+        RecordService.getAll(page, pageSize, searchTitle, selectedTopicValue)
             .then((response) => {
                 const { records, totalPages } = response.data;
                 this.refreshList();
@@ -136,10 +176,6 @@ class ViewRecordsList extends Component {
     }
 
     displayRecordThread(record) {
-        // this.setState({
-        //     currentRecord: record,
-        //     currentIndex: index,
-        // });
         this.props.history.push({
             pathname: '/records/thread/' + record.id,
             state: { recordId: record.id }
@@ -176,105 +212,162 @@ class ViewRecordsList extends Component {
             page,
             count,
         } = this.state;
-
-        const {showTopics} = this.state;
         const {classes} = this.props;
         return (
             <div className="list row">
-                <Grid xs={12} className={classes.mainGrid}>
-                    <Grid xs={8} item className={classes.gridXs8}>
-                        <div>
-                            <div>
-                                <Grid className="input-group mb-3">
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Введите часть заголовка"
-                                        value={searchTitle}
-                                        onChange={this.onChangeSearchTitle}
-                                    />
-                                    <div className="input-group-append">
-                                        <button
-                                            className="btn btn-outline-secondary"
-                                            type="button"
-                                            onClick={this.getRecords}
-                                        >
-                                            Найти
-                                        </button>
+                <div className="col-sm-9">
+                    <div className="input-group mb-3">
+                        {/*<input
+                            type="text"
+                            className="form-control"
+                            placeholder="Введите часть заголовка"
+                            value={searchTitle}
+                            onChange={this.onChangeSearchTitle}
+                        />
+                        <div className="input-group-append">
+                            <button
+                                className="btn btn-outline-secondary"
+                                type="button"
+                                onClick={this.getRecords}
+                            >
+                                Найти
+                            </button>
+                        </div>*/}
+                        <Paper component="form" className={classes.paper} >
+                            <InputBase
+                                value={searchTitle}
+                                onChange={this.onChangeSearchTitle}
+                                className={classes.input}
+                                placeholder="Поиск"
+                                // inputProps={{ 'aria-label': 'search google maps' }}
+                            />
+                            <IconButton type="button" onClick={this.getRecords} className={classes.iconButton} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </Paper>
+
+                        <FormControl className={classes.selectForm} fullWidth>
+                            <Select
+                                className={classes.root}
+                                labelId="selected-topics"
+                                // variant="outlined"
+                                value={this.state.selectedTopicValue}
+                                onChange={this.handleTopics}
+                                input={<Input id="select-multiple-chip-for-topics"/>}
+                                renderValue={(selected) => (
+                                    <div className={classes.chips}>
+                                        {
+                                            <Chip key={selected} label={selected} className={classes.chip}/>
+                                        }
                                     </div>
-                                </Grid>
-                                <Grid>
-                                    <label htmlFor="selectedTopics" className="col-sm-2"></label>
-                                    <Select className={classes.selector}
-                                            onChange={this.onTopicsDropdownSelected}
-                                            options={this.state.availableTopics}
-                                            value={this.state.selectedTopicValue}
-                                            autoFocus={true}
-                                            isMulti={false}
-                                    />
-                                </Grid>
-                            </div>
-
-                            <div className="mt-3">
-                                <div className="row">
-                                    <div style={{marginLeft: "17px"}}>{"Количество постов на странице: "}</div>
-                                    <Select className="col-2"
-                                            onChange={this.handlePageSizeChange}
-                                            options={this.pageSizes}
-                                            autoFocus={true}
-                                            defaultValue={this.pageSizes[2]}
-                                            styles={stylesForSmallSelectBox}
-                                    />
-                                </div>
-
-                                <Pagination
-                                    className="my-3"
-                                    count={count}
-                                    page={page}
-                                    siblingCount={1}
-                                    boundaryCount={1}
-                                    variant="outlined"
-                                    shape="rounded"
-                                    onChange={this.handlePageChange}
-                                />
-                            </div>
-
-
-                            <Grid container spacing={2} direction={"column"}>
-                                {this.state.records &&
-                                this.state.records.map((record, index) => (
-                                    <Grid item
-                                          style={{listStyleType: "none"}}
-                                          key={index}
-                                          onClick={() => this.displayRecordThread(record)}
-                                    >
-                                        <RecordCardNew record={record} isPreview={true} isReply={false} />
-                                    </Grid>
+                                )}
+                                MenuProps={MenuProps}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {this.state.availableTopics.map(x => (
+                                    <MenuItem key={x.value} value={x.label} id={x.value}>
+                                        {x.label}
+                                    </MenuItem>
                                 ))}
-                            </Grid>
+                            </Select>
+                        </FormControl>
+                    </div>
+
+                    <div className="mt-3">
+                        <div className="row">
+                            <div style={{marginLeft: "17px", marginTop: "5px"}}>{"Количество постов на странице: "}</div>
+                            <SelectReact className="col-2"
+                                    onChange={this.handlePageSizeChange}
+                                    options={this.pageSizes}
+                                    autoFocus={true}
+                                    defaultValue={this.pageSizes[2]}
+                                    styles={stylesForSmallSelectBox}
+                            />
                         </div>
-                    </Grid>
-                    <Grid xs={4} item>
-                        <Card className={classes.paper2}>
-                            <Grid className={classes.grid}>
-                                <Button variant="contained" href="/records/create" className={classes.button}>
-                                    Создать пост
-                                </Button>
-                                <Button variant="contained" href="/topics/create" className={classes.button}>
-                                    Страница тэгов
-                                </Button>
+
+                        <Pagination
+                            className="my-3"
+                            count={count}
+                            page={page}
+                            siblingCount={1}
+                            boundaryCount={1}
+                            variant="outlined"
+                            shape="rounded"
+                            onChange={this.handlePageChange}
+                        />
+                    </div>
+
+
+                    <Grid container spacing={2} direction={"column"}>
+                        {this.state.records &&
+                        this.state.records.map((record, index) => (
+                            <Grid item
+                                style={{listStyleType: "none"}}
+                                key={index}
+                                // onClick={() => this.displayRecordThread(record)}
+                            >
+                                <RecordCard record={record} isPreview={true} isReply={false} />
                             </Grid>
-                        </Card>
+                        ))}
                     </Grid>
-                    {/*<div className="col-sm-2">*/}
-                    {/*    <Button variant="contained" href="/records/create" className={classes.button}>*/}
-                    {/*        Создать пост*/}
-                    {/*    </Button>*/}
-                    {/*    <Button variant="contained" href="/topics/create" className={classes.button}>*/}
-                    {/*        Страница тэгов*/}
-                    {/*    </Button>*/}
-                    {/*</div>*/}
-                </Grid>
+                </div>
+
+                <div className="col-sm-2">
+                    <Button variant="contained" href="/records/create" className={classes.button}>
+                        Создать пост
+                    </Button>
+                    <Button variant="contained" href="/topics/create" className={classes.button}>
+                        Страница тэгов
+                    </Button>
+
+                    {/*<Paper className={classes.topicPaper}>*/}
+                    {/*    <Grid container spacing={1} direction={"column"}>*/}
+                    {/*        <Grid item*/}
+                    {/*              onClick={() => (*/}
+                    {/*                  this.setState({*/}
+                    {/*                          selectedTopic: null,*/}
+                    {/*                      },*/}
+                    {/*                      this.getRecords*/}
+                    {/*                  ))}>*/}
+                    {/*            <Typography variant="body1" className={classes.topicTitle}>*/}
+                    {/*                Список тэгов:*/}
+                    {/*            </Typography>*/}
+                    {/*        </Grid>*/}
+                    {/*        {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (*/}
+                    {/*            <Grid item*/}
+                    {/*                  style={{listStyleType: "none"}}*/}
+                    {/*                  key={index}*/}
+                    {/*                  onClick={() => (*/}
+                    {/*                      this.setState({*/}
+                    {/*                              selectedTopic: topic.value,*/}
+                    {/*                          },*/}
+                    {/*                          this.getRecords*/}
+                    {/*                      ))}*/}
+                    {/*            >*/}
+                    {/*                <ButtonBase>*/}
+                    {/*                    {topic.label}*/}
+                    {/*                </ButtonBase>*/}
+                    {/*            </Grid>*/}
+                    {/*        ))}*/}
+                    {/*        <Grid item*/}
+                    {/*              onClick={() => (*/}
+                    {/*                  this.setState({*/}
+                    {/*                          selectedTopic: null,*/}
+                    {/*                      },*/}
+                    {/*                      this.getRecords*/}
+                    {/*                  ))}>*/}
+                    {/*            <Typography className={classes.reset}>*/}
+                    {/*                <ButtonBase>*/}
+                    {/*                    сбросить*/}
+                    {/*                </ButtonBase>*/}
+                    {/*            </Typography>*/}
+                    {/*        </Grid>*/}
+                    {/*    </Grid>*/}
+                    {/*</Paper>*/}
+                </div>
+
             </div>
         );
     }
