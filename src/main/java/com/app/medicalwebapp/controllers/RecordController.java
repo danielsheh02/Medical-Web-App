@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
 @RestController
@@ -26,17 +27,17 @@ public class RecordController {
 
     @GetMapping("/all/root")
     public ResponseEntity<?> getAllRootRecords(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Long topicId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(name = "searchTitle", required = false) String searchTitle,
+            @RequestParam(name = "selectedTopicValue", required = false, defaultValue = "") String selectedTopicValue
     ) {
         try {
             RecordsPageResponse responseBody;
-            if (topicId == null) {
-                responseBody = recordService.getRecordsPage(page, size, title);
+            if (Objects.equals(selectedTopicValue, "")) {
+                responseBody = recordService.getRecordsPage(page, pageSize, searchTitle);
             } else {
-                responseBody = recordService.getRecordsPageByTopicAndTitle(page, size, title, topicId);
+                responseBody = recordService.getRecordsPageByTopicAndTitle(page, pageSize, searchTitle, selectedTopicValue);
             }
             return ResponseEntity.ok().body(responseBody);
         } catch (Exception e) {
@@ -71,14 +72,12 @@ public class RecordController {
     public ResponseEntity<?> saveRecord(@Valid @RequestBody RecordCreationRequest request) {
         try {
             recordService.saveRecord(request, getAuthenticatedUserId(), request.getParentId());
-            System.out.println(request.getParentId());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.ok().build();
     }
-
 
 
     private Long getAuthenticatedUserId() {

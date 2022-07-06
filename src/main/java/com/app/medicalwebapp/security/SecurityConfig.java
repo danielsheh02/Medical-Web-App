@@ -32,8 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+//    @Autowired
+//    PasswordEncoder encoder;
 
     @Bean
     public OncePerRequestFilterImpl authenticationJwtTokenFilter() {
@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        createModer();
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -66,24 +65,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/mirf/**").permitAll()
                 .antMatchers("/api/test/all").permitAll()
+                .antMatchers("/api/ws/**").permitAll()
                 .antMatchers("/api/**").authenticated()
+                .antMatchers("/app/**").authenticated()
+                .antMatchers("/topic/**").authenticated()
                 .anyRequest().permitAll();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-    public void createModer() {
-        com.app.medicalwebapp.model.User user = new com.app.medicalwebapp.model.User();
-
-        if (!userRepository.existsByUsername("moderator")) {
-            user.setUsername("moderator");
-            user.setRole("Модератор");
-            user.setPassword(encoder.encode("moderator"));
-            user.setStatus(0);
-            user.setRate(0);
-            user.setRegisteredDate(LocalDateTime.now());
-
-            userRepository.save(user);
-        }
     }
 }
