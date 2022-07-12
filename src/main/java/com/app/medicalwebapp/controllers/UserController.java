@@ -42,7 +42,6 @@ public class UserController {
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
         try {
-            System.out.println("Hello");
             if (username.equals("empty")) {
                 List<User> responseBody;
                 responseBody = userService.getAll();
