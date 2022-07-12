@@ -84,6 +84,7 @@ class RecordCardNew extends Component {
         this.formatTime = this.formatTime.bind(this);
         this.getContent = this.getContent.bind(this);
         this.displayRecordThread = this.displayRecordThread.bind(this);
+        this.openDicomViewer = this.openDicomViewer.bind(this);
 
         this.state = {
             currentUser: AuthService.getCurrentUser(),
@@ -158,6 +159,12 @@ class RecordCardNew extends Component {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
 
+    openDicomViewer(uid) {
+        const url = window.location.href
+        const num = url.indexOf(":7999")
+        window.open(url.slice(0, num + 1) + "3000/viewer/" + uid, '_blank')
+    }
+
     render() {
         const {classes} = this.props;
         return (
@@ -212,13 +219,18 @@ class RecordCardNew extends Component {
                     {/*<div id={containerId} />*/}
 
                     {!this.isPreview && this.state.filePreviews.map((el, index) => (
+                        // <Tooltip title="Открыть в DICOM Viewer">
+                        //     <a href={"http://localhost:3000/viewer/" + this.record.attachments[index].uid} target="_blank">
+                        //         <Button><img className="col-sm-8 top-buffer-10" key={el.id} alt="" src={el.image}>
+                        //         </img>
+                        //         </Button>
+                        //
+                        //     </a>
+                        // </Tooltip>
                         <Tooltip title="Открыть в DICOM Viewer">
-                            <a href={"http://localhost:3000/viewer/" + this.record.attachments[index].uid} target="_blank">
-                                <Button><img className="col-sm-8 top-buffer-10" key={el.id} alt="" src={el.image}>
-                                </img>
-                                </Button>
-
-                            </a>
+                            <img onClick={() => this.openDicomViewer(this.record.attachments[index].uid)}
+                                 className="col-sm-8 top-buffer-10" key={el.id} alt="" src={el.image}>
+                            </img>
                         </Tooltip>
                     ))}
 

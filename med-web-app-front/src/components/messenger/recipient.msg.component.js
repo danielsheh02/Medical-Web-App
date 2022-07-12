@@ -101,6 +101,7 @@ function RecipientMsg(props) {
                                 <ImageListItem key={index}>
                                     {file.uid ?
                                         <Tooltip title="Открыть в DICOM Viewer">
+                                            {/*TODO тоже сделать, как в record-card*/}
                                             <a href={"http://localhost:3000/viewer/" + file.uid}
                                                target="_blank">
                                                 <Button>
