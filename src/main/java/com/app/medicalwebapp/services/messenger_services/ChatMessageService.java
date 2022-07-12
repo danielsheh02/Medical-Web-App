@@ -67,6 +67,7 @@ public class ChatMessageService {
         chatMessage.setContent(msg.getContent());
         chatMessage.setStatusMessage(StatusMessage.UNREAD);
         chatMessage.setSendDate(msg.getSendDate());
+        chatMessage.setTimeZone(msg.getTimeZone());
         chatMessage.setAttachments(files);
         chatMessage.setLocalFiles(localFiles);
         return chatMessageRepository.save(chatMessage);

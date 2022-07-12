@@ -88,7 +88,6 @@ class ChatMessageServiceTest {
                 .when(chatMessageRepository)
                 .findByRecipientIdAndStatusMessageOrderBySendDateAsc(chatMessage.getRecipientId(), StatusMessage.UNREAD);
         List<ChatMessage> returnedChatMessage = chatMessageService.findUnreadMessages(1L);
-        System.out.println(returnedChatMessage.get(0));
         Mockito.verify(chatMessageRepository, Mockito.times(1))
                 .findByRecipientIdAndStatusMessageOrderBySendDateAsc(chatMessage.getRecipientId(), StatusMessage.UNREAD);
         assertEquals(chatMessage, returnedChatMessage.get(0));

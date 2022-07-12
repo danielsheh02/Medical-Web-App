@@ -177,7 +177,6 @@ class ViewRecordsList extends Component {
         const { searchTitle, page, pageSize, selectedTopicValue } = this.state;
         RecordService.getAll(page, pageSize, searchTitle, selectedTopicValue)
             .then((response) => {
-                console.log(response.data)
                 const { records, totalPages } = response.data;
                 this.refreshList();
 
