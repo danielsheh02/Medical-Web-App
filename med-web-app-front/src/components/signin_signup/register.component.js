@@ -79,6 +79,8 @@ function Register(props) {
     const [chosenRole, setChosenRole] = useState("Пользователь")
     const [successful, setSuccessful] = useState(false)
     const [message, setMessage] = useState("")
+    const [loginMessage, setLoginMessage] = useState("")
+    const [loginSuccessful, setLoginSuccessful] = useState(false)
     const [usernameError, setUsernameError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
     const [passwordErrorRepeat, setPasswordErrorRepeat] = useState(false)
@@ -105,8 +107,6 @@ function Register(props) {
         } else {
             setPasswordError(false)
         }
-        console.log(value === passwordRepeat)
-        // console.log(passwordRepeat)
         if (value === passwordRepeat) {
             setPasswordMatch(true)
         } else {
@@ -169,6 +169,8 @@ function Register(props) {
         e.preventDefault()
         setMessage("")
         setSuccessful(false)
+        setLoginMessage("")
+        setLoginSuccessful(false)
 
         let initials
         if (patronymic !== "") {
@@ -197,6 +199,20 @@ function Register(props) {
                     setPassword("")
                     setPasswordRepeat("")
                     setChosenRole("Пользователь")
+                    AuthService.login(username,password).then(
+                        () => {
+                            setLoginSuccessful(true)
+                            props.history.push("/records/view");
+                            window.location.reload();
+                        },
+                        error => {
+                            const resLoginMessage =
+                                (error.response && error.response.data && error.response.data.message) ||
+                                error.message || error.toString();
+                            setLoginSuccessful(false)
+                            setLoginMessage(resLoginMessage)
+                        }
+                    )
                 },
                 error => {
                     const resMessage =
@@ -324,7 +340,6 @@ function Register(props) {
                                     autoComplete="off"
                                     error={passwordErrorRepeat}
                                     helperText={passwordErrorRepeat && "Пароль должен быть не менее 6 символов"}
-                                    // helperText={passwordErrorRepeat && "hi"}
                                     value={passwordRepeat}
                                     onChange={onChangePasswordRepeat}
                                     InputProps={{
@@ -399,6 +414,20 @@ function Register(props) {
                                     role="alert"
                                 >
                                     {message}
+                                </Grid>
+                            </Grid>
+                        )}
+                        {loginMessage && (
+                            <Grid>
+                                <Grid
+                                    className={
+                                        loginSuccessful
+                                            ? "alert alert-success"
+                                            : "alert alert-danger"
+                                    }
+                                    role="alert"
+                                >
+                                    {loginMessage}
                                 </Grid>
                             </Grid>
                         )}

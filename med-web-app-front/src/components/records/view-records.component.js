@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import RecordService from "../../services/record.service";
 import Pagination from "@material-ui/lab/Pagination";
 import SelectReact from 'react-select';
@@ -12,6 +12,7 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import {Link} from "react-router-dom";
+import AuthService from "../../services/auth.service";
 
 const useStyles = theme => ({
     button: {
@@ -95,6 +96,9 @@ const MenuProps = {
 class ViewRecordsList extends Component {
     constructor(props) {
         super(props);
+
+        const user = AuthService.getCurrentUser();
+
         this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
         this.getRecords = this.getRecords.bind(this);
         this.refreshList = this.refreshList.bind(this);
@@ -120,6 +124,8 @@ class ViewRecordsList extends Component {
             selectedTopic: null,
             selectedTopicValue: "",
             selectedTopicID: null,
+
+            currentUser: user,
         };
 
         this.pageSizes = [{value: 2, label: '2'}, {value: 4, label: '4'}, {value: 10, label: '10'}];
@@ -173,7 +179,7 @@ class ViewRecordsList extends Component {
     }
 
     getRecords() {
-        const { searchTitle, page, pageSize, selectedTopicValue } = this.state;
+        const {searchTitle, page, pageSize, selectedTopicValue} = this.state;
         RecordService.getAll(page, pageSize, searchTitle, selectedTopicValue)
             .then((response) => {
                 const { records, totalPages } = response.data;
@@ -199,7 +205,7 @@ class ViewRecordsList extends Component {
     displayRecordThread(record) {
         this.props.history.push({
             pathname: '/records/thread/' + record.id,
-            state: { recordId: record.id }
+            state: {recordId: record.id}
         });
         window.location.reload();
     }
@@ -236,7 +242,7 @@ class ViewRecordsList extends Component {
         const {classes} = this.props;
         return (
             <Grid item className={classes.mainGrid}>
-                <Grid xs={12} className={classes.firstGrid} item>
+                <Grid xs={12} className={classes.firstGrid}>
                     <Grid xs={8} item>
                         {/*<input
                             type="text"
@@ -254,7 +260,7 @@ class ViewRecordsList extends Component {
                                 Найти
                             </button>
                         </div>*/}
-                        <Paper component="form" className={classes.paper} >
+                        <Paper component="form" className={classes.paper}>
                             <InputBase
                                 value={searchTitle}
                                 onChange={this.onChangeSearchTitle}
@@ -262,8 +268,9 @@ class ViewRecordsList extends Component {
                                 placeholder="Поиск"
                                 // inputProps={{ 'aria-label': 'search google maps' }}
                             />
-                            <IconButton type="button" onClick={this.getRecords} className={classes.iconButton} aria-label="search">
-                                <SearchIcon />
+                            <IconButton type="button" onClick={this.getRecords} className={classes.iconButton}
+                                        aria-label="search">
+                                <SearchIcon/>
                             </IconButton>
                         </Paper>
 
@@ -298,13 +305,14 @@ class ViewRecordsList extends Component {
 
                     <div className="mt-3">
                         <div className="row">
-                            <div style={{marginLeft: "17px", marginTop: "5px"}}>{"Количество постов на странице: "}</div>
+                            <div
+                                style={{marginLeft: "17px", marginTop: "5px"}}>{"Количество постов на странице: "}</div>
                             <SelectReact className="col-2"
-                                    onChange={this.handlePageSizeChange}
-                                    options={this.pageSizes}
-                                    autoFocus={true}
-                                    defaultValue={this.pageSizes[2]}
-                                    styles={stylesForSmallSelectBox}
+                                         onChange={this.handlePageSizeChange}
+                                         options={this.pageSizes}
+                                         autoFocus={true}
+                                         defaultValue={this.pageSizes[2]}
+                                         styles={stylesForSmallSelectBox}
                             />
                         </div>
 
@@ -325,17 +333,18 @@ class ViewRecordsList extends Component {
                         {this.state.records &&
                         this.state.records.map((record, index) => (
                             <Grid item
-                                style={{listStyleType: "none"}}
-                                key={index}
+                                  style={{listStyleType: "none"}}
+                                  key={index}
                                 // onClick={() => this.displayRecordThread(record)}
                             >
-                                <RecordCard record={record} isPreview={true} isReply={false} />
+                                <RecordCard record={record} isPreview={true} isReply={false}/>
                             </Grid>
                         ))}
                     </Grid>
                 </Grid>
 
-                <Grid xs={4} item>
+                {this.state.currentUser != null &&
+                (<Grid xs={4} item>
                     <Card className={classes.paper2}>
                         <Grid className={classes.grid}>
                             <Link to={"/records/create"} style={{textDecoration: 'none'}}>
@@ -343,6 +352,7 @@ class ViewRecordsList extends Component {
                                     Создать пост
                                 </Button>
                             </Link>
+                            {/*TODO создание тэгов только для админов*/}
                             <Link to={"/topics/create"} style={{textDecoration: 'none'}}>
                                 <Button className={classes.button}>
                                     Страница тэгов
@@ -350,7 +360,8 @@ class ViewRecordsList extends Component {
                             </Link>
                         </Grid>
                     </Card>
-                </Grid>
+                </Grid>)
+                }
 
                 {/*<div className="col-sm-2">*/}
                 {/*    <Button variant="contained" href="/records/create" className={classes.button}>*/}
@@ -360,50 +371,50 @@ class ViewRecordsList extends Component {
                 {/*        Страница тэгов*/}
                 {/*    </Button>*/}
 
-                    {/*<Paper className={classes.topicPaper}>*/}
-                    {/*    <Grid container spacing={1} direction={"column"}>*/}
-                    {/*        <Grid item*/}
-                    {/*              onClick={() => (*/}
-                    {/*                  this.setState({*/}
-                    {/*                          selectedTopic: null,*/}
-                    {/*                      },*/}
-                    {/*                      this.getRecords*/}
-                    {/*                  ))}>*/}
-                    {/*            <Typography variant="body1" className={classes.topicTitle}>*/}
-                    {/*                Список тэгов:*/}
-                    {/*            </Typography>*/}
-                    {/*        </Grid>*/}
-                    {/*        {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (*/}
-                    {/*            <Grid item*/}
-                    {/*                  style={{listStyleType: "none"}}*/}
-                    {/*                  key={index}*/}
-                    {/*                  onClick={() => (*/}
-                    {/*                      this.setState({*/}
-                    {/*                              selectedTopic: topic.value,*/}
-                    {/*                          },*/}
-                    {/*                          this.getRecords*/}
-                    {/*                      ))}*/}
-                    {/*            >*/}
-                    {/*                <ButtonBase>*/}
-                    {/*                    {topic.label}*/}
-                    {/*                </ButtonBase>*/}
-                    {/*            </Grid>*/}
-                    {/*        ))}*/}
-                    {/*        <Grid item*/}
-                    {/*              onClick={() => (*/}
-                    {/*                  this.setState({*/}
-                    {/*                          selectedTopic: null,*/}
-                    {/*                      },*/}
-                    {/*                      this.getRecords*/}
-                    {/*                  ))}>*/}
-                    {/*            <Typography className={classes.reset}>*/}
-                    {/*                <ButtonBase>*/}
-                    {/*                    сбросить*/}
-                    {/*                </ButtonBase>*/}
-                    {/*            </Typography>*/}
-                    {/*        </Grid>*/}
-                    {/*    </Grid>*/}
-                    {/*</Paper>*/}
+                {/*<Paper className={classes.topicPaper}>*/}
+                {/*    <Grid container spacing={1} direction={"column"}>*/}
+                {/*        <Grid item*/}
+                {/*              onClick={() => (*/}
+                {/*                  this.setState({*/}
+                {/*                          selectedTopic: null,*/}
+                {/*                      },*/}
+                {/*                      this.getRecords*/}
+                {/*                  ))}>*/}
+                {/*            <Typography variant="body1" className={classes.topicTitle}>*/}
+                {/*                Список тэгов:*/}
+                {/*            </Typography>*/}
+                {/*        </Grid>*/}
+                {/*        {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (*/}
+                {/*            <Grid item*/}
+                {/*                  style={{listStyleType: "none"}}*/}
+                {/*                  key={index}*/}
+                {/*                  onClick={() => (*/}
+                {/*                      this.setState({*/}
+                {/*                              selectedTopic: topic.value,*/}
+                {/*                          },*/}
+                {/*                          this.getRecords*/}
+                {/*                      ))}*/}
+                {/*            >*/}
+                {/*                <ButtonBase>*/}
+                {/*                    {topic.label}*/}
+                {/*                </ButtonBase>*/}
+                {/*            </Grid>*/}
+                {/*        ))}*/}
+                {/*        <Grid item*/}
+                {/*              onClick={() => (*/}
+                {/*                  this.setState({*/}
+                {/*                          selectedTopic: null,*/}
+                {/*                      },*/}
+                {/*                      this.getRecords*/}
+                {/*                  ))}>*/}
+                {/*            <Typography className={classes.reset}>*/}
+                {/*                <ButtonBase>*/}
+                {/*                    сбросить*/}
+                {/*                </ButtonBase>*/}
+                {/*            </Typography>*/}
+                {/*        </Grid>*/}
+                {/*    </Grid>*/}
+                {/*</Paper>*/}
                 {/*</div>*/}
 
             </Grid>
