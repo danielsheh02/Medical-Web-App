@@ -269,7 +269,7 @@ class CreateRecordComponent extends Component {
                             />
 
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="selected-topics">Прикрепить тэги</InputLabel>
+                                <InputLabel id="selected-topics">Выбрать ключевые слова</InputLabel>
                                 <Select
                                     className={classes.root}
                                     multiple
