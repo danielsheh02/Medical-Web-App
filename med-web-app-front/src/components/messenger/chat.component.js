@@ -283,6 +283,7 @@ function Chat(props) {
             }
             const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
             const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
             const message = {
                 content: contentCorrect,
                 recipientId: selectedUser.id,
@@ -292,6 +293,7 @@ function Chat(props) {
                 attachmentsBlobForImageClient: selectedFiles,
                 localFiles: fileNameAndStringBase64,
                 sendDate: localISOTime,
+                timeZone: timeZone,
                 uid: uid
             }
             if (allMessages.get(selectedUser.username)) {
@@ -344,33 +346,49 @@ function Chat(props) {
         }
     }
 
+    function getOffsetBetweenTimezonesForDate(date, timezone1, timezone2) {
+        const timezone1Date = convertDateToAnotherTimeZone(date, timezone1);
+        const timezone2Date = convertDateToAnotherTimeZone(date, timezone2);
+        return timezone1Date.getTime() - timezone2Date.getTime();
+    }
+
+    function convertDateToAnotherTimeZone(date, timezone) {
+        const dateString = date.toLocaleString('en-US', {
+            timeZone: timezone
+        });
+        return new Date(dateString);
+    }
+
     function processTimeSend(userAndLastMsg) {
         let today = new Date()
         let messageTime = new Date(userAndLastMsg.second.sendDate)
-        if (today.toDateString() === messageTime.toDateString()) {
-            return (((messageTime.getHours() < 10 && "0" + messageTime.getHours()) || messageTime.getHours() >= 10 && messageTime.getHours()) + ":"
-                + ((messageTime.getMinutes() < 10 && "0" + messageTime.getMinutes())
-                    || (messageTime.getMinutes() >= 10 && messageTime.getMinutes())
+        let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
+        const difsTimeZones = getOffsetBetweenTimezonesForDate(new Date(), userAndLastMsg.second.timeZone, timeZone)
+        const timeMsgCurrentTimeZone = new Date(new Date(messageTime).getTime() - difsTimeZones)
+        if (today.toDateString() === timeMsgCurrentTimeZone.toDateString()) {
+            return (((timeMsgCurrentTimeZone.getHours() < 10 && "0" + timeMsgCurrentTimeZone.getHours()) || timeMsgCurrentTimeZone.getHours() >= 10 && timeMsgCurrentTimeZone.getHours()) + ":"
+                + ((timeMsgCurrentTimeZone.getMinutes() < 10 && "0" + timeMsgCurrentTimeZone.getMinutes())
+                    || (timeMsgCurrentTimeZone.getMinutes() >= 10 && timeMsgCurrentTimeZone.getMinutes())
                 ))
-        } else if (today.getFullYear() === messageTime.getFullYear()) {
+        } else if (today.getFullYear() === timeMsgCurrentTimeZone.getFullYear()) {
             let yesterday1 = new Date(today)
             yesterday1.setDate(yesterday1.getDate() - 1)
-            if (yesterday1.getDate() === messageTime.getDate()) {
+            if (yesterday1.getDate() === timeMsgCurrentTimeZone.getDate()) {
                 return "Вчера"
             }
             const days = ["ВC", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"]
             for (let i = 0; i < 5; i++) {
-                const dayOfWeek = getDayOfWeek(yesterday1, messageTime, days)
+                const dayOfWeek = getDayOfWeek(yesterday1, timeMsgCurrentTimeZone, days)
                 if (dayOfWeek) {
                     return dayOfWeek
                 }
             }
         }
         return (
-            ((messageTime.getDate() < 10 && "0" + messageTime.getDate()) || (messageTime.getDate() >= 10 && messageTime.getDate()))
+            ((timeMsgCurrentTimeZone.getDate() < 10 && "0" + timeMsgCurrentTimeZone.getDate()) || (timeMsgCurrentTimeZone.getDate() >= 10 && timeMsgCurrentTimeZone.getDate()))
             + "."
-            + (((messageTime.getMonth() + 1) < 10 && "0" + (messageTime.getMonth() + 1)) || (((messageTime.getMonth() + 1) >= 10 && (messageTime.getMonth() + 1))))
-            + "." + messageTime.getFullYear()
+            + (((timeMsgCurrentTimeZone.getMonth() + 1) < 10 && "0" + (timeMsgCurrentTimeZone.getMonth() + 1)) || (((timeMsgCurrentTimeZone.getMonth() + 1) >= 10 && (timeMsgCurrentTimeZone.getMonth() + 1))))
+            + "." + timeMsgCurrentTimeZone.getFullYear()
         )
 
     }

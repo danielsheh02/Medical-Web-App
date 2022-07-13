@@ -3,7 +3,6 @@ import '../../styles/Search.css'
 import {ImageList, ImageListItem, Paper, Tooltip, withStyles} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
 
@@ -41,11 +40,32 @@ function RecipientMsg(props) {
     const {initialsSender} = props
     const {scrollToBottom} = props;
     const [files, setFiles] = useState([])
+    const [timeMsgCurrentTimeZone, setTimeMsgCurrentTimeZone] = useState([])
     useEffect(async () => {
         updateStatusMsg(msg)
         await getFiles()
+        processTime()
         scrollToBottom()
     }, [msg]);
+
+    function processTime() {
+        let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
+        const difsTimeZones = getOffsetBetweenTimezonesForDate(new Date(), msg.timeZone, timeZone)
+        setTimeMsgCurrentTimeZone(new Date(new Date(msg.sendDate).getTime() - difsTimeZones))
+    }
+
+    function getOffsetBetweenTimezonesForDate(date, timezone1, timezone2) {
+        const timezone1Date = convertDateToAnotherTimeZone(date, timezone1);
+        const timezone2Date = convertDateToAnotherTimeZone(date, timezone2);
+        return timezone1Date.getTime() - timezone2Date.getTime();
+    }
+
+    function convertDateToAnotherTimeZone(date, timezone) {
+        const dateString = date.toLocaleString('en-US', {
+            timeZone: timezone
+        });
+        return new Date(dateString);
+    }
 
     async function getFiles() {
         setFiles([])
@@ -84,6 +104,12 @@ function RecipientMsg(props) {
         setFiles(preview)
     }
 
+    function openDicomViewer(uid) {
+        const url = window.location.href
+        const num = url.indexOf(":7999")
+        window.open(url.slice(0, num + 1) + "3000/viewer/" + uid, '_blank')
+    }
+
     return (
         <Grid>
             <Paper className={classes.msgNotMy}>
@@ -101,19 +127,16 @@ function RecipientMsg(props) {
                                 <ImageListItem key={index}>
                                     {file.uid ?
                                         <Tooltip title="Открыть в DICOM Viewer">
-                                            {/*TODO тоже сделать, как в record-card*/}
-                                            <a href={"http://localhost:3000/viewer/" + file.uid}
-                                               target="_blank">
-                                                <Button>
-                                                    <img
-                                                        src={file.image}
-                                                        srcSet={file.image}
-                                                        alt={file.id}
-                                                        loading="lazy"
-                                                    />
-                                                </Button>
-                                            </a>
-                                        </Tooltip> :
+                                            <img onClick={() => openDicomViewer(file.uid)}
+                                                 src={file.image}
+                                                 srcSet={file.image}
+                                                 alt={file.id}
+                                                 loading="lazy"
+                                                 style={{cursor: 'pointer'}}
+                                            >
+                                            </img>
+                                        </Tooltip>
+                                        :
                                         <img
                                             src={file.image}
                                             srcSet={file.image}
@@ -130,15 +153,15 @@ function RecipientMsg(props) {
                 <Grid
                     className={classes.time}>
                     {
-                        (((new Date(msg.sendDate).getHours() < 10 && "0" + new Date(msg.sendDate).getHours())
-                                || (new Date(msg.sendDate).getHours() >= 10 && new Date(msg.sendDate).getHours())) + ":"
-                            + ((new Date(msg.sendDate).getMinutes() < 10 && "0" + new Date(msg.sendDate).getMinutes())
-                                || (new Date(msg.sendDate).getMinutes() > 10 && new Date(msg.sendDate).getMinutes())
+                        (((new Date(timeMsgCurrentTimeZone).getHours() < 10 && "0" + new Date(timeMsgCurrentTimeZone).getHours())
+                                || (new Date(timeMsgCurrentTimeZone).getHours() >= 10 && new Date(timeMsgCurrentTimeZone).getHours())) + ":"
+                            + ((new Date(timeMsgCurrentTimeZone).getMinutes() < 10 && "0" + new Date(timeMsgCurrentTimeZone).getMinutes())
+                                || (new Date(timeMsgCurrentTimeZone).getMinutes() > 10 && new Date(timeMsgCurrentTimeZone).getMinutes())
                             )) + "    " + (
-                            ((new Date(msg.sendDate).getDate() < 10 && "0" + new Date(msg.sendDate).getDate()) || (new Date(msg.sendDate).getDate() >= 10 && new Date(msg.sendDate).getDate()))
+                            ((new Date(timeMsgCurrentTimeZone).getDate() < 10 && "0" + new Date(timeMsgCurrentTimeZone).getDate()) || (new Date(timeMsgCurrentTimeZone).getDate() >= 10 && new Date(timeMsgCurrentTimeZone).getDate()))
                             + "."
-                            + (((new Date(msg.sendDate).getMonth() + 1) < 10 && "0" + (new Date(msg.sendDate).getMonth() + 1)) || (((new Date(msg.sendDate).getMonth() + 1) >= 10 && (new Date(msg.sendDate).getMonth() + 1))))
-                            + "." + new Date(msg.sendDate).getFullYear()
+                            + (((new Date(timeMsgCurrentTimeZone).getMonth() + 1) < 10 && "0" + (new Date(timeMsgCurrentTimeZone).getMonth() + 1)) || (((new Date(timeMsgCurrentTimeZone).getMonth() + 1) >= 10 && (new Date(timeMsgCurrentTimeZone).getMonth() + 1))))
+                            + "." + new Date(timeMsgCurrentTimeZone).getFullYear()
                         )
                     }
                 </Grid>

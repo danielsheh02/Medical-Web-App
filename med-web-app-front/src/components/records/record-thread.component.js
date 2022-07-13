@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import RecordService from "../../services/record.service";
 import RecordCard from "./record-card.component";
 import ReplyRecordForm from "./reply-record.component";
 import {Card, Grid, withStyles} from "@material-ui/core";
 import ReviewCard from "../review-card.component";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
@@ -65,7 +65,6 @@ class RecordThreadComponent extends Component {
     componentDidMount() {
         RecordService.getRecord(this.state.recordId)
             .then(response => {
-                console.log(response)
                     this.setState({record: response.data});
                 }
             )
@@ -88,8 +87,8 @@ class RecordThreadComponent extends Component {
     }
 
     render() {
-        const { classes } = this.props;
-        const { answers } = this.state;
+        const {classes} = this.props;
+        const {answers} = this.state;
         return (
             <Grid xs={12} item className={classes.Grid}>
                 <Grid xs={8} item>
@@ -100,16 +99,21 @@ class RecordThreadComponent extends Component {
                         <Card className={classes.paper}>
 
                             <ReplyRecordForm
-                                refreshRecords = {this.refreshAnswers}
-                                parentId = {this.state.recordId}/>
+                                refreshRecords={this.refreshAnswers}
+                                parentId={this.state.recordId}/>
 
                             <ul className="list-group">
                                 {answers !== undefined && this.state.answers !== null &&
                                 this.state.answers.map((record, index) => (
                                     <li
-                                        style={{listStyleType: "none", width: "100%", marginLeft: "auto", marginTop: "1"}}
+                                        style={{
+                                            listStyleType: "none",
+                                            width: "100%",
+                                            marginLeft: "auto",
+                                            marginTop: "1"
+                                        }}
                                         key={index}
-                                        >
+                                    >
                                         <ReviewCard review={record} isPreview={false} isReply={true}/>
                                     </li>
 
@@ -121,26 +125,16 @@ class RecordThreadComponent extends Component {
                 <Grid xs={4} item>
                     <Card className={classes.paper2}>
                         <Grid className={classes.grid}>
-                            {/*<Link to={"/records/create"} className="nav-link card-link-custom color-orange">*/}
-                            {/*    Создать пост*/}
-                            {/*</Link>*/}
-                            {/*<Link to={"/records/view"} className="nav-link card-link-custom color-orange">*/}
-                            {/*    Обратно к постам*/}
-                            {/*</Link>*/}
-                            {/*<Button >*/}
-                                <Link  to={"/records/create"} style={{ textDecoration: 'none' }}>
-                                    <Button className={classes.button}>
+                            <Link to={"/records/create"} style={{textDecoration: 'none'}}>
+                                <Button className={classes.button}>
                                     Создать пост
-                                    </Button>
-                                </Link>
-                            {/*</Button>*/}
-                            {/*<Button >*/}
-                                <Link to={"/records/view"} style={{ textDecoration: 'none' }}>
-                                    <Button className={classes.button}>
+                                </Button>
+                            </Link>
+                            <Link to={"/records/view"} style={{textDecoration: 'none'}}>
+                                <Button className={classes.button}>
                                     Обратно к постам
-                                    </Button>
-                                </Link>
-                            {/*</Button>*/}
+                                </Button>
+                            </Link>
                         </Grid>
                     </Card>
                 </Grid>
