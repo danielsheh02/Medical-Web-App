@@ -81,7 +81,7 @@ public class ChatMessageService {
             chatId = (recipientUsername + senderUsername);
         }
         List<ChatMessage> messages;
-        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatIdOrderBySendDateAsc(chatId);
+        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatId(chatId);
         messages = messagesOptional.orElseGet(ArrayList::new);
 
         if (messages.size() > 0) {
@@ -111,7 +111,7 @@ public class ChatMessageService {
 
     public List<ChatMessage> findUnreadMessages(Long recipientId) {
         List<ChatMessage> messages;
-        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByRecipientIdAndStatusMessageOrderBySendDateAsc(recipientId, StatusMessage.UNREAD);
+        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByRecipientIdAndStatusMessage(recipientId, StatusMessage.UNREAD);
         messages = messagesOptional.orElseGet(ArrayList::new);
         return messages;
     }
@@ -139,7 +139,7 @@ public class ChatMessageService {
     }
 
     public Optional<ChatMessage> findFirstByChatIdOrderBySendDateDesc(String chatId) {
-        return chatMessageRepository.findFirstByChatIdOrderBySendDateDesc(chatId);
+        return chatMessageRepository.findFirstByChatIdOrderByIdDesc(chatId);
     }
 }
 
