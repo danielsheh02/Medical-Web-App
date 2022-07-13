@@ -40,7 +40,6 @@ class ReviewCard extends Component {
     constructor(props) {
         super(props);
 
-        // this.convertTZ = this.convertTZ.bind(this);
         this.formatTime = this.formatTime.bind(this);
         this.getContent = this.getContent.bind(this);
         this.replyToReview = this.replyToReview.bind(this);
@@ -78,10 +77,6 @@ class ReviewCard extends Component {
         return new Date(dateString);
     }
 
-    // convertTZ(date, tzString) {
-    //     return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
-    // }
-
     getContent(content) {
         if (this.props.isPreview && content != null && content.length > 1000) {
             return content.substring(0, 1000) + '...';
@@ -93,12 +88,6 @@ class ReviewCard extends Component {
         let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
         const difsTimeZones = this.getOffsetBetweenTimezonesForDate(new Date(), this.review.timeZone, timeZone)
         return (new Date(new Date(this.review.creationTime).getTime() - difsTimeZones))
-        // var creationTimestamp = new Date(creationTime);
-        // let userDate = this.convertTZ(creationTimestamp, "Asia/Dhaka");
-        // var hours = userDate.getHours();
-        // var minutes = userDate.getMinutes();
-        // minutes = minutes >= 10 ? minutes : '0' + minutes;
-        // return hours + ':' + minutes;
     }
 
     render() {

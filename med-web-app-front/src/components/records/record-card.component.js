@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AuthService from "../../services/auth.service";
 import AttachmentService from "../../services/attachment.service";
 import '../../styles/Record.css'
-import {Button, Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
+import {Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {purple} from "@material-ui/core/colors";
 import {Link} from "react-router-dom";
@@ -80,7 +80,6 @@ class RecordCardNew extends Component {
         super(props);
 
         this.download = this.download.bind(this);
-        // this.convertTZ = this.convertTZ.bind(this);
         this.formatTime = this.formatTime.bind(this);
         this.getContent = this.getContent.bind(this);
         this.displayRecordThread = this.displayRecordThread.bind(this);
@@ -113,10 +112,6 @@ class RecordCardNew extends Component {
         return new Date(dateString);
     }
 
-    // convertTZ(date, tzString) {
-    //     return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
-    // }
-
     getContent(content) {
         if (this.props.isPreview && content != null && content.length > 1000) {
             return content.substring(0, 1000) + '...';
@@ -128,12 +123,6 @@ class RecordCardNew extends Component {
         let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
         const difsTimeZones = this.getOffsetBetweenTimezonesForDate(new Date(), this.record.timeZone, timeZone)
         return (new Date(new Date(this.record.creationTime).getTime() - difsTimeZones))
-        // var creationTimestamp = new Date(creationTime);
-        // let userDate = this.convertTZ(creationTimestamp, "Asia/Dhaka");
-        // var hours = userDate.getHours();
-        // var minutes = userDate.getMinutes();
-        // minutes = minutes >= 10 ? minutes : '0' + minutes;
-        // return hours + ':' + minutes;
     }
 
     displayRecordThread() {
@@ -206,11 +195,6 @@ class RecordCardNew extends Component {
                                     )}
                             </Typography>
                         </Grid>
-                        {/*<Grid className={classes.ggrid}>*/}
-                        {/*    <Typography variant={"subtitle1"}>*/}
-                        {/*        {this.creationTime.getDate()}*/}
-                        {/*    </Typography>*/}
-                        {/*</Grid>*/}
                     </Grid>
                     <Grid className={classes.grid}>
                         {this.isPreview ? (

@@ -231,20 +231,6 @@ function SenderMsg(props) {
                                 {files.map((file, index) =>
                                     <ImageListItem key={index}>
                                         {file.uid ?
-                                            // <Tooltip title="Открыть в DICOM Viewer">
-                                            //     {/*TODO да сделай ты уже так же, как в record-card*/}
-                                            //     <a href={"http://localhost:3000/viewer/" + file.uid}
-                                            //        target="_blank">
-                                            //         <Button>
-                                            //             <img
-                                            //                 src={file.image}
-                                            //                 srcSet={file.image}
-                                            //                 alt={file.id}
-                                            //                 loading="lazy"
-                                            //             />
-                                            //         </Button>
-                                            //     </a>
-                                            // </Tooltip>
                                             <Tooltip title="Открыть в DICOM Viewer">
                                                 <img onClick={() => openDicomViewer(file.uid)}
                                                      src={file.image}

@@ -12,7 +12,6 @@ const useStyles = theme => ({
         margin:10,
     },
     grid: {
-        //margin: theme.spacing(1.5, 0, 0, 1),
         display: 'flex',
     },
     paper: {
@@ -34,7 +33,6 @@ class TopicCard extends Component {
     constructor(props) {
         super(props);
 
-        // this.convertTZ = this.convertTZ.bind(this);
         this.formatTime = this.formatTime.bind(this);
         this.getOffsetBetweenTimezonesForDate = this.getOffsetBetweenTimezonesForDate.bind(this);
         this.convertDateToAnotherTimeZone = this.convertDateToAnotherTimeZone.bind(this);
@@ -61,20 +59,10 @@ class TopicCard extends Component {
         return new Date(dateString);
     }
 
-    // convertTZ(date, tzString) {
-    //     return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
-    // }
-
     formatTime() {
         let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
         const difsTimeZones = this.getOffsetBetweenTimezonesForDate(new Date(), this.topic.timeZone, timeZone)
         return (new Date(new Date(this.topic.creationTime).getTime() - difsTimeZones))
-        // var creationTimestamp = new Date(creationTime);
-        // let userDate = this.convertTZ(creationTimestamp, "Asia/Dhaka");
-        // var hours = userDate.getHours();
-        // var minutes = userDate.getMinutes();
-        // minutes = minutes >= 10 ? minutes : '0' + minutes;
-        // return hours + ':' + minutes;
     }
 
     render() {
@@ -128,7 +116,6 @@ class TopicCard extends Component {
 
                             </Grid>
                         </Grid>
-
                     </Grid>
                 </Card>
             </Grid>
