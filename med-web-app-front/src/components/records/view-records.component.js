@@ -3,7 +3,6 @@ import RecordService from "../../services/record.service";
 import Pagination from "@material-ui/lab/Pagination";
 import SelectReact from 'react-select';
 import RecordCard from "./record-card.component";
-// import Topic from "./topic.component"
 import TopicService from "../../services/topic.service";
 import {Card, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -237,7 +236,7 @@ class ViewRecordsList extends Component {
         const {classes} = this.props;
         return (
             <Grid item className={classes.mainGrid}>
-                <Grid xs={12} className={classes.firstGrid}>
+                <Grid xs={12} className={classes.firstGrid} item>
                     <Grid xs={8} item>
                         {/*<input
                             type="text"

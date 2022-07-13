@@ -284,9 +284,6 @@ function Chat(props) {
             const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
             const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-            // console.log((new Date(Date.now() - tzoffset)).toISOString())
-            // console.log(tzoffset)
-            // console.log(localISOTime)
             const message = {
                 content: contentCorrect,
                 recipientId: selectedUser.id,
