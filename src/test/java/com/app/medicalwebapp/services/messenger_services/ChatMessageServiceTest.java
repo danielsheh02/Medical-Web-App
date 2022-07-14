@@ -68,10 +68,10 @@ class ChatMessageServiceTest {
 
             Mockito.doReturn(Optional.of(List.of(chatMessage)))
                     .when(chatMessageRepository)
-                    .findByChatIdOrderBySendDateAsc(chatMessage.getChatId());
+                    .findByChatId(chatMessage.getChatId());
             List<ChatMessage> returnedChatMessage = chatMessageService.findMessages(chatMessage.getSenderName(), chatMessage.getRecipientName());
             Mockito.verify(chatMessageRepository, Mockito.times(1))
-                    .findByChatIdOrderBySendDateAsc(chatMessage.getChatId());
+                    .findByChatId(chatMessage.getChatId());
             assertEquals(chatMessage, returnedChatMessage.get(0));
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,10 +86,10 @@ class ChatMessageServiceTest {
 
         Mockito.doReturn(Optional.of(List.of(chatMessage)))
                 .when(chatMessageRepository)
-                .findByRecipientIdAndStatusMessageOrderBySendDateAsc(chatMessage.getRecipientId(), StatusMessage.UNREAD);
+                .findByRecipientIdAndStatusMessage(chatMessage.getRecipientId(), StatusMessage.UNREAD);
         List<ChatMessage> returnedChatMessage = chatMessageService.findUnreadMessages(1L);
         Mockito.verify(chatMessageRepository, Mockito.times(1))
-                .findByRecipientIdAndStatusMessageOrderBySendDateAsc(chatMessage.getRecipientId(), StatusMessage.UNREAD);
+                .findByRecipientIdAndStatusMessage(chatMessage.getRecipientId(), StatusMessage.UNREAD);
         assertEquals(chatMessage, returnedChatMessage.get(0));
     }
 
@@ -132,7 +132,7 @@ class ChatMessageServiceTest {
         chatMessage.setChatId("DoeJohn");
         Mockito.doReturn(Optional.of(chatMessage))
                 .when(chatMessageRepository)
-                .findFirstByChatIdOrderBySendDateDesc(chatMessage.getChatId());
+                .findFirstByChatIdOrderByIdDesc(chatMessage.getChatId());
         Optional<ChatMessage> returnedChatMessageOpt = chatMessageService.findFirstByChatIdOrderBySendDateDesc(chatMessage.getChatId());
         if (returnedChatMessageOpt.isPresent()) {
             ChatMessage returnedChatMessage = returnedChatMessageOpt.get();
