@@ -28,6 +28,9 @@ const useStyles = theme => ({
         "& .MuiTypography-root": {
             color: "black",
         },
+        "@media (max-width: 470px)":{
+          width: 200
+        },
     },
     grid: {
         "& .MuiTypography-root": {
@@ -41,14 +44,31 @@ const useStyles = theme => ({
     },
     gridContent: {
         margin: theme.spacing(1),
+        [theme.breakpoints.down("xs")]:{
+            Width: 200,
+        },
+        [theme.breakpoints.between("sm", "md")]:{
+            Width:500
+        },
+        "@media (min-width : 1280px)":{
+           Width: 1000,
+        },
     },
     paper: {
         padding: theme.spacing(2),
-        margin: 'auto',
+        margin: 0,
         // maxWidth: 700,
         borderColor: "#e9e9e9",
         borderRadius: 10,
-        minWidth: 400,
+        [theme.breakpoints.down("xs")]:{
+            width: 230,
+        },
+        [theme.breakpoints.between("sm", "md")]:{
+            width:500
+        },
+        "@media (min-width : 1280px)":{
+            width: 800,
+        },
     },
     mainGrid: {
         margin: 0,
@@ -59,6 +79,15 @@ const useStyles = theme => ({
     content: {
         whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
+        [theme.breakpoints.down("xs")]:{
+            width: 200,
+        },
+        [theme.breakpoints.between("sm", "md")]:{
+            width:470
+        },
+        "@media (min-width : 1280px)":{
+            width: 770,
+        },
     },
     titleStyle: {
         size: 15,

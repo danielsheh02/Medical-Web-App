@@ -6,24 +6,162 @@ import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     paper: {
-        width: 700,
-        margin: 'auto',
-        padding: theme.spacing(3),
+        [theme.breakpoints.down("xs")]:{
+            margin: theme.spacing(0),
+            width: 230,
+            padding: theme.spacing(1)
+        },
+        [theme.breakpoints.between("sm", "md")]: {
+            margin: "auto",
+            width: 550,
+            padding: theme.spacing(2)
+
+        },
+        "@media (min-width: 1280px)": {
+            width: 800,
+            margin: "auto",
+            padding: theme.spacing(5)
+
+        },
     },
     typography: {
-        margin: theme.spacing(1, 1, 1, 1),
+        textAlign:"center",
+        [theme.breakpoints.down("xs")]: {
+          width:230,
+        },
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 500,
+
+        },
+        "@media (min-width: 1280px)": {
+            width: 700,
+
+        },
+
     },
     typography2: {
-        margin: theme.spacing(1, 1, 1, 1),
-        fontSize: 17,
+        textAlign: "left",
+        [theme.breakpoints.down("xs")]: {
+
+            width:230,
+        },
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 500,
+
+        },
+        "@media (min-width: 1280px)": {
+            width: 700,
+
+        },
     },
     div: {
         margin: theme.spacing(3, 0, 1, 0),
     },
     button: {
         marginRight: theme.spacing(1),
+        [theme.breakpoints.down("xs")]: {
+            marginBottom: theme.spacing(1)
+        },
     },
 })
+
+const GreetingWords = (props) =>{
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const breakpoint_1 = 1280;
+    const breakpoint_2 = 700;
+    React.useEffect(() => {
+        const handleResizeWindow = () => setWidth(window.innerWidth);
+        // subscribe to window resize event "onComponentDidMount"
+        window.addEventListener("resize", handleResizeWindow);
+        return () => {
+            // unsubscribe "onComponentDestroy"
+            window.removeEventListener("resize", handleResizeWindow);
+        };
+    }, []);
+
+    if(width > breakpoint_1){
+        return (<Typography variant="subtitle1" className={props.className}>
+            Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
+            <br/> <br/>
+            В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
+            ПЭТ: <br/><br/>
+            – подтверждение необходимости хирургического вмешательства<br/><br/>
+            – подтверждение онкологического или редкого заболевания<br/><br/>
+            – проверка эффективности назначенной терапии<br/><br/>
+            – сомнения пациента относительно корректности поставленного диагноза<br/><br/>
+            – консультация специалиста узкого профиля <br/> <br/>
+        </Typography>);
+    }
+    else if(width > breakpoint_2){
+        return ( <Typography variant="subtitle4" className={props.className}>
+            Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
+            <br/> <br/>
+            В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
+            ПЭТ: <br/><br/>
+            – подтверждение необходимости хирургического вмешательства<br/><br/>
+            – подтверждение онкологического или редкого заболевания<br/><br/>
+            – проверка эффективности назначенной терапии<br/><br/>
+            – сомнения пациента относительно корректности поставленного диагноза<br/><br/>
+            – консультация специалиста узкого профиля <br/> <br/>
+        </Typography>);
+    }
+
+    else {
+        return( <Typography variant="subtitle6" className={props.className}>
+            Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
+            <br/> <br/>
+            В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
+            ПЭТ: <br/>
+            – подтверждение необходимости хирургического вмешательства<br/><br/>
+            – подтверждение онкологического или редкого заболевания<br/><br/>
+            – проверка эффективности назначенной терапии<br/><br/>
+            – сомнения пациента относительно корректности поставленного диагноза<br/><br/>
+            – консультация специалиста узкого профиля <br/> <br/>
+        </Typography>);
+    }
+
+
+}
+const GreetingTitle = (props) =>{
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const breakpoint_1 = 1280;
+    const breakpoint_2 = 700;
+    React.useEffect(() => {
+        const handleResizeWindow = () => setWidth(window.innerWidth);
+        // subscribe to window resize event "onComponentDidMount"
+        window.addEventListener("resize", handleResizeWindow);
+        return () => {
+            // unsubscribe "onComponentDestroy"
+            window.removeEventListener("resize", handleResizeWindow);
+        };
+    }, []);
+    if (width > breakpoint_1){
+        return(
+                <Typography variant="h3" className={props.className} >
+                    Medical-Web-App
+                </Typography>
+
+        );
+    }
+    if(width > breakpoint_2){
+        return(
+
+                <Typography variant="h4" className={props.className}>
+                    Medical-Web-App
+                </Typography>
+        );
+    }
+    else {
+        return(
+
+                <Typography variant="h6" className={props.className} >
+                    Medical-Web-App
+                </Typography>
+
+        );
+    }
+}
+
 
 class Home extends Component {
     constructor(props) {
@@ -58,9 +196,7 @@ class Home extends Component {
             <Grid>
                 <div className={classes.div}>
                     <Paper className={classes.paper}>
-                        <Typography variant="h3" className={classes.typography}>
-                            Medical-Web-App
-                        </Typography>
+                        <GreetingTitle  className = {classes.typography}/>
                     </Paper>
                 </div>
 
@@ -68,18 +204,7 @@ class Home extends Component {
                 <div className={classes.div}>
 */}
                 <Paper className={classes.paper}>
-                    <Typography variant="subtitle1">
-                        Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
-                        <br/> <br/>
-                        В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
-                        ПЭТ: <br/>
-                        – подтверждение необходимости хирургического вмешательства<br/>
-                        – подтверждение онкологического или редкого заболевания<br/>
-                        – проверка эффективности назначенной терапии<br/>
-                        – сомнения пациента относительно корректности поставленного диагноза<br/>
-                        – консультация специалиста узкого профиля <br/> <br/>
-                    </Typography>
-
+                    <GreetingWords className = {classes.typography2}/>
                     <Grid
                         container
                         justifyContent="center">
@@ -124,8 +249,6 @@ class Home extends Component {
                         {/*    </Button>*/}
                     </Grid>
                 </Paper>
-                {/*</div>*/}
-
             </Grid>
         )
     }

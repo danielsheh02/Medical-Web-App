@@ -179,31 +179,31 @@ class PipelineResultsComponent extends Component {
                                                                         style={{marginLeft: 5}}>Скачать</Typography>
                                                         </Button>
                                                     </div>
-                                                    {/*<div className="col-sm-1">*/}
-                                                    {/*    <IconButton aria-label="delete"*/}
-                                                    {/*                size="small"*/}
-                                                    {/*                style={{width: 5, color: '#444',}}*/}
-                                                    {/*                onClick={() => this.handleClickOpen()}>*/}
-                                                    {/*        <DeleteIcon fontSize="small"/>*/}
-                                                    {/*    </IconButton>*/}
-                                                    {/*</div>*/}
-                                                    {/*<Dialog*/}
-                                                    {/*    open={this.state.open}*/}
-                                                    {/*    onClose={this.handleClose}*/}
-                                                    {/*    aria-labelledby="alert-dialog-title"*/}
-                                                    {/*    aria-describedby="alert-dialog-description"*/}
-                                                    {/*>*/}
-                                                    {/*    <DialogTitle id="alert-dialog-title">*/}
-                                                    {/*        {"Вы действительно хотите удалить результат анализа?"}*/}
-                                                    {/*    </DialogTitle>*/}
-                                                    {/*    <DialogActions>*/}
-                                                    {/*        <Button onClick={this.handleClose}>Нет</Button>*/}
-                                                    {/*        <Button onClick={() => this.delete(el.id, el.outputId)}*/}
-                                                    {/*                autoFocus>*/}
-                                                    {/*            Да*/}
-                                                    {/*        </Button>*/}
-                                                    {/*    </DialogActions>*/}
-                                                    {/*</Dialog>*/}
+                                                   {/* <div className="col-sm-1">
+                                                        <IconButton aria-label="delete"
+                                                                    size="small"
+                                                                    style={{width: 5, color: '#444',}}
+                                                                    onClick={() => this.handleClickOpen()}>
+                                                            <DeleteIcon fontSize="small"/>
+                                                        </IconButton>
+                                                    </div>
+                                                    <Dialog
+                                                        open={this.state.open}
+                                                        onClose={this.handleClose}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">
+                                                            {"Вы действительно хотите удалить результат анализа?"}
+                                                        </DialogTitle>
+                                                        <DialogActions>
+                                                            <Button onClick={this.handleClose}>Нет</Button>
+                                                            <Button onClick={() => this.delete(el.id, el.outputId)}
+                                                                    autoFocus>
+                                                                Да
+                                                            </Button>
+                                                        </DialogActions>
+                                                    </Dialog>*/}
                                                 </div>
                                             ))}
                                         </div>

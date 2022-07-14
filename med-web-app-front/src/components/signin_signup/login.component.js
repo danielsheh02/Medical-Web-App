@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -49,6 +49,7 @@ class Login extends Component {
         };
     }
 
+
     onChangeUsername(e) {
         this.setState({
             username: e.target.value
@@ -88,7 +89,7 @@ class Login extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" disableGutters={true}>
                 <Card className={classes.paper}>
                     <div className={classes.div}>
                         <Typography component="h1" variant="h5">
@@ -124,6 +125,7 @@ class Login extends Component {
                                 id="password"
                                 value={this.state.password}
                                 onChange={this.onChangePassword}
+
                             />
                             {/*<FormControlLabel*/}
                             {/*    control={<Checkbox value="remember" color="primary"/>}*/}
