@@ -51,6 +51,9 @@ public class ChatMessage {
     @Column(name = "statusMessage")
     private StatusMessage statusMessage;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @ManyToMany
     @JoinTable(
             name = "files_msgs",

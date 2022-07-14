@@ -132,7 +132,7 @@ class ChatMessageServiceTest {
         chatMessage.setChatId("DoeJohn");
         Mockito.doReturn(Optional.of(chatMessage))
                 .when(chatMessageRepository)
-                .findFirstByChatIdOrderByIdDesc(chatMessage.getChatId());
+                .findFirstByChatIdAndDeleted_IsFalseOrderByIdDesc(chatMessage.getChatId());
         Optional<ChatMessage> returnedChatMessageOpt = chatMessageService.findFirstByChatIdOrderBySendDateDesc(chatMessage.getChatId());
         if (returnedChatMessageOpt.isPresent()) {
             ChatMessage returnedChatMessage = returnedChatMessageOpt.get();
