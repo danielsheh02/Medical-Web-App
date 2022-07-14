@@ -140,7 +140,7 @@ const useStyles = theme => ({
         }),
     },
     appBarShift: {
-        marginLeft: drawerWidth,
+        // marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -203,12 +203,45 @@ let stompClient = null;
 
 
 function App(props) {
+
+    function LeftMenuOpen(){
+        const [width, setWidth] = React.useState(window.innerWidth);
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        return width > 320;
+
+    }
+    function LeftMenuShown(){
+        const [width, setWidth] = React.useState(window.innerWidth);
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if(width > 425){
+            return "permanent";
+        }
+        return "persistent";
+    }
+
+
     const {classes} = props
     const [numberOfUnRead, setNumberOfUnRead] = useState(0)
     // const [showModeratorBoard, setShowModeratorBoard] = useState(false)
     // const [showAdminBoard, setShowAdminBoard] = useState(false)
     const [currentUser, setCurrentUser] = useState(null)
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState({LeftMenuOpen})
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
     const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
@@ -554,6 +587,7 @@ function App(props) {
 
     }
 
+
     function ContainerBorder(){
         const [width, setWidth] = React.useState(window.innerWidth);
         React.useEffect(() => {
@@ -587,7 +621,10 @@ function App(props) {
             return "container mt-3";
         }
     }
-    ;
+
+
+
+
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -622,7 +659,7 @@ function App(props) {
                 <Grid item className={clsx(classes.leftIndent, open && classes.leftIndentOpen)}>
                     <Drawer
                         height="100%"
-                        variant="persistent"
+                        variant= "persistent"   //{LeftMenuShown} // вот здесь надо поменять что-то
                         classes={{
                             paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
                         }}
@@ -639,6 +676,7 @@ function App(props) {
                             </IconButton>
                         </div>)}
                         <Divider/>
+
                         <List>
                             {currentUser && (
                                 menuItemsForRegisteredUsers.map((item) => (
@@ -655,15 +693,14 @@ function App(props) {
                             }
                             {!currentUser && (
                                 menuItemsForUnregisteredUsers.map((item) => (
-                                    <ListItem
-                                        button
+                                    <ListItemButton
                                         key={item.text}
                                         //onClick={() => this.displayPageContent(item.path)}
                                         component={Link} to={item.path}
                                     >
                                         <ListItemIcon>{item.icon}</ListItemIcon>
                                         <ListItemText primary={item.text}/>
-                                    </ListItem>
+                                    </ListItemButton>
                                 )))
                             }
                         </List>
