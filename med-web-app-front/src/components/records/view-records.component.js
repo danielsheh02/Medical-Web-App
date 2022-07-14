@@ -242,7 +242,7 @@ class ViewRecordsList extends Component {
         const {classes} = this.props;
         return (
             <Grid item className={classes.mainGrid}>
-                <Grid xs={12} className={classes.firstGrid}>
+                <Grid xs={12} className={classes.firstGrid} item>
                     <Grid xs={8} item>
                         {/*<input
                             type="text"
