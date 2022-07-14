@@ -49,6 +49,7 @@ import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
+import ListItemButton from "@mui/material/ListItemButton";
 
 const drawerWidth = 240
 
@@ -58,7 +59,18 @@ const useStyles = theme => ({
     },
     drawerPaper: {
         whiteSpace: 'nowrap',
-        width: theme.spacing(32),
+        [theme.breakpoints.down("xs")]: {
+            width: 210,
+            marginRight: theme.spacing(0),
+        },
+        [theme.breakpoints.between("sm", "md")]: {
+            width: theme.spacing(25),
+            marginRight: theme.spacing(0)
+        },
+        "@media (min-width: 1280px)": {
+            width: theme.spacing(32),
+            marginRight: theme.spacing(5)
+        },
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -66,7 +78,6 @@ const useStyles = theme => ({
         height: "100%",
     },
     drawerPaperClose: {
-        overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -79,17 +90,42 @@ const useStyles = theme => ({
         height: "100%",
     },
     leftIndent: {
+        [theme.breakpoints.down("xs")]: {
+            width: 40,
+            marginRight: theme.spacing(0)
+        },
         width: 60,
     },
     leftIndentOpen: {
-        width: 240,
+        [theme.breakpoints.down("xs")]: {
+            width: 100,
+        },
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 150
+        },
+        "@media (min-width: 1280px)": {
+            width: 200
+        },
+
     },
     active: {
         background: '#f4f4f4'
     },
     title: {
         flexGrow: 1,
-        width: '100%',
+        margin:'auto',
+        [theme.breakpoints.down("xs")]: {
+            width: 100,
+        },
+        "@media (min-width : 400px)": {
+            width: 250,
+
+        },
+        "@media (min-width: 1280px)": {
+            width: 700,
+            paddingRight: "70%",
+        },
+
     },
     appBar: {
         top: 0,
@@ -116,13 +152,21 @@ const useStyles = theme => ({
         marginTop: 10,
     },
     menuButton: {
-        marginRight: 36,
+        [theme.breakpoints.down("xs")]: {
+            marginRight: 5
+        },
+        [theme.breakpoints.between("sm","md")]:{
+            marginRight: 10
+        },
+        "@media (min-width: 1280px)" :{
+            marginRight: 34
+        },
     },
     menuButtonHidden: {
         display: 'none',
     },
     toolbar: {
-        paddingRight: 24,
+        paddingRight: "0%",
     },
     toolbarIcon: {
         display: 'flex',
@@ -139,6 +183,9 @@ const useStyles = theme => ({
         // width: '100%',
         //marginLeft: '100px'
     },
+    contentOpen : {
+        marginLeft: '250px',
+    },
     noticeMsg: {
         backgroundColor: '#FF0040',
         textAlign: 'center',
@@ -146,8 +193,14 @@ const useStyles = theme => ({
         // width: '100%',
         //marginLeft: '100px'
     },
+    regAndLogbuttons: {
+        padding: 0,
+        margin: 'auto'
+    }
 })
 let stompClient = null;
+
+
 
 function App(props) {
     const {classes} = props
@@ -155,7 +208,7 @@ function App(props) {
     // const [showModeratorBoard, setShowModeratorBoard] = useState(false)
     // const [showAdminBoard, setShowAdminBoard] = useState(false)
     const [currentUser, setCurrentUser] = useState(null)
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(false)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
     const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
@@ -363,6 +416,178 @@ function App(props) {
         },
     ]
 
+
+    const IconsForNotRegisteredUsers = () =>{
+        const [width, setWidth] = React.useState(window.innerWidth);
+        const breakpoint_1 = 580;
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if(width > breakpoint_1){
+            return (
+                <Grid container >
+                    <Grid item xs/>
+                    <Grid item >
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/login"}>
+                            <ListItemText primary={"Войти"}/>
+                        </ListItemButton>
+                    </Grid>
+                    <Grid item>
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/register"}>
+                            <ListItemText primary={"Регистрация"}/>
+                        </ListItemButton>
+                    </Grid>
+                </Grid>
+            );
+        }
+        else{
+            return (
+                <Grid container alignItems={"left"} direction={'column'}>
+                    <Grid >
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/login"}
+                        >
+                            <ListItemText primary={"Войти"}/>
+                        </ListItemButton>
+                    </Grid>
+                    <Grid >
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/register"}>
+
+                            <ListItemText primary={"Регистрация"}/>
+                        </ListItemButton>
+                    </Grid>
+                </Grid>
+            );
+        }
+
+    }
+
+
+    const IconsForRegistredUsers = (props) =>{
+        const username = props.username;
+        const [width, setWidth] = React.useState(window.innerWidth);
+        const breakpoint_1 = 588;
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if (width > breakpoint_1){
+            return (<Grid container>
+                <Grid item xs/>
+                <Grid item width={'50px'}>
+                    <IconButton color="inherit">
+                        <Badge badgeContent={4} color="secondary">
+                            <NotificationsIcon/>
+                        </Badge>
+                    </IconButton>
+                </Grid>
+                <Grid item width={'130px'}>
+                    <ListItem
+                        button
+                        component={Link} to={getPathForProfile()}>
+                        <AccountCircleRoundedIcon/>
+                        <ListItemText primary={username}/>
+                    </ListItem>
+                </Grid>
+
+                <Grid item width={'90px'}>
+                    <ListItem
+                        button
+                        component={Link} to={"/login"}
+                        onClick={logOut}>
+                        <ListItemText primary={"Выйти"}/>
+                    </ListItem>
+                </Grid>
+            </Grid>);
+        }
+        else {
+            return(
+                <Grid container alignItems={"center"} justifyContent={"flex-start"}
+                      direction={"row"} >
+                    <Grid item width={'25px'} alignContent={"stretch"}  >
+                        <IconButton color="inherit" >
+                            <Badge badgeContent={4} color="secondary">
+                                <NotificationsIcon />
+                            </Badge>
+                        </IconButton>
+                    </Grid>
+                    <Grid container xs={5} direction={"column"} justifyContent={"center"} alignItems={"flex-start"}>
+                        <Grid item width={'100px'}>
+                            <ListItemButton
+                                sx = {{paddingRight : 0,paddingBottom: 0}}
+                                component={Link} to={getPathForProfile()}>
+                                <AccountCircleRoundedIcon/>
+                                <ListItemText primary={username}/>
+                            </ListItemButton>
+                        </Grid>
+
+                        <Grid item width={'100px'} >
+                            <ListItemButton
+                                sx = {{paddingRight: 0, paddingTop : 0,paddingBottom : 0}}
+                                component={Link} to={"/login"}
+                                onClick={logOut}>
+                                <ListItemText primary={"Выйти"}/>
+                            </ListItemButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            );
+        }
+
+    }
+
+    function ContainerBorder(){
+        const [width, setWidth] = React.useState(window.innerWidth);
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if(width <= 320){
+            return "container mt-3 ml-0 pl-0";
+        }
+        else if(width <= 375 ){
+            return "container mt-3 ml-3 pl-0";
+        }
+        else if(width <= 450){
+            return "container mt-3 ml-3";
+        }
+        else if (width <= 600){
+            return "container mt-3 ";
+        }
+        else if(width <= 768){
+            return "container mt-3";
+        }
+        else if(width <= 1024){
+            return "container mt-3 ml-1 pl-0";
+        }
+        else {
+            return "container mt-3";
+        }
+    }
+    ;
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -383,61 +608,21 @@ function App(props) {
                     </Typography>
 
                     {currentUser && (
-                        <Grid container>
-                            <Grid item xs/>
-                            <Grid item width={'50px'}>
-                                <IconButton color="inherit">
-                                    <Badge badgeContent={4} color="secondary">
-                                        <NotificationsIcon/>
-                                    </Badge>
-                                </IconButton>
-                            </Grid>
-                            <Grid item width={'130px'}>
-                                <ListItem
-                                    button
-                                    component={Link} to={getPathForProfile()}>
-                                    <AccountCircleRoundedIcon/>
-                                    <ListItemText primary={currentUser.username}/>
-                                </ListItem>
-                            </Grid>
+                        <IconsForRegistredUsers username = {currentUser.username}/>
+                    )}
 
-                            <Grid item width={'90px'}>
-                                <ListItem
-                                    button
-                                    component={Link} to={"/login"}
-                                    onClick={logOut}>
-                                    <ListItemText primary={"Выйти"}/>
-                                </ListItem>
-                            </Grid>
-                        </Grid>
-                    )}
                     {!currentUser && (
-                        <Grid container>
-                            <Grid item xs/>
-                            <Grid item>
-                                <ListItem
-                                    button
-                                    component={Link} to={"/login"}>
-                                    <ListItemText primary={"Войти"}/>
-                                </ListItem>
-                            </Grid>
-                            <Grid item>
-                                <ListItem
-                                    button
-                                    component={Link} to={"/register"}>
-                                    <ListItemText primary={"Зарегистрироваться"}/>
-                                </ListItem>
-                            </Grid>
-                        </Grid>
+                        <IconsForNotRegisteredUsers/>
                     )}
+
                 </Toolbar>
             </AppBar>
 
-            <Grid container>
+            <Grid container >
                 <Grid item className={clsx(classes.leftIndent, open && classes.leftIndentOpen)}>
                     <Drawer
                         height="100%"
-                        variant="permanent"
+                        variant="persistent"
                         classes={{
                             paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
                         }}
@@ -484,10 +669,10 @@ function App(props) {
                         </List>
                     </Drawer>
                 </Grid>
-                <Grid item xs className={clsx(classes.content, !open && classes.contentClose)}>
+                <Grid item xs className={clsx(classes.content, open && classes.contentOpen)}>
                     <div className={classes.appBarSpacer}/>
                     <div className={classes.appBarSpacer2}/>
-                    <div className="container mt-3">
+                    <div className={ContainerBorder()} >
                         <Switch>
                             <Route exact path={["/", "/home"]} component={Home}/>
                             <Route exact path="/home/patient" component={HomePatient}/>

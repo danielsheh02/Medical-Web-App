@@ -27,24 +27,57 @@ const useStyles = theme => ({
         }
     },
     paper: {
-        height: 42,
-        padding: '2px 4px',
-        display: 'flex',
-        alignItems: 'center',
-        width: 800,
+        [theme.breakpoints.down("xs")]:{
+            width: 238,
+            height: 42,
+            padding: '2px 4px',
+            alignItems: 'center'
+        },
+        [theme.breakpoints.between("sm", "md")]:{
+            width: 400,
+            height: 42,
+            padding: '2px 4px',
+            alignItems: 'center'
+        },
+        "@media (min-width : 1280px)":{
+            width: 800,
+            height: 42,
+            padding: '2px 4px',
+            display: 'flex',
+            alignItems: 'center'
+        },
     },
     input: {
         marginLeft: theme.spacing(1),
         flex: 1,
+        [theme.breakpoints.between("sm", "md")]:{
+            width: 350,
+        },
+
     },
     iconButton: {
-        padding: 10,
+        [theme.breakpoints.down("xs")]: {
+            padding: 0,
+        },
+        [theme.breakpoints.between("sm", "md")]:{
+            padding: 0,
+
+        },
     },
     selectForm: {
         "& .MuiFormLabel-root": {
             margin: 0
         },
-        width: 800,
+        [theme.breakpoints.down("xs")]:{
+            width: 238,
+        },
+
+        [theme.breakpoints.between("sm", "md")]:{
+            width: 400,
+        },
+        "@media (min-width : 1280px)":{
+            width: 800,
+        },
     },
     topicPaper: {
         width: 200,
@@ -62,7 +95,15 @@ const useStyles = theme => ({
     },
     mainGrid: {
         display: 'flex',
-        minWidth: 1000,
+        [theme.breakpoints.down("xs")]:{
+            minWidth: 200,
+        },
+        [theme.breakpoints.between("sm", "md")]:{
+            mindWidth:500
+        },
+        "@media (min-width : 1280px)":{
+            minWidth: 1000.
+        },
     },
     paper2: {
         margin: theme.spacing(3),
@@ -270,9 +311,8 @@ class ViewRecordsList extends Component {
                                 placeholder="Поиск"
                                 // inputProps={{ 'aria-label': 'search google maps' }}
                             />
-                            <IconButton type="button" onClick={this.getRecords} className={classes.iconButton}
-                                        aria-label="search">
-                                <SearchIcon/>
+                            <IconButton type="button"  onClick={this.getRecords} className={classes.iconButton} aria-label="search">
+                                <SearchIcon />
                             </IconButton>
                         </Paper>
 
@@ -307,8 +347,7 @@ class ViewRecordsList extends Component {
 
                     <div className="mt-3">
                         <div className="row">
-                            <div
-                                style={{marginLeft: "17px", marginTop: "5px"}}>{"Количество постов на странице: "}</div>
+                            <div style={{marginLeft: "17px", marginTop: "5px", width: 225}}>{"Количество постов на странице: "}</div>
                             <SelectReact className="col-2"
                                          onChange={this.handlePageSizeChange}
                                          options={this.pageSizes}
@@ -365,59 +404,59 @@ class ViewRecordsList extends Component {
                 </Grid>)
                 }
 
-                {/*<div className="col-sm-2">*/}
-                {/*    <Button variant="contained" href="/records/create" className={classes.button}>*/}
-                {/*        Создать пост*/}
-                {/*    </Button>*/}
-                {/*    <Button variant="contained" href="/topics/create" className={classes.button}>*/}
-                {/*        Страница тэгов*/}
-                {/*    </Button>*/}
+                {/*<div className="col-sm-2">
+                    <Button variant="contained" href="/records/create" className={classes.button}>
+                        Создать пост
+                    </Button>
+                    <Button variant="contained" href="/topics/create" className={classes.button}>
+                        Страница тэгов
+                    </Button>
 
-                {/*<Paper className={classes.topicPaper}>*/}
-                {/*    <Grid container spacing={1} direction={"column"}>*/}
-                {/*        <Grid item*/}
-                {/*              onClick={() => (*/}
-                {/*                  this.setState({*/}
-                {/*                          selectedTopic: null,*/}
-                {/*                      },*/}
-                {/*                      this.getRecords*/}
-                {/*                  ))}>*/}
-                {/*            <Typography variant="body1" className={classes.topicTitle}>*/}
-                {/*                Список тэгов:*/}
-                {/*            </Typography>*/}
-                {/*        </Grid>*/}
-                {/*        {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (*/}
-                {/*            <Grid item*/}
-                {/*                  style={{listStyleType: "none"}}*/}
-                {/*                  key={index}*/}
-                {/*                  onClick={() => (*/}
-                {/*                      this.setState({*/}
-                {/*                              selectedTopic: topic.value,*/}
-                {/*                          },*/}
-                {/*                          this.getRecords*/}
-                {/*                      ))}*/}
-                {/*            >*/}
-                {/*                <ButtonBase>*/}
-                {/*                    {topic.label}*/}
-                {/*                </ButtonBase>*/}
-                {/*            </Grid>*/}
-                {/*        ))}*/}
-                {/*        <Grid item*/}
-                {/*              onClick={() => (*/}
-                {/*                  this.setState({*/}
-                {/*                          selectedTopic: null,*/}
-                {/*                      },*/}
-                {/*                      this.getRecords*/}
-                {/*                  ))}>*/}
-                {/*            <Typography className={classes.reset}>*/}
-                {/*                <ButtonBase>*/}
-                {/*                    сбросить*/}
-                {/*                </ButtonBase>*/}
-                {/*            </Typography>*/}
-                {/*        </Grid>*/}
-                {/*    </Grid>*/}
-                {/*</Paper>*/}
-                {/*</div>*/}
+                    <Paper className={classes.topicPaper}>
+                        <Grid container spacing={1} direction={"column"}>
+                            <Grid item
+                                  onClick={() => (
+                                      this.setState({
+                                              selectedTopic: null,
+                                          },
+                                          this.getRecords
+                                      ))}>
+                                <Typography variant="body1" className={classes.topicTitle}>
+                                    Список тэгов:
+                                </Typography>
+                            </Grid>
+                            {this.state.availableTopics && this.state.availableTopics.map((topic, index) => (
+                                <Grid item
+                                      style={{listStyleType: "none"}}
+                                      key={index}
+                                      onClick={() => (
+                                          this.setState({
+                                                  selectedTopic: topic.value,
+                                              },
+                                              this.getRecords
+                                          ))}
+                                >
+                                    <ButtonBase>
+                                        {topic.label}
+                                    </ButtonBase>
+                                </Grid>
+                            ))}
+                            <Grid item
+                                  onClick={() => (
+                                      this.setState({
+                                              selectedTopic: null,
+                                          },
+                                          this.getRecords
+                                      ))}>
+                                <Typography className={classes.reset}>
+                                    <ButtonBase>
+                                        сбросить
+                                    </ButtonBase>
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </div>*/}
 
             </Grid>
         );
@@ -431,13 +470,21 @@ const stylesForSmallSelectBox = {
         borderColor: '#9e9e9e',
         minHeight: '30px',
         height: '30px',
+        width: 70,
+        textAlign: "center",
+        "@media (max-width : 480px)":{
+            marginLeft: 74,
+        },
         boxShadow: state.isFocused ? null : null,
     }),
 
     valueContainer: (provided, state) => ({
         ...provided,
         height: '30px',
-        padding: '0 6px'
+        padding: '0 6px',
+        "@media (max-width : 400px)":{
+            width: 50
+        },
     }),
 
     input: (provided, state) => ({

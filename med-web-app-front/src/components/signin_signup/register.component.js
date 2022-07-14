@@ -253,7 +253,7 @@ function Register(props) {
 
 
     return (
-        <Container component="main" maxWidth="sm">
+        <Container component="main" maxWidth="sm" disableGutters={true} >
             <Card className={classes.paper}>
                 <Grid className={classes.div}>
                     <Typography component="h1" variant="h5">
