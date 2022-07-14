@@ -16,10 +16,13 @@ const useStyles = theme => ({
     paper2: {
         margin: theme.spacing(3),
         padding: theme.spacing(3),
+
     },
     mainGrid: {
         display: 'flex',
         minWidth: 1000,
+
+
     },
     button: {
         marginTop: theme.spacing(3),
@@ -56,6 +59,7 @@ const useStyles = theme => ({
         alignItems: 'center',
         flexDirection: 'column',
         display: 'flex',
+
     },
     title: {
         padding: theme.spacing(3),
@@ -65,6 +69,10 @@ const useStyles = theme => ({
         padding: theme.spacing(1),
         marginLeft: 7,
     },
+    CenterContainer:{
+        spacing : theme.spacing(3),
+        paddingLeft : theme.spacing(4)
+    }
 })
 
 class PipelinesComponent extends Component {
@@ -167,8 +175,7 @@ class PipelinesComponent extends Component {
 
         return (
             <Grid className={classes.mainGrid}>
-                <Grid container spacing={3}>
-                    <Grid item xs/>
+                <Grid container className={classes.CenterContainer} justifyContent={"flex-start"}>
                     <Grid item xs={6}>
                         <Paper className={classes.paper}>
                             <Typography className={classes.title} variant="h5">
