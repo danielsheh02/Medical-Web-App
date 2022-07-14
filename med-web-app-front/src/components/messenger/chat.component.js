@@ -359,46 +359,56 @@ function Chat(props) {
         return new Date(dateString);
     }
 
-    function processTimeSend(userAndLastMsg) {
-        let today = new Date()
-        let messageTime = new Date(userAndLastMsg.second.sendDate)
+    function detectTimeInCurrentTimeZone(time, zone) {
+        let messageTime = new Date(time)
         let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
-        const difsTimeZones = getOffsetBetweenTimezonesForDate(new Date(), userAndLastMsg.second.timeZone, timeZone)
-        const timeMsgCurrentTimeZone = new Date(new Date(messageTime).getTime() - difsTimeZones)
-        if (today.toDateString() === timeMsgCurrentTimeZone.toDateString()) {
-            return (((timeMsgCurrentTimeZone.getHours() < 10 && "0" + timeMsgCurrentTimeZone.getHours()) || timeMsgCurrentTimeZone.getHours() >= 10 && timeMsgCurrentTimeZone.getHours()) + ":"
-                + ((timeMsgCurrentTimeZone.getMinutes() < 10 && "0" + timeMsgCurrentTimeZone.getMinutes())
-                    || (timeMsgCurrentTimeZone.getMinutes() >= 10 && timeMsgCurrentTimeZone.getMinutes())
+        const difsTimeZones = getOffsetBetweenTimezonesForDate(new Date(), zone, timeZone)
+        return (new Date(new Date(messageTime).getTime() - difsTimeZones))
+    }
+
+    function processTimeSend(timeMsg) {
+        let today = new Date()
+        let messageTime = new Date(timeMsg)
+        if (today.toDateString() === messageTime.toDateString()) {
+            return (((messageTime.getHours() < 10 && "0" + messageTime.getHours()) || messageTime.getHours() >= 10 && messageTime.getHours()) + ":"
+                + ((messageTime.getMinutes() < 10 && "0" + messageTime.getMinutes())
+                    || (messageTime.getMinutes() >= 10 && messageTime.getMinutes())
                 ))
-        } else if (today.getFullYear() === timeMsgCurrentTimeZone.getFullYear()) {
+        } else if (today.getFullYear() === messageTime.getFullYear()) {
             let yesterday1 = new Date(today)
             yesterday1.setDate(yesterday1.getDate() - 1)
-            if (yesterday1.getDate() === timeMsgCurrentTimeZone.getDate()) {
+            if (yesterday1.getDate() === messageTime.getDate()) {
                 return "Вчера"
             }
             const days = ["ВC", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"]
             for (let i = 0; i < 5; i++) {
-                const dayOfWeek = getDayOfWeek(yesterday1, timeMsgCurrentTimeZone, days)
+                const dayOfWeek = getDayOfWeek(yesterday1, messageTime, days)
                 if (dayOfWeek) {
                     return dayOfWeek
                 }
             }
         }
         return (
-            ((timeMsgCurrentTimeZone.getDate() < 10 && "0" + timeMsgCurrentTimeZone.getDate()) || (timeMsgCurrentTimeZone.getDate() >= 10 && timeMsgCurrentTimeZone.getDate()))
+            ((messageTime.getDate() < 10 && "0" + messageTime.getDate()) || (messageTime.getDate() >= 10 && messageTime.getDate()))
             + "."
-            + (((timeMsgCurrentTimeZone.getMonth() + 1) < 10 && "0" + (timeMsgCurrentTimeZone.getMonth() + 1)) || (((timeMsgCurrentTimeZone.getMonth() + 1) >= 10 && (timeMsgCurrentTimeZone.getMonth() + 1))))
-            + "." + timeMsgCurrentTimeZone.getFullYear()
+            + (((messageTime.getMonth() + 1) < 10 && "0" + (messageTime.getMonth() + 1)) || (((messageTime.getMonth() + 1) >= 10 && (messageTime.getMonth() + 1))))
+            + "." + messageTime.getFullYear()
         )
 
     }
 
     function sortContacts() {
         let sortedContacts = [...usersWithLastMsg.values()]
+        for (let i = 0; i < sortedContacts.length; i++) {
+            if (sortedContacts[i].second !== null && sortedContacts[i].second.sendDate !== null && sortedContacts[i].second.timeZone !== null) {
+                let timeInCurrentTimeZoneArray = detectTimeInCurrentTimeZone(sortedContacts[i].second.sendDate, sortedContacts[i].second.timeZone)
+                sortedContacts[i] = {...sortedContacts[i], sendDateInCurrentTimeZone: timeInCurrentTimeZoneArray}
+            }
+        }
         sortedContacts.sort(function (a, b) {
-            if (a.second !== null && b.second !== null) {
-                const aTime = new Date(a.second.sendDate)
-                const bTime = new Date(b.second.sendDate)
+            if (a.sendDateInCurrentTimeZone !== null && b.sendDateInCurrentTimeZone !== null) {
+                const aTime = new Date(a.sendDateInCurrentTimeZone)
+                const bTime = new Date(b.sendDateInCurrentTimeZone)
                 if (aTime > bTime) {
                     return -1
                 }
@@ -434,7 +444,7 @@ function Chat(props) {
                                         <Grid xs={3} item>
                                             <Grid className={classes.lastMsgTimeContent}>
                                                 {
-                                                    userAndLastMsg.second && userAndLastMsg.second.sendDate && processTimeSend(userAndLastMsg)
+                                                    userAndLastMsg.sendDateInCurrentTimeZone && processTimeSend(userAndLastMsg.sendDateInCurrentTimeZone)
                                                 }
                                             </Grid>
                                         </Grid>
