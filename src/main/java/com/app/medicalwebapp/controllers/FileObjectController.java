@@ -13,13 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
@@ -100,6 +94,37 @@ public class FileObjectController {
             log.error("Download of file failed");
             ex.printStackTrace();
             return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при скачивании файла"));
+        }
+    }
+
+    @DeleteMapping("delete/{fileId}")
+    public ResponseEntity<?> deleteFile(@PathVariable Long fileId) {
+        try {
+            if (fileService.deleteFile(fileId)) {
+                return ResponseEntity.ok("Успех!");
+            } else {
+                return ResponseEntity.badRequest().body(new MessageResponse("Не удалось удалить файл"));
+            }
+        } catch (Exception ex) {
+            log.error("Couldn't delete file");
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Не удалось удалить файл"));
+        }
+    }
+
+    @PostMapping("rename/{fileId}")
+    public ResponseEntity<?> renameFile(@RequestParam("name") String newName, @PathVariable Long fileId) {
+        try {
+            var editedFile = fileService.editFile(newName, fileId);
+            if (editedFile != null) {
+                return ResponseEntity.ok("Успех!");
+            } else {
+                return ResponseEntity.badRequest().body(new MessageResponse("Не удалось переименовать файл"));
+            }
+        } catch (Exception ex) {
+            log.error("Couldn't rename file");
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Не удалось переименовать файл"));
         }
     }
 
