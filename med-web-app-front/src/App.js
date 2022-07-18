@@ -140,7 +140,7 @@ const useStyles = theme => ({
         }),
     },
     appBarShift: {
-        marginLeft: drawerWidth,
+        // marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -203,15 +203,32 @@ let stompClient = null;
 
 
 function App(props) {
+
+
+    const LeftMenuOpen = (width) =>{
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        return width >= 425;
+    }
+
     const {classes} = props
     const [numberOfUnRead, setNumberOfUnRead] = useState(0)
     // const [showModeratorBoard, setShowModeratorBoard] = useState(false)
     // const [showAdminBoard, setShowAdminBoard] = useState(false)
     const [currentUser, setCurrentUser] = useState(null)
-    const [open, setOpen] = useState(false)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
     const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const [open, setOpen] = useState(LeftMenuOpen(width));
+
 
     useEffect(() => {
         const user = AuthService.getCurrentUser()
@@ -452,7 +469,7 @@ function App(props) {
         }
         else{
             return (
-                <Grid container alignItems={"left"} direction={'column'}>
+                <Grid container alignItems={"flex-start"} direction={'column'}>
                     <Grid >
                         <ListItemButton
                             sx = {{paddingTop : 0, paddingBottom : 0}}
@@ -554,6 +571,7 @@ function App(props) {
 
     }
 
+
     function ContainerBorder(){
         const [width, setWidth] = React.useState(window.innerWidth);
         React.useEffect(() => {
@@ -587,7 +605,123 @@ function App(props) {
             return "container mt-3";
         }
     }
-    ;
+
+    function MyDrawer(props){
+        const classes = props.classes;
+        const open = props.open;
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if(width <=425){
+        return (
+            <Drawer
+                height="100%"
+                variant= "persistent"
+                classes={{
+                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                }}
+                open={open}
+            >
+                {open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon/>
+                    </IconButton>
+                </div>)}
+                {!open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerOpen}>
+                        <ChevronRightRoundedIcon/>
+                    </IconButton>
+                </div>)}
+                <Divider/>
+
+                <List>
+                    {currentUser && (
+                        menuItemsForRegisteredUsers.map((item) => (
+                            <ListItem
+                                button
+                                key={item.text}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                                <ListItemText primary={item.numberMsg}/>
+                            </ListItem>
+                        )))
+                    }
+                    {!currentUser && (
+                        menuItemsForUnregisteredUsers.map((item) => (
+                            <ListItemButton
+                                key={item.text}
+                                //onClick={() => this.displayPageContent(item.path)}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                            </ListItemButton>
+                        )))
+                    }
+                </List>
+            </Drawer>);
+    }
+    else{
+           return(<Drawer
+                height="100%"
+                variant= "permanent"
+                classes={{
+                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                }}
+                open={open}
+            >
+                {open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon/>
+                    </IconButton>
+                </div>)}
+                {!open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerOpen}>
+                        <ChevronRightRoundedIcon/>
+                    </IconButton>
+                </div>)}
+                <Divider/>
+
+                <List>
+                    {currentUser && (
+                        menuItemsForRegisteredUsers.map((item) => (
+                            <ListItem
+                                button
+                                key={item.text}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                                <ListItemText primary={item.numberMsg}/>
+                            </ListItem>
+                        )))
+                    }
+                    {!currentUser && (
+                        menuItemsForUnregisteredUsers.map((item) => (
+                            <ListItemButton
+                                key={item.text}
+                                //onClick={() => this.displayPageContent(item.path)}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                            </ListItemButton>
+                        )))
+                    }
+                </List>
+            </Drawer>);
+    }
+    }
+
+
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -620,54 +754,7 @@ function App(props) {
 
             <Grid container >
                 <Grid item className={clsx(classes.leftIndent, open && classes.leftIndentOpen)}>
-                    <Drawer
-                        height="100%"
-                        variant="persistent"
-                        classes={{
-                            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                        }}
-                        open={open}
-                    >
-                        {open && (<div className={classes.toolbarIcon}>
-                            <IconButton onClick={handleDrawerClose}>
-                                <ChevronLeftIcon/>
-                            </IconButton>
-                        </div>)}
-                        {!open && (<div className={classes.toolbarIcon}>
-                            <IconButton onClick={handleDrawerOpen}>
-                                <ChevronRightRoundedIcon/>
-                            </IconButton>
-                        </div>)}
-                        <Divider/>
-                        <List>
-                            {currentUser && (
-                                menuItemsForRegisteredUsers.map((item) => (
-                                    <ListItem
-                                        button
-                                        key={item.text}
-                                        component={Link} to={item.path}
-                                    >
-                                        <ListItemIcon>{item.icon}</ListItemIcon>
-                                        <ListItemText primary={item.text}/>
-                                        <ListItemText primary={item.numberMsg}/>
-                                    </ListItem>
-                                )))
-                            }
-                            {!currentUser && (
-                                menuItemsForUnregisteredUsers.map((item) => (
-                                    <ListItem
-                                        button
-                                        key={item.text}
-                                        //onClick={() => this.displayPageContent(item.path)}
-                                        component={Link} to={item.path}
-                                    >
-                                        <ListItemIcon>{item.icon}</ListItemIcon>
-                                        <ListItemText primary={item.text}/>
-                                    </ListItem>
-                                )))
-                            }
-                        </List>
-                    </Drawer>
+                  <MyDrawer open = {open} classes = {classes}/>
                 </Grid>
                 <Grid item xs className={clsx(classes.content, open && classes.contentOpen)}>
                     <div className={classes.appBarSpacer}/>
