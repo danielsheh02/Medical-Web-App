@@ -196,7 +196,6 @@ class UploadAttachmentsComponent extends Component {
 
     render() {
         const {selectedFiles, progressInfos, message} = this.state;
-        console.log(selectedFiles)
         const {classes} = this.props;
         return (
 

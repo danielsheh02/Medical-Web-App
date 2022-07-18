@@ -7,95 +7,95 @@ services:
       - SERVER_PORT=5011
       - MEDICAL_WEB_APP_URL=medwebapp
       - MEDICAL_WEB_APP_PORT=7999
-#      - MEDICAL_WEB_APP_URL_SUCCESS=medwebapp:80/api/mirf/mirfSuccess
+    #      - MEDICAL_WEB_APP_URL_SUCCESS=medwebapp:80/api/mirf/mirfSuccess
     ports:
       - "5011:5011"
     networks:
       - app_net
 
-#  ecgreaderblock:
-#    image: ashvyrkova/mirfblock
-#    environment:
-#      - SERVER_PORT=8056
-#      - BLOCK_TYPE=ecgReaderAlg
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#
-#  ecgbeatextractorblock:
-#    image: ashvyrkova/mirfblock
-#    environment:
-#      - SERVER_PORT=8057
-#      - BLOCK_TYPE=ecgBeatExtractorAlg
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#
-#  dicomreaderblock:
-#    image: ashvyrkova/mirfblockml
-#    environment:
-#      - SERVER_PORT=8058
-#      - BLOCK_TYPE=dicomImageSeriesReaderAlg
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#
-#  addmaskblock:
-#    image: ashvyrkova/mirfblockml
-#    environment:
-#      - SERVER_PORT=8059
-#      - BLOCK_TYPE=dicomAddCircleMaskAlg
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#
-#  highlightedpdfalg:
-#    image: ashvyrkova/mirfblockml
-#    environment:
-#      - SERVER_PORT=8060
-#      - BLOCK_TYPE=convertHighlightedDicomImagesToPdfAlg
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#
-#  seriespdfalg:
-#    image: ashvyrkova/mirfblockml
-#    environment:
-#      - SERVER_PORT=8061
-#      - BLOCK_TYPE=convertDicomImagesToPdfAlg
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
-#
-#  pdfcreatoralg:
-#    image: ashvyrkova/mirfblockml
-#    environment:
-#      - SERVER_PORT=8062
-#      - BLOCK_TYPE=pdfFileCreatorAlg
-#      - ORCHESTRATOR_HOST=orchestrator
-#      - ORCHESTRATOR_PORT=5011
-#    networks:
-#      - app_net
-#    depends_on:
-#      - orchestrator
+  #  ecgreaderblock:
+  #    image: ashvyrkova/mirfblock
+  #    environment:
+  #      - SERVER_PORT=8056
+  #      - BLOCK_TYPE=ecgReaderAlg
+  #      - ORCHESTRATOR_HOST=orchestrator
+  #      - ORCHESTRATOR_PORT=5011
+  #    networks:
+  #      - app_net
+  #    depends_on:
+  #      - orchestrator
+  #
+  #  ecgbeatextractorblock:
+  #    image: ashvyrkova/mirfblock
+  #    environment:
+  #      - SERVER_PORT=8057
+  #      - BLOCK_TYPE=ecgBeatExtractorAlg
+  #      - ORCHESTRATOR_HOST=orchestrator
+  #      - ORCHESTRATOR_PORT=5011
+  #    networks:
+  #      - app_net
+  #    depends_on:
+  #      - orchestrator
+  #
+  #  dicomreaderblock:
+  #    image: ashvyrkova/mirfblockml
+  #    environment:
+  #      - SERVER_PORT=8058
+  #      - BLOCK_TYPE=dicomImageSeriesReaderAlg
+  #      - ORCHESTRATOR_HOST=orchestrator
+  #      - ORCHESTRATOR_PORT=5011
+  #    networks:
+  #      - app_net
+  #    depends_on:
+  #      - orchestrator
+  #
+  #  addmaskblock:
+  #    image: ashvyrkova/mirfblockml
+  #    environment:
+  #      - SERVER_PORT=8059
+  #      - BLOCK_TYPE=dicomAddCircleMaskAlg
+  #      - ORCHESTRATOR_HOST=orchestrator
+  #      - ORCHESTRATOR_PORT=5011
+  #    networks:
+  #      - app_net
+  #    depends_on:
+  #      - orchestrator
+  #
+  #  highlightedpdfalg:
+  #    image: ashvyrkova/mirfblockml
+  #    environment:
+  #      - SERVER_PORT=8060
+  #      - BLOCK_TYPE=convertHighlightedDicomImagesToPdfAlg
+  #      - ORCHESTRATOR_HOST=orchestrator
+  #      - ORCHESTRATOR_PORT=5011
+  #    networks:
+  #      - app_net
+  #    depends_on:
+  #      - orchestrator
+  #
+  #  seriespdfalg:
+  #    image: ashvyrkova/mirfblockml
+  #    environment:
+  #      - SERVER_PORT=8061
+  #      - BLOCK_TYPE=convertDicomImagesToPdfAlg
+  #      - ORCHESTRATOR_HOST=orchestrator
+  #      - ORCHESTRATOR_PORT=5011
+  #    networks:
+  #      - app_net
+  #    depends_on:
+  #      - orchestrator
+  #
+  #  pdfcreatoralg:
+  #    image: ashvyrkova/mirfblockml
+  #    environment:
+  #      - SERVER_PORT=8062
+  #      - BLOCK_TYPE=pdfFileCreatorAlg
+  #      - ORCHESTRATOR_HOST=orchestrator
+  #      - ORCHESTRATOR_PORT=5011
+  #    networks:
+  #      - app_net
+  #    depends_on:
+  #      - orchestrator
 
   pipelinealg:
     image: ashvyrkova/mirfblockml
@@ -109,8 +109,8 @@ services:
     depends_on:
       - orchestrator
       - mirfrepository
-    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","block-1.0-SNAPSHOT.jar"]
-
+    command: [ "sh", "wait-for-orchestrator.sh", "java","-jar","block-1.0-SNAPSHOT.jar" ]
+#
   ihdpipeline:
     image: ashvyrkova/mirfblockml
     environment:
@@ -123,7 +123,7 @@ services:
     depends_on:
       - orchestrator
       - mirfrepository
-    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","block-1.0-SNAPSHOT.jar"]
+    command: [ "sh", "wait-for-orchestrator.sh", "java","-jar","block-1.0-SNAPSHOT.jar" ]
 
   mirfrepository:
     image: ashvyrkova/mirfrepository
@@ -137,7 +137,7 @@ services:
       - app_net
     depends_on:
       - orchestrator
-    command: ["sh", "wait-for-orchestrator.sh", "java","-jar","repository-1.0-SNAPSHOT.jar"]
+    command: [ "sh", "wait-for-orchestrator.sh", "java","-jar","repository-1.0-SNAPSHOT.jar" ]
 
 
 
@@ -167,8 +167,8 @@ services:
 
   sftp:
     image: atmoz/sftp
-#    volumes:
-#      - <host-dir>/upload:/home/foo/upload
+    #    volumes:
+    #      - <host-dir>/upload:/home/foo/upload
     ports:
       - "4999:22"
     command: medwebuser:secretpassword:::upload
@@ -198,8 +198,15 @@ services:
     networks:
       - app_net
 
+  viewer:
+    image: danielsheh/viewer
+    ports:
+      - "3000:80"
+    networks:
+      - app_net
+
   medwebapp:
-    image: ashvyrkova/medwebapp
+    image: lickoma/medwebapp
     environment:
       - SERVER_PORT=7999
       - MIRF_ORCHESTRATOR_URL=orchestrator

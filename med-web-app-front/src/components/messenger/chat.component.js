@@ -283,6 +283,7 @@ function Chat(props) {
             }
             const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
             const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
             const message = {
                 content: contentCorrect,
                 recipientId: selectedUser.id,
@@ -292,6 +293,7 @@ function Chat(props) {
                 attachmentsBlobForImageClient: selectedFiles,
                 localFiles: fileNameAndStringBase64,
                 sendDate: localISOTime,
+                timeZone: timeZone,
                 uid: uid
             }
             if (allMessages.get(selectedUser.username)) {
@@ -344,9 +346,29 @@ function Chat(props) {
         }
     }
 
-    function processTimeSend(userAndLastMsg) {
+    function getOffsetBetweenTimezonesForDate(date, timezone1, timezone2) {
+        const timezone1Date = convertDateToAnotherTimeZone(date, timezone1);
+        const timezone2Date = convertDateToAnotherTimeZone(date, timezone2);
+        return timezone1Date.getTime() - timezone2Date.getTime();
+    }
+
+    function convertDateToAnotherTimeZone(date, timezone) {
+        const dateString = date.toLocaleString('en-US', {
+            timeZone: timezone
+        });
+        return new Date(dateString);
+    }
+
+    function detectTimeInCurrentTimeZone(time, zone) {
+        let messageTime = new Date(time)
+        let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
+        const difsTimeZones = getOffsetBetweenTimezonesForDate(new Date(), zone, timeZone)
+        return (new Date(new Date(messageTime).getTime() - difsTimeZones))
+    }
+
+    function processTimeSend(timeMsg) {
         let today = new Date()
-        let messageTime = new Date(userAndLastMsg.second.sendDate)
+        let messageTime = new Date(timeMsg)
         if (today.toDateString() === messageTime.toDateString()) {
             return (((messageTime.getHours() < 10 && "0" + messageTime.getHours()) || messageTime.getHours() >= 10 && messageTime.getHours()) + ":"
                 + ((messageTime.getMinutes() < 10 && "0" + messageTime.getMinutes())
@@ -377,10 +399,16 @@ function Chat(props) {
 
     function sortContacts() {
         let sortedContacts = [...usersWithLastMsg.values()]
+        for (let i = 0; i < sortedContacts.length; i++) {
+            if (sortedContacts[i].second !== null && sortedContacts[i].second.sendDate !== null && sortedContacts[i].second.timeZone !== null) {
+                let timeInCurrentTimeZoneArray = detectTimeInCurrentTimeZone(sortedContacts[i].second.sendDate, sortedContacts[i].second.timeZone)
+                sortedContacts[i] = {...sortedContacts[i], sendDateInCurrentTimeZone: timeInCurrentTimeZoneArray}
+            }
+        }
         sortedContacts.sort(function (a, b) {
-            if (a.second !== null && b.second !== null) {
-                const aTime = new Date(a.second.sendDate)
-                const bTime = new Date(b.second.sendDate)
+            if (a.sendDateInCurrentTimeZone !== null && b.sendDateInCurrentTimeZone !== null) {
+                const aTime = new Date(a.sendDateInCurrentTimeZone)
+                const bTime = new Date(b.sendDateInCurrentTimeZone)
                 if (aTime > bTime) {
                     return -1
                 }
@@ -416,7 +444,7 @@ function Chat(props) {
                                         <Grid xs={3} item>
                                             <Grid className={classes.lastMsgTimeContent}>
                                                 {
-                                                    userAndLastMsg.second && userAndLastMsg.second.sendDate && processTimeSend(userAndLastMsg)
+                                                    userAndLastMsg.sendDateInCurrentTimeZone && processTimeSend(userAndLastMsg.sendDateInCurrentTimeZone)
                                                 }
                                             </Grid>
                                         </Grid>

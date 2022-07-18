@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -30,6 +31,11 @@ public class ChatMessageService {
 
     @Autowired
     private FileService fileService;
+
+    private void delete(ChatMessage msg) {
+        msg.setDeleted(true);
+        chatMessageRepository.save(msg);
+    }
 
     public ChatMessage save(ChatMessageRequest msg) throws Exception {
         List<FileObject> files = new ArrayList<>();
@@ -67,8 +73,10 @@ public class ChatMessageService {
         chatMessage.setContent(msg.getContent());
         chatMessage.setStatusMessage(StatusMessage.UNREAD);
         chatMessage.setSendDate(msg.getSendDate());
+        chatMessage.setTimeZone(msg.getTimeZone());
         chatMessage.setAttachments(files);
         chatMessage.setLocalFiles(localFiles);
+        chatMessage.setDeleted(false);
         return chatMessageRepository.save(chatMessage);
     }
 
@@ -80,9 +88,9 @@ public class ChatMessageService {
             chatId = (recipientUsername + senderUsername);
         }
         List<ChatMessage> messages;
-        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatIdOrderBySendDateAsc(chatId);
+        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByChatId(chatId);
         messages = messagesOptional.orElseGet(ArrayList::new);
-
+        messages = messages.stream().filter(msg -> !msg.isDeleted()).collect(Collectors.toList());
         if (messages.size() > 0) {
             getImages(messages);
         }
@@ -110,8 +118,9 @@ public class ChatMessageService {
 
     public List<ChatMessage> findUnreadMessages(Long recipientId) {
         List<ChatMessage> messages;
-        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByRecipientIdAndStatusMessageOrderBySendDateAsc(recipientId, StatusMessage.UNREAD);
+        Optional<List<ChatMessage>> messagesOptional = chatMessageRepository.findByRecipientIdAndStatusMessage(recipientId, StatusMessage.UNREAD);
         messages = messagesOptional.orElseGet(ArrayList::new);
+        messages = messages.stream().filter(msg -> !msg.isDeleted()).collect(Collectors.toList());
         return messages;
     }
 
@@ -123,7 +132,7 @@ public class ChatMessageService {
     }
 
     public void deleteMessage(ChatMessage message) {
-        chatMessageRepository.delete(message);
+        this.delete(message);
     }
 
     public void deleteMsgByTimeAndChatId(LocalDateTime time, String senderUsername, String recipientUsername) {
@@ -134,11 +143,11 @@ public class ChatMessageService {
             chatId = (recipientUsername + senderUsername);
         }
         ChatMessage messageToDelete = chatMessageRepository.findBySendDateAndChatId(time, chatId);
-        chatMessageRepository.delete(messageToDelete);
+        this.delete(messageToDelete);
     }
 
     public Optional<ChatMessage> findFirstByChatIdOrderBySendDateDesc(String chatId) {
-        return chatMessageRepository.findFirstByChatIdOrderBySendDateDesc(chatId);
+        return chatMessageRepository.findFirstByChatIdAndDeleted_IsFalseOrderByIdDesc(chatId);
     }
 }
 
