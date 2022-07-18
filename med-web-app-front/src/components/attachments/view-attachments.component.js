@@ -4,6 +4,11 @@ import AttachmentService from "../../services/attachment.service";
 import Button from "@material-ui/core/Button";
 import {Divider, Grid, Paper, Typography, withStyles} from "@material-ui/core";
 import {Link} from "react-router-dom";
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import Modal from 'react-bootstrap/Modal';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const useStyles = theme => ({
     button: {
@@ -49,6 +54,113 @@ const useStyles = theme => ({
     },
 })
 
+const renameFile = (id, onHide, inputField) => {
+    console.log(inputField);
+    AttachmentService.renameAttachment(id, inputField);
+    onHide();
+    window.location.reload()
+}
+
+const deleteFile = (id, onHide) => {
+    AttachmentService.deleteAttachment(id);
+    onHide();
+    window.location.reload()
+}
+
+function EditModal(props) {
+    const [inputField, setInputFields] = React.useState('');
+    return (
+      <Modal {...props} centered='true' dialogClassName="modal-90w"      aria-labelledby="contained-modal-title-vcenter">
+        <Modal.Header>
+          <Modal.Title  id="contained-modal-title-vcenter">
+            Переименовать {props.name}{props.currentFileType}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="show-grid">
+            <Grid>
+                <TextField
+                    required
+                    size="full"
+                    margin="normal"
+                    name="Новое имя"
+                    fullWidth='true'
+                    label="Новое имя"
+                    variant="outlined"
+                    defaultValue={props.name}
+                    val
+                    InputProps={{
+                        endAdornment: <InputAdornment position="end">{props.currentFileType}</InputAdornment>,
+                      }}
+                    onChange={(changedText) => setInputFields(changedText.target.value + props.currentFileType)} />
+            </Grid>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Отмена</Button>
+          <Button onClick={() =>renameFile(props.id, props.onHide, inputField)}>Сохранить</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+  
+  function Edit(props) {
+
+    
+    const [modalShow, setModalShow] = React.useState(false);
+    
+    
+    return (
+      <>
+        <Button  onClick={() => setModalShow(true)} title="Редактировать">
+            <EditIcon fontSize="medium" />
+        </Button>
+  
+        <EditModal currentFileType={props.currentFileType} id={props.id} name={props.name} show={modalShow} onHide={() => setModalShow(false)} />
+      </>
+    );
+  }
+
+
+function DeleteModal(props) {
+    return (
+      <Modal {...props} centered='true' aria-labelledby="contained-modal-title-vcenter">
+        
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Подтвердить удаление
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <div className="alert alert-danger">Вы дейтвительно хотите удалить файл {props.name}?</div>
+        </Modal.Body>
+        <Modal.Footer >
+        
+          <Button onClick={props.onHide}>
+            Отмена
+          </Button>
+          <Button onClick={() => deleteFile(props.id, props.onHide)}>
+            Удалить
+          </Button>
+        </Modal.Footer>
+        
+      </Modal>
+    );
+  }
+  
+  function Delete(props) {
+
+    const [modalShow, setModalShow] = React.useState(false);
+
+    return (
+      <>
+        <Button title="Удалить"   onClick={() => setModalShow(true)} >
+            <DeleteIcon fontSize="medium" />
+        </Button>
+  
+        <DeleteModal  id={props.id} name={props.name} show={modalShow} onHide={() => setModalShow(false)} />
+      </>
+    );
+  }
+
 class ViewAttachmentsComponent extends Component {
     constructor(props) {
         super(props);
@@ -81,6 +193,15 @@ class ViewAttachmentsComponent extends Component {
         return name;
     }
 
+    getOnlyName(name) {
+        return name.replace(/\.[^/.]+$/, "");
+    }
+
+    getOnlyType(name) {
+        var re = /(?:\.([^.]+))?$/;
+        return re.exec(name)[0];
+    }
+
     render() {
         // const { currentState } = this.state;
         const {classes} = this.props;
@@ -97,12 +218,12 @@ class ViewAttachmentsComponent extends Component {
 
                             {this.state.userFilesInfo.map(el => (
                                 <Grid key={el.id} className={classes.grid2}>
-                                    <Grid xs={5}>
+                                    <Grid item xs={5}>
                                         <Typography variant={"subtitle1"}>
                                             {this.getName(el.initialName)}
                                         </Typography>
                                     </Grid>
-                                    <Grid xs={4}>
+                                    <Grid item xs={4}>
                                         <Typography variant={"subtitle1"}>
                                             {new Date(el.creationTime).toLocaleDateString()}
                                         </Typography>
@@ -115,11 +236,13 @@ class ViewAttachmentsComponent extends Component {
                                     >
                                         Скачать
                                     </Button>
+
+                                    <Edit id={el.id} name={this.getOnlyName(el.initialName)} currentFileType={this.getOnlyType(el.initialName)}/>
+                                    <Delete id={el.id} name={this.getName(el.initialName)}/>
                                 </Grid>
                             ))}
                         </Paper>
                     </Grid>
-
                     <Grid item xs={4}>
                         <Paper className={classes.paper2}>
                             <Grid className={classes.grid}>
@@ -139,6 +262,7 @@ class ViewAttachmentsComponent extends Component {
                     </Grid>
                 </Grid>
             </Grid>
+
         );
     }
 }

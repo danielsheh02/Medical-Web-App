@@ -40,4 +40,23 @@ public class FileService {
         FileExtractorStrategy fileExtractor = extractorStrategyResolver.getFileExtractor(fileObject.getFormat());
         return fileExtractor.getHumanReadablePresentation(fileObject);
     }
+
+    public boolean deleteFile(Long fileId) {
+        var fileToDelete = fileObjectRepository.findById(fileId).orElse(null);
+        if (fileToDelete == null) return false;
+
+        System.out.println(fileToDelete);
+        fileObjectRepository.delete(fileToDelete);
+        return true;
+    }
+
+    public FileObject editFile(String newName, Long fileId) throws Exception{
+        if (newName == null) throw new IllegalArgumentException();
+        var file = fileObjectRepository.findById(fileId).orElse(null);
+        if (file == null) return null;
+
+        file.setInitialName(newName);
+        fileObjectRepository.save(file);
+        return file;
+    }
 }

@@ -36,6 +36,32 @@ class AttachmentService {
         });
     }
 
+    deleteAttachment(fileId) {
+        console.log('deleting...');
+        console.log(fileId);
+        const user = JSON.parse(localStorage.getItem('user'));
+        let token = '';
+        if (user && user.token) {
+            token = user.token;
+        }
+        axios.delete(API_URL + 'delete/' + fileId, {headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token}});
+        console.log('deleted');
+    }
+
+    renameAttachment(fileId, newName) {
+        let formData = new FormData();
+        formData.append("name", newName);
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        let token = '';
+        if (user && user.token) {
+            token = user.token;
+        }
+        return axios.post(API_URL + "rename/" + fileId, formData, {
+            headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token}
+        });
+    }
+
     async downloadAttachment(fileId, fileName) {
         axios.get(API_URL + 'download/' + fileId, {responseType: 'blob', headers: authHeader()})
             .then(response => {
