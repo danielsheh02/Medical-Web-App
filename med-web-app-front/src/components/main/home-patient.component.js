@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import {Container, Grid, Paper, Typography, withStyles} from "@material-ui/core";
+import {Link} from "react-router-dom";
+import AuthService from "../../services/auth.service";
 
 const useStyles = theme => ({
     paper: {
@@ -139,8 +141,11 @@ class HomePatient extends Component {
     constructor(props) {
         super(props);
 
+        const user = AuthService.getCurrentUser();
+
         this.state = {
-            content: ""
+            content: "",
+            currentUser: user,
         };
     }
 
@@ -156,6 +161,12 @@ class HomePatient extends Component {
 
                 <Paper className={classes.paper}>
                     <GreetingWords className = {classes.typography2}/>
+                    {this.state.currentUser == null &&
+                    (<Grid style={{marginTop: 10}} item>
+                        <Link to="/login">
+                            Войти в аккаунт
+                        </Link>
+                    </Grid>)}
                 </Paper>
             </Grid>
         )

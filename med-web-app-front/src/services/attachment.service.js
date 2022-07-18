@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = /*process.env.REACT_APP_API_URL +*/ '/api/files/';
+const API_URL = process.env.REACT_APP_API_URL + '/api/files/';
 
 class AttachmentService {
 
@@ -14,15 +14,13 @@ class AttachmentService {
     }
 
     uploadAttachment(file, fileName, isDicom, UID, onUploadProgress) {
-        console.log("Got file to upload");
-        console.log(UID);
         let formData = new FormData();
 
         if (isDicom) {
             formData.append("file", new Blob([file]), fileName);
         } else {
             formData.append("file", file);
-            UID = "";
+            UID = null;
         }
         console.log(file)
         const user = JSON.parse(localStorage.getItem('user'));

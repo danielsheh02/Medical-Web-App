@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import {Container, Paper, Typography, withStyles} from "@material-ui/core";
+import {Link} from "react-router-dom";
+import Grid from "@material-ui/core/Grid";
+import AuthService from "../../services/auth.service";
 
 const useStyles = theme => ({
     paper: {
@@ -23,9 +26,9 @@ const useStyles = theme => ({
         margin: theme.spacing(3, 0, 1, 0),
     },
     typography: {
-        textAlign:"center",
+        textAlign: "center",
         [theme.breakpoints.down("xs")]: {
-            width:230,
+            width: 230,
         },
         [theme.breakpoints.between("sm", "md")]: {
             width: 600,
@@ -50,26 +53,25 @@ const DoctorPageTitle = (props) => {
             window.removeEventListener("resize", handleResizeWindow);
         };
     }, []);
-    if (width > breakpoint_1){
-        return(
-            <Typography variant="h3" className={props.className} >
+    if (width > breakpoint_1) {
+        return (
+            <Typography variant="h3" className={props.className}>
                 Medical-Web-App
             </Typography>
 
         );
     }
-    if(width > breakpoint_2){
-        return(
+    if (width > breakpoint_2) {
+        return (
 
             <Typography variant="h4" className={props.className}>
                 Medical-Web-App
             </Typography>
         );
-    }
-    else {
-        return(
+    } else {
+        return (
 
-            <Typography variant="h6" className={props.className} >
+            <Typography variant="h6" className={props.className}>
                 Medical-Web-App
             </Typography>
 
@@ -78,7 +80,7 @@ const DoctorPageTitle = (props) => {
 }
 
 
-const DoctorPageWords = (props) =>{
+const DoctorPageWords = (props) => {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint_1 = 1280;
     React.useEffect(() => {
@@ -90,12 +92,11 @@ const DoctorPageWords = (props) =>{
             window.removeEventListener("resize", handleResizeWindow);
         };
     }, []);
-    if(width > breakpoint_1){
+    if (width > breakpoint_1) {
         return (<Typography variant="subtitle1">
             Я врач
         </Typography>);
-    }
-    else{
+    } else {
         return (<Typography variant="subtitle2">
             Я врач
         </Typography>)
@@ -107,24 +108,34 @@ class HomeDoctor extends Component {
     constructor(props) {
         super(props);
 
+        const user = AuthService.getCurrentUser();
+
         this.state = {
-            content: ""
+            content: "",
+            currentUser: user,
         };
     }
 
 
     render() {
         const {classes} = this.props;
-        return(
+        return (
             <Container>
                 <div className={classes.div}>
                     <Paper className={classes.paper}>
-                        <DoctorPageTitle className = {classes.typography}/>
+                        <DoctorPageTitle className={classes.typography}/>
                     </Paper>
                 </div>
 
                 <Paper className={classes.paper}>
-                    <DoctorPageWords className = {classes.typography}/>
+                    <DoctorPageWords className={classes.typography}/>
+                    {this.state.currentUser == null &&
+                    (<Grid style={{marginTop: 10}} item>
+                        <Link to="/login">
+                            Войти в аккаунт
+                        </Link>
+                    </Grid>)}
+
                 </Paper>
             </Container>
         )

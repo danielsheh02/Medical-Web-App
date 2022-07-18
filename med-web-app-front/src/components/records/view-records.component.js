@@ -13,7 +13,6 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import {Link} from "react-router-dom";
-import AuthService from "../../services/auth.service";
 
 const useStyles = theme => ({
     button: {
@@ -139,8 +138,6 @@ class ViewRecordsList extends Component {
     constructor(props) {
         super(props);
 
-        const user = AuthService.getCurrentUser();
-
         this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
         this.getRecords = this.getRecords.bind(this);
         this.refreshList = this.refreshList.bind(this);
@@ -166,8 +163,6 @@ class ViewRecordsList extends Component {
             selectedTopic: null,
             selectedTopicValue: "",
             selectedTopicID: null,
-
-            currentUser: user,
         };
 
         this.pageSizes = [{value: 2, label: '2'}, {value: 4, label: '4'}, {value: 10, label: '10'}];
@@ -383,11 +378,10 @@ class ViewRecordsList extends Component {
                         ))}
                     </Grid>
                 </Grid>
-
-                {this.state.currentUser != null &&
-                (<Grid xs={4} item>
+                <Grid xs={4} item>
                     <Card className={classes.paper2}>
                         <Grid className={classes.grid}>
+                            {/*TODO сделать на onClick проверку на зарегистрированность и ссылку на логин*/}
                             <Link to={"/records/create"} style={{textDecoration: 'none'}}>
                                 <Button className={classes.button}>
                                     Создать пост
@@ -401,8 +395,7 @@ class ViewRecordsList extends Component {
                             </Link>
                         </Grid>
                     </Card>
-                </Grid>)
-                }
+                </Grid>
 
                 {/*<div className="col-sm-2">
                     <Button variant="contained" href="/records/create" className={classes.button}>

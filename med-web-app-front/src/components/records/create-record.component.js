@@ -85,6 +85,7 @@ const MenuProps = {
 class CreateRecordComponent extends Component {
     constructor(props) {
         super(props);
+
         this.handleSubmitRecord = this.handleSubmitRecord.bind(this);
         this.onChangeTitle = this.onChangeTitle.bind(this);
         this.onChangeContent = this.onChangeContent.bind(this);
@@ -230,6 +231,7 @@ class CreateRecordComponent extends Component {
             <Container component="main">
                 <main className={classes.layout}>
                     <Paper className={classes.paper}>
+
                         <Typography variant="h6" gutterBottom>
                             Создание поста
                         </Typography>
