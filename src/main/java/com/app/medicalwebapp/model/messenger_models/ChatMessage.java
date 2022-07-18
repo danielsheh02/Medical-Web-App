@@ -45,8 +45,14 @@ public class ChatMessage {
     @Column(name = "sendDate")
     private LocalDateTime sendDate;
 
+    @Column(name = "timeZone")
+    private String timeZone;
+
     @Column(name = "statusMessage")
     private StatusMessage statusMessage;
+
+    @Column(name = "deleted")
+    private boolean deleted;
 
     @ManyToMany
     @JoinTable(

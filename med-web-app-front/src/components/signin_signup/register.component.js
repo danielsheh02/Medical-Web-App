@@ -70,17 +70,6 @@ const useStyles = theme => ({
 function Register(props) {
     const {classes} = props
 
-    // this.handleRegister = this.handleRegister.bind(this)
-    // this.onChangeUsername = this.onChangeUsername.bind(this)
-    // this.onChangeFirstname = this.onChangeFirstname.bind(this)
-    // this.onChangeLastname = this.onChangeLastname.bind(this)
-    // // this.onChangeEmail = this.onChangeEmail.bind(this)
-    // this.onChangePassword = this.onChangePassword.bind(this)
-    // this.onChangePatronymic = this.onChangePatronymic.bind(this)
-    // this.onChangeRole = this.onChangeRole.bind(this)
-    // this.vusername = this.vusername.bind(this)
-    // this.vpassword = this.vpassword.bind(this)
-
     const [username, setUsername] = useState("")
     const [firstname, setFirstname] = useState("")
     const [lastname, setLastname] = useState("")
@@ -102,21 +91,6 @@ function Register(props) {
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
     const handleMouseDownPassword = () => setShowPassword(!showPassword);
-
-    // this.state = {
-    //     username: "",
-    //     firstname: "",
-    //     lastname: "",
-    //     patronymic: "",
-    //     // email: "",
-    //     password: "",
-    //     chosenRole: "Пользователь",
-    //     successful: false,
-    //     message: "",
-    //     usernameError: false,
-    //     passwordError: false,
-    //     validateForm: false
-    // }
 
 
     function vusername(value) {

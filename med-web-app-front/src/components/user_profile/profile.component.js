@@ -159,19 +159,7 @@ function Profile(props) {
 
     function refreshList() {
         setUser(null)
-        // this.setState({
-        //     user: null,
-        // });
     }
-
-    // function getUsername(prevState, props) {
-    //     setUsername(usernamePath)
-    //     return usernamePath
-    // }
-
-    // function setNewUsername() {
-    //     setUsername(getUsername);
-    // }
 
     useEffect(() => {
         setUsername(usernamePath)

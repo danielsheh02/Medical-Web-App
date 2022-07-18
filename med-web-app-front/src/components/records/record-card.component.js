@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AuthService from "../../services/auth.service";
 import AttachmentService from "../../services/attachment.service";
 import '../../styles/Record.css'
-import {Button, Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
+import {Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {purple} from "@material-ui/core/colors";
 import {Link} from "react-router-dom";
@@ -109,10 +109,12 @@ class RecordCardNew extends Component {
         super(props);
 
         this.download = this.download.bind(this);
-        this.convertTZ = this.convertTZ.bind(this);
         this.formatTime = this.formatTime.bind(this);
         this.getContent = this.getContent.bind(this);
         this.displayRecordThread = this.displayRecordThread.bind(this);
+        this.openDicomViewer = this.openDicomViewer.bind(this);
+        this.getOffsetBetweenTimezonesForDate = this.getOffsetBetweenTimezonesForDate.bind(this);
+        this.convertDateToAnotherTimeZone = this.convertDateToAnotherTimeZone.bind(this);
 
         this.state = {
             currentUser: AuthService.getCurrentUser(),
@@ -123,11 +125,20 @@ class RecordCardNew extends Component {
         this.record = this.props.record;
         this.isPreview = this.props.isPreview;
         this.isReply = this.props.isReply;
-        this.creationTime = this.formatTime(this.record.creationTime);
+        this.creationTime = this.formatTime();
     }
 
-    convertTZ(date, tzString) {
-        return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+    getOffsetBetweenTimezonesForDate(date, timezone1, timezone2) {
+        const timezone1Date = this.convertDateToAnotherTimeZone(date, timezone1);
+        const timezone2Date = this.convertDateToAnotherTimeZone(date, timezone2);
+        return timezone1Date.getTime() - timezone2Date.getTime();
+    }
+
+    convertDateToAnotherTimeZone(date, timezone) {
+        const dateString = date.toLocaleString('en-US', {
+            timeZone: timezone
+        });
+        return new Date(dateString);
     }
 
     getContent(content) {
@@ -137,13 +148,10 @@ class RecordCardNew extends Component {
         return content;
     }
 
-    formatTime(creationTime) {
-        var creationTimestamp = new Date(creationTime);
-        let userDate = this.convertTZ(creationTimestamp, "Asia/Dhaka");
-        var hours = userDate.getHours();
-        var minutes = userDate.getMinutes();
-        minutes = minutes >= 10 ? minutes : '0' + minutes;
-        return hours + ':' + minutes;
+    formatTime() {
+        let timeZone = (Intl.DateTimeFormat().resolvedOptions().timeZone)
+        const difsTimeZones = this.getOffsetBetweenTimezonesForDate(new Date(), this.record.timeZone, timeZone)
+        return (new Date(new Date(this.record.creationTime).getTime() - difsTimeZones))
     }
 
     displayRecordThread() {
@@ -163,11 +171,8 @@ class RecordCardNew extends Component {
                     this.record.attachments[i].initialName.endsWith(".png") ||
                     this.record.attachments[i].initialName.endsWith(".dcm")) {
                     AttachmentService.getPreviewNew(this.record.attachments[i].id).then(response => {
-                        console.log(response.data)
                         dicom.push(response.data)
-                        // this.getPathToDicom(dicom[0])
                         preview.push({id: this.record.attachments[i].id, image: URL.createObjectURL(response.data)});
-                        console.log(preview)
                         this.setState({filePreviews: preview, dicoms: dicom}
                         )
                         ;
@@ -187,6 +192,12 @@ class RecordCardNew extends Component {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
 
+    openDicomViewer(uid) {
+        const url = window.location.href
+        const num = url.indexOf(":7999")
+        window.open(url.slice(0, num + 1) + "3000/viewer/" + uid, '_blank')
+    }
+
     render() {
         const {classes} = this.props;
         return (
@@ -200,12 +211,17 @@ class RecordCardNew extends Component {
                         </Grid>
                         <Grid className={classes.ggrid}>
                             <Typography variant={"subtitle1"}>
-                                {new Date(this.record.creationTime).toLocaleDateString()}
-                            </Typography>
-                        </Grid>
-                        <Grid className={classes.ggrid}>
-                            <Typography variant={"subtitle1"}>
-                                {this.creationTime}
+                                {
+                                    (((new Date(this.creationTime).getHours() < 10 && "0" + new Date(this.creationTime).getHours())
+                                            || (new Date(this.creationTime).getHours() >= 10 && new Date(this.creationTime).getHours())) + ":"
+                                        + ((new Date(this.creationTime).getMinutes() < 10 && "0" + new Date(this.creationTime).getMinutes())
+                                            || (new Date(this.creationTime).getMinutes() > 10 && new Date(this.creationTime).getMinutes())
+                                        )) + "    " + (
+                                        ((new Date(this.creationTime).getDate() < 10 && "0" + new Date(this.creationTime).getDate()) || (new Date(this.creationTime).getDate() >= 10 && new Date(this.creationTime).getDate()))
+                                        + "."
+                                        + (((new Date(this.creationTime).getMonth() + 1) < 10 && "0" + (new Date(this.creationTime).getMonth() + 1)) || (((new Date(this.creationTime).getMonth() + 1) >= 10 && (new Date(this.creationTime).getMonth() + 1))))
+                                        + "." + new Date(this.creationTime).getFullYear()
+                                    )}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -241,13 +257,20 @@ class RecordCardNew extends Component {
                     {/*<div id={containerId} />*/}
 
                     {!this.isPreview && this.state.filePreviews.map((el, index) => (
+                        // <Tooltip title="Открыть в DICOM Viewer">
+                        //     <a href={"http://localhost:3000/viewer/" + this.record.attachments[index].uid} target="_blank">
+                        //         <Button><img className="col-sm-8 top-buffer-10" key={el.id} alt="" src={el.image}>
+                        //         </img>
+                        //         </Button>
+                        //
+                        //     </a>
+                        // </Tooltip>
                         <Tooltip title="Открыть в DICOM Viewer">
-                            <a href={"http://localhost:3000/viewer/" + this.record.attachments[index].uid} target="_blank">
-                                <Button><img className="col-sm-8 top-buffer-10" key={el.id} alt="" src={el.image}>
-                                </img>
-                                </Button>
-
-                            </a>
+                            <img onClick={() => this.openDicomViewer(this.record.attachments[index].uid)}
+                                 className="col-sm-8 top-buffer-10" key={el.id} alt="" src={el.image}
+                                 style={{cursor: 'pointer'}}
+                            >
+                            </img>
                         </Tooltip>
                     ))}
 

@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     button: {
@@ -216,9 +217,11 @@ class PipelineResultsComponent extends Component {
                     <Grid xs={4} item>
                         <Card className={classes.paper2}>
                             <Grid className={classes.grid}>
-                                <Button href={"/pipelines/create"} className={classes.button}>
-                                    Запустить анализ
-                                </Button>
+                                <Link to={"/pipelines/create"} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.button}>
+                                        Запустить анализ
+                                    </Button>
+                                </Link>
                             </Grid>
                         </Card>
                     </Grid>

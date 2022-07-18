@@ -308,7 +308,7 @@ function App(props) {
     }
 
     function connectToChat() {
-        let Sock = new SockJS('http://localhost:7999/api/ws')
+        let Sock = new SockJS('/api/ws')
         stompClient = over(Sock)
         stompClient.connect({}, onConnected, onError)
     }

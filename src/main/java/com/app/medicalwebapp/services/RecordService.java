@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -89,7 +90,7 @@ public class RecordService {
 
         Set<Topic> topics = null;
         if (request.getTopics() != null && !request.getTopics().isEmpty()) {
-             topics = request.getTopics().stream().map(topicId -> {
+            topics = request.getTopics().stream().map(topicId -> {
                 Topic topic = new Topic();
                 topic.setId(topicId);
                 return topic;
@@ -98,11 +99,13 @@ public class RecordService {
 
         User creator = new User();
         creator.setId(creatorId);
-
+        var timeZoneUnparsed = ZonedDateTime.now().toString();
+        String timeZone = timeZoneUnparsed.substring(timeZoneUnparsed.lastIndexOf("[") + 1).split("]")[0];
         Record record = Record.builder()
                 .content(request.getContent())
                 .title(request.getTitle())
                 .creationTime(LocalDateTime.now())
+                .timeZone(timeZone)
                 .creator(creator)
                 .edited(false)
                 .attachments(files)

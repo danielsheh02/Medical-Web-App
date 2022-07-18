@@ -21,7 +21,6 @@ import {
 } from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import SearchIcon from '@material-ui/icons/Search';
-import Button from "@material-ui/core/Button";
 
 
 const StyledTableRow = withStyles((theme) => ({
@@ -183,7 +182,6 @@ class Search extends Component {
 
     render() {
         const {classes} = this.props;
-        console.log(this.state.users)
         return (
             <Grid className={classes.mainGrid}>
                 <Grid>
@@ -202,37 +200,12 @@ class Search extends Component {
                             onChange={this.onChangeSearchString}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end" className={classes.inputAdornment}>
-                                    {/*<Button*/}
-                                    {/*    className={classes.button}*/}
-                                    {/*    variant="contained"*/}
-                                    {/*    color="primary"*/}
-                                    {/*    onClick={this.getUsers}*/}
-                                    {/*>*/}
-                                    {/*    /!*<i className="fa fa-search" aria-hidden="true"/>*!/*/}
-                                    {/*    <SearchIcon style={{color: "white"}}/>*/}
-                                    {/*</Button>*/}
                                     <IconButton onClick={this.getUsers}>
                                         <SearchIcon/>
                                     </IconButton>
                                 </InputAdornment>
                             }}
                         />
-                        {/*<input className="input-search"*/}
-                        {/*       type="text"*/}
-                        {/*       placeholder="Искать здесь..."*/}
-                        {/*       value={this.state.searchString}*/}
-                        {/*       onChange={this.onChangeUsername}*/}
-                        {/*/>*/}
-                        {/*<Button*/}
-                        {/*    className={classes.button}*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="primary"*/}
-                        {/*        onClick={this.getUsers}*/}
-                        {/*>*/}
-                        {/*    /!*<i className="fa fa-search" aria-hidden="true"/>*!/*/}
-                        {/*    <SearchIcon style={{color: "white"}}/>*/}
-                        {/*</Button>*/}
-                        {/*</form>*/}
                     </div>
                     <Grid className={classes.mainGrid}>
                         <Grid>
@@ -267,8 +240,6 @@ class Search extends Component {
                             </Grid>
                         </Grid>
                         <Grid>
-                            {/*<div className="div-search">*/}
-                            {/*</div>*/}
                         </Grid>
                     </Grid>
                 </Grid>

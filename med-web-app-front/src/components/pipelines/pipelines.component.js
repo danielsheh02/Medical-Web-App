@@ -253,6 +253,7 @@ class PipelinesComponent extends Component {
                                     </Button>
                                 </Link>
 
+                                {/*TODO сделать так же, как в record-card*/}
                                 <a href={"http://localhost:3000/local"} target="_blank"
                                       style={{textDecoration: 'none'}}>
                                     <Button className={classes.buttons}>

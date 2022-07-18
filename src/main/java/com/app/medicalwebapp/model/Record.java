@@ -51,6 +51,9 @@ public class Record {
     @Column(name="creation_time")
     private LocalDateTime creationTime;
 
+    @Column(name="timeZone")
+    private String timeZone;
+
     @Column(name="edited")
     private Boolean edited;
 
