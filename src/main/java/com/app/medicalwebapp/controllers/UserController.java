@@ -4,11 +4,11 @@ import com.app.medicalwebapp.controllers.requestbody.messenger.ContactsResponse;
 import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.controllers.requestbody.messenger.ContactsRequest;
 import com.app.medicalwebapp.model.User;
-import com.app.medicalwebapp.model.messengerModels.ChatMessage;
-import com.app.medicalwebapp.model.messengerModels.Contact;
+import com.app.medicalwebapp.model.messenger_models.ChatMessage;
+import com.app.medicalwebapp.model.messenger_models.Contact;
 import com.app.medicalwebapp.security.UserDetailsImpl;
-import com.app.medicalwebapp.services.messengerServices.ChatMessageService;
-import com.app.medicalwebapp.services.messengerServices.ContactsService;
+import com.app.medicalwebapp.services.messenger_services.ChatMessageService;
+import com.app.medicalwebapp.services.messenger_services.ContactsService;
 import com.app.medicalwebapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,6 @@ public class UserController {
             @RequestParam(name = "username", required = false, defaultValue = "empty") String username
     ) {
         try {
-            System.out.println("Hello");
             if (username.equals("empty")) {
                 List<User> responseBody;
                 responseBody = userService.getAll();

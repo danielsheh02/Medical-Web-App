@@ -3,22 +3,22 @@ import {Switch, Route, Link, Redirect} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
-import Home from "./components/home.component"
-import HomePatient from "./components/home-patient.component"
-import HomeDoctor from "./components/home-doctor.component"
-import Profile from "./components/profile.component"
-import Search from "./components/search.component"
-import ViewAttachmentsComponent from "./components/view-attachments.component"
-import UploadAttachmentsComponent from "./components/upload-attachments.component"
-import PipelinesComponent from "./components/pipelines.component"
-import PipelineResultsComponent from "./components/pipeline-results.component"
-import ViewRecordsComponent from "./components/view-records.component"
-import CreateRecordComponent from "./components/create-record.component"
-import RecordThreadComponent from "./components/record-thread.component"
-import SavePipelineConfigComponent from "./components/save-pipeline-config.component"
-import TopicComponent from "./components/topic.component"
-import Register from "./components/register.component"
-import Login from "./components/login.component"
+import Home from "./components/main/home.component"
+import HomePatient from "./components/main/home-patient.component"
+import HomeDoctor from "./components/main/home-doctor.component"
+import Profile from "./components/user_profile/profile.component"
+import Search from "./components/search/search.component"
+import ViewAttachmentsComponent from "./components/attachments/view-attachments.component"
+import UploadAttachmentsComponent from "./components/attachments/upload-attachments.component"
+import PipelinesComponent from "./components/pipelines/pipelines.component"
+import PipelineResultsComponent from "./components/pipelines/pipeline-results.component"
+import ViewRecordsComponent from "./components/records/view-records.component"
+import CreateRecordComponent from "./components/records/create-record.component"
+import RecordThreadComponent from "./components/records/record-thread.component"
+import SavePipelineConfigComponent from "./components/pipelines/save-pipeline-config.component"
+import TopicComponent from "./components/records/topic.component"
+import Register from "./components/signin_signup/register.component"
+import Login from "./components/signin_signup/login.component"
 import NotExist from "./components/not-exist.component"
 import AuthService from "./services/auth.service"
 import {
@@ -43,14 +43,13 @@ import BallotIcon from '@material-ui/icons/Ballot'
 import ForumIcon from '@material-ui/icons/Forum'
 import SearchIcon from '@material-ui/icons/Search'
 import MessageIcon from '@material-ui/icons/Message'
-import Brightness1TwoToneIcon from '@material-ui/icons/Brightness1TwoTone'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
-import Chat from "./components/messengerComponents/chat.component"
+import Chat from "./components/messenger/chat.component"
 import SockJS from "sockjs-client"
 import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
-import AttachmentService from "./services/attachment.service";
+import ListItemButton from "@mui/material/ListItemButton";
 
 const drawerWidth = 240
 
@@ -60,7 +59,18 @@ const useStyles = theme => ({
     },
     drawerPaper: {
         whiteSpace: 'nowrap',
-        width: theme.spacing(32),
+        [theme.breakpoints.down("xs")]: {
+            width: 210,
+            marginRight: theme.spacing(0),
+        },
+        [theme.breakpoints.between("sm", "md")]: {
+            width: theme.spacing(25),
+            marginRight: theme.spacing(0)
+        },
+        "@media (min-width: 1280px)": {
+            width: theme.spacing(32),
+            marginRight: theme.spacing(5)
+        },
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -68,7 +78,6 @@ const useStyles = theme => ({
         height: "100%",
     },
     drawerPaperClose: {
-        overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -81,17 +90,42 @@ const useStyles = theme => ({
         height: "100%",
     },
     leftIndent: {
+        [theme.breakpoints.down("xs")]: {
+            width: 40,
+            marginRight: theme.spacing(0)
+        },
         width: 60,
     },
     leftIndentOpen: {
-        width: 240,
+        [theme.breakpoints.down("xs")]: {
+            width: 100,
+        },
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 150
+        },
+        "@media (min-width: 1280px)": {
+            width: 200
+        },
+
     },
     active: {
         background: '#f4f4f4'
     },
     title: {
         flexGrow: 1,
-        width: '100%',
+        margin:'auto',
+        [theme.breakpoints.down("xs")]: {
+            width: 100,
+        },
+        "@media (min-width : 400px)": {
+            width: 250,
+
+        },
+        "@media (min-width: 1280px)": {
+            width: 700,
+            paddingRight: "70%",
+        },
+
     },
     appBar: {
         top: 0,
@@ -106,7 +140,7 @@ const useStyles = theme => ({
         }),
     },
     appBarShift: {
-        marginLeft: drawerWidth,
+        // marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -118,13 +152,21 @@ const useStyles = theme => ({
         marginTop: 10,
     },
     menuButton: {
-        marginRight: 36,
+        [theme.breakpoints.down("xs")]: {
+            marginRight: 5
+        },
+        [theme.breakpoints.between("sm","md")]:{
+            marginRight: 10
+        },
+        "@media (min-width: 1280px)" :{
+            marginRight: 34
+        },
     },
     menuButtonHidden: {
         display: 'none',
     },
     toolbar: {
-        paddingRight: 24,
+        paddingRight: "0%",
     },
     toolbarIcon: {
         display: 'flex',
@@ -141,6 +183,9 @@ const useStyles = theme => ({
         // width: '100%',
         //marginLeft: '100px'
     },
+    contentOpen : {
+        marginLeft: '250px',
+    },
     noticeMsg: {
         backgroundColor: '#FF0040',
         textAlign: 'center',
@@ -148,19 +193,42 @@ const useStyles = theme => ({
         // width: '100%',
         //marginLeft: '100px'
     },
+    regAndLogbuttons: {
+        padding: 0,
+        margin: 'auto'
+    }
 })
 let stompClient = null;
 
+
+
 function App(props) {
+
+
+    const LeftMenuOpen = (width) =>{
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        return width >= 425;
+    }
+
     const {classes} = props
     const [numberOfUnRead, setNumberOfUnRead] = useState(0)
     // const [showModeratorBoard, setShowModeratorBoard] = useState(false)
     // const [showAdminBoard, setShowAdminBoard] = useState(false)
     const [currentUser, setCurrentUser] = useState(null)
-    const [open, setOpen] = useState(true)
     const [refresh, setRefresh] = useState({})
     const [allMessages, setAllMessages] = useState(new Map())
     const [usersWithLastMsgReceived, setUsersWithLastMsgReceived] = useState(new Map())
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const [open, setOpen] = useState(LeftMenuOpen(width));
+
 
     useEffect(() => {
         const user = AuthService.getCurrentUser()
@@ -257,7 +325,7 @@ function App(props) {
     }
 
     function connectToChat() {
-        let Sock = new SockJS('http://localhost:7999/api/ws')
+        let Sock = new SockJS('/api/ws')
         stompClient = over(Sock)
         stompClient.connect({}, onConnected, onError)
     }
@@ -365,6 +433,295 @@ function App(props) {
         },
     ]
 
+
+    const IconsForNotRegisteredUsers = () =>{
+        const [width, setWidth] = React.useState(window.innerWidth);
+        const breakpoint_1 = 580;
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if(width > breakpoint_1){
+            return (
+                <Grid container >
+                    <Grid item xs/>
+                    <Grid item >
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/login"}>
+                            <ListItemText primary={"Войти"}/>
+                        </ListItemButton>
+                    </Grid>
+                    <Grid item>
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/register"}>
+                            <ListItemText primary={"Регистрация"}/>
+                        </ListItemButton>
+                    </Grid>
+                </Grid>
+            );
+        }
+        else{
+            return (
+                <Grid container alignItems={"flex-start"} direction={'column'}>
+                    <Grid >
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/login"}
+                        >
+                            <ListItemText primary={"Войти"}/>
+                        </ListItemButton>
+                    </Grid>
+                    <Grid >
+                        <ListItemButton
+                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            component={Link} to={"/register"}>
+
+                            <ListItemText primary={"Регистрация"}/>
+                        </ListItemButton>
+                    </Grid>
+                </Grid>
+            );
+        }
+
+    }
+
+
+    const IconsForRegistredUsers = (props) =>{
+        const username = props.username;
+        const [width, setWidth] = React.useState(window.innerWidth);
+        const breakpoint_1 = 588;
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if (width > breakpoint_1){
+            return (<Grid container>
+                <Grid item xs/>
+                <Grid item width={'50px'}>
+                    <IconButton color="inherit">
+                        <Badge badgeContent={4} color="secondary">
+                            <NotificationsIcon/>
+                        </Badge>
+                    </IconButton>
+                </Grid>
+                <Grid item width={'130px'}>
+                    <ListItem
+                        button
+                        component={Link} to={getPathForProfile()}>
+                        <AccountCircleRoundedIcon/>
+                        <ListItemText primary={username}/>
+                    </ListItem>
+                </Grid>
+
+                <Grid item width={'90px'}>
+                    <ListItem
+                        button
+                        component={Link} to={"/login"}
+                        onClick={logOut}>
+                        <ListItemText primary={"Выйти"}/>
+                    </ListItem>
+                </Grid>
+            </Grid>);
+        }
+        else {
+            return(
+                <Grid container alignItems={"center"} justifyContent={"flex-start"}
+                      direction={"row"} >
+                    <Grid item width={'25px'} alignContent={"stretch"}  >
+                        <IconButton color="inherit" >
+                            <Badge badgeContent={4} color="secondary">
+                                <NotificationsIcon />
+                            </Badge>
+                        </IconButton>
+                    </Grid>
+                    <Grid container xs={5} direction={"column"} justifyContent={"center"} alignItems={"flex-start"}>
+                        <Grid item width={'100px'}>
+                            <ListItemButton
+                                sx = {{paddingRight : 0,paddingBottom: 0}}
+                                component={Link} to={getPathForProfile()}>
+                                <AccountCircleRoundedIcon/>
+                                <ListItemText primary={username}/>
+                            </ListItemButton>
+                        </Grid>
+
+                        <Grid item width={'100px'} >
+                            <ListItemButton
+                                sx = {{paddingRight: 0, paddingTop : 0,paddingBottom : 0}}
+                                component={Link} to={"/login"}
+                                onClick={logOut}>
+                                <ListItemText primary={"Выйти"}/>
+                            </ListItemButton>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            );
+        }
+
+    }
+
+
+    function ContainerBorder(){
+        const [width, setWidth] = React.useState(window.innerWidth);
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if(width <= 320){
+            return "container mt-3 ml-0 pl-0";
+        }
+        else if(width <= 375 ){
+            return "container mt-3 ml-3 pl-0";
+        }
+        else if(width <= 450){
+            return "container mt-3 ml-3";
+        }
+        else if (width <= 600){
+            return "container mt-3 ";
+        }
+        else if(width <= 768){
+            return "container mt-3";
+        }
+        else if(width <= 1024){
+            return "container mt-3 ml-1 pl-0";
+        }
+        else {
+            return "container mt-3";
+        }
+    }
+
+    function MyDrawer(props){
+        const classes = props.classes;
+        const open = props.open;
+        React.useEffect(() => {
+            const handleResizeWindow = () => setWidth(window.innerWidth);
+            // subscribe to window resize event "onComponentDidMount"
+            window.addEventListener("resize", handleResizeWindow);
+            return () => {
+                // unsubscribe "onComponentDestroy"
+                window.removeEventListener("resize", handleResizeWindow);
+            };
+        }, []);
+        if(width <=425){
+        return (
+            <Drawer
+                height="100%"
+                variant= "persistent"
+                classes={{
+                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                }}
+                open={open}
+            >
+                {open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon/>
+                    </IconButton>
+                </div>)}
+                {!open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerOpen}>
+                        <ChevronRightRoundedIcon/>
+                    </IconButton>
+                </div>)}
+                <Divider/>
+
+                <List>
+                    {currentUser && (
+                        menuItemsForRegisteredUsers.map((item) => (
+                            <ListItem
+                                button
+                                key={item.text}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                                <ListItemText primary={item.numberMsg}/>
+                            </ListItem>
+                        )))
+                    }
+                    {!currentUser && (
+                        menuItemsForUnregisteredUsers.map((item) => (
+                            <ListItemButton
+                                key={item.text}
+                                //onClick={() => this.displayPageContent(item.path)}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                            </ListItemButton>
+                        )))
+                    }
+                </List>
+            </Drawer>);
+    }
+    else{
+           return(<Drawer
+                height="100%"
+                variant= "permanent"
+                classes={{
+                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                }}
+                open={open}
+            >
+                {open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon/>
+                    </IconButton>
+                </div>)}
+                {!open && (<div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerOpen}>
+                        <ChevronRightRoundedIcon/>
+                    </IconButton>
+                </div>)}
+                <Divider/>
+
+                <List>
+                    {currentUser && (
+                        menuItemsForRegisteredUsers.map((item) => (
+                            <ListItem
+                                button
+                                key={item.text}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                                <ListItemText primary={item.numberMsg}/>
+                            </ListItem>
+                        )))
+                    }
+                    {!currentUser && (
+                        menuItemsForUnregisteredUsers.map((item) => (
+                            <ListItemButton
+                                key={item.text}
+                                //onClick={() => this.displayPageContent(item.path)}
+                                component={Link} to={item.path}
+                            >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.text}/>
+                            </ListItemButton>
+                        )))
+                    }
+                </List>
+            </Drawer>);
+    }
+    }
+
+
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -385,111 +742,24 @@ function App(props) {
                     </Typography>
 
                     {currentUser && (
-                        <Grid container>
-                            <Grid item xs/>
-                            <Grid item width={'50px'}>
-                                <IconButton color="inherit">
-                                    <Badge badgeContent={4} color="secondary">
-                                        <NotificationsIcon/>
-                                    </Badge>
-                                </IconButton>
-                            </Grid>
-                            <Grid item width={'130px'}>
-                                <ListItem
-                                    button
-                                    component={Link} to={getPathForProfile()}>
-                                    <AccountCircleRoundedIcon/>
-                                    <ListItemText primary={currentUser.username}/>
-                                </ListItem>
-                            </Grid>
+                        <IconsForRegistredUsers username = {currentUser.username}/>
+                    )}
 
-                            <Grid item width={'90px'}>
-                                <ListItem
-                                    button
-                                    component={Link} to={"/login"}
-                                    onClick={logOut}>
-                                    <ListItemText primary={"Выйти"}/>
-                                </ListItem>
-                            </Grid>
-                        </Grid>
-                    )}
                     {!currentUser && (
-                        <Grid container>
-                            <Grid item xs/>
-                            <Grid item>
-                                <ListItem
-                                    button
-                                    component={Link} to={"/login"}>
-                                    <ListItemText primary={"Войти"}/>
-                                </ListItem>
-                            </Grid>
-                            <Grid item>
-                                <ListItem
-                                    button
-                                    component={Link} to={"/register"}>
-                                    <ListItemText primary={"Зарегистрироваться"}/>
-                                </ListItem>
-                            </Grid>
-                        </Grid>
+                        <IconsForNotRegisteredUsers/>
                     )}
+
                 </Toolbar>
             </AppBar>
 
-            <Grid container>
+            <Grid container >
                 <Grid item className={clsx(classes.leftIndent, open && classes.leftIndentOpen)}>
-                    <Drawer
-                        height="100%"
-                        variant="permanent"
-                        classes={{
-                            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                        }}
-                        open={open}
-                    >
-                        {open && (<div className={classes.toolbarIcon}>
-                            <IconButton onClick={handleDrawerClose}>
-                                <ChevronLeftIcon/>
-                            </IconButton>
-                        </div>)}
-                        {!open && (<div className={classes.toolbarIcon}>
-                            <IconButton onClick={handleDrawerOpen}>
-                                <ChevronRightRoundedIcon/>
-                            </IconButton>
-                        </div>)}
-                        <Divider/>
-                        <List>
-                            {currentUser && (
-                                menuItemsForRegisteredUsers.map((item) => (
-                                    <ListItem
-                                        button
-                                        key={item.text}
-                                        component={Link} to={item.path}
-                                    >
-                                        <ListItemIcon>{item.icon}</ListItemIcon>
-                                        <ListItemText primary={item.text}/>
-                                        <ListItemText primary={item.numberMsg}/>
-                                    </ListItem>
-                                )))
-                            }
-                            {!currentUser && (
-                                menuItemsForUnregisteredUsers.map((item) => (
-                                    <ListItem
-                                        button
-                                        key={item.text}
-                                        //onClick={() => this.displayPageContent(item.path)}
-                                        component={Link} to={item.path}
-                                    >
-                                        <ListItemIcon>{item.icon}</ListItemIcon>
-                                        <ListItemText primary={item.text}/>
-                                    </ListItem>
-                                )))
-                            }
-                        </List>
-                    </Drawer>
+                  <MyDrawer open = {open} classes = {classes}/>
                 </Grid>
-                <Grid item xs className={clsx(classes.content, !open && classes.contentClose)}>
+                <Grid item xs className={clsx(classes.content, open && classes.contentOpen)}>
                     <div className={classes.appBarSpacer}/>
                     <div className={classes.appBarSpacer2}/>
-                    <div className="container mt-3">
+                    <div className={ContainerBorder()} >
                         <Switch>
                             <Route exact path={["/", "/home"]} component={Home}/>
                             <Route exact path="/home/patient" component={HomePatient}/>

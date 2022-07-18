@@ -23,6 +23,8 @@ public class ChatMessageRequest {
 
     private LocalDateTime sendDate;
 
+    private String timeZone;
+
     private String uid;
 
 }

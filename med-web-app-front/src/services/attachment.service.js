@@ -6,23 +6,21 @@ const API_URL = process.env.REACT_APP_API_URL + '/api/files/';
 class AttachmentService {
 
     getAttachmentsForUser(username) {
-        return axios.get(API_URL + username, { headers: authHeader() });
+        return axios.get(API_URL + username, {headers: authHeader()});
     }
 
     getAttachmentsInfoForUser(username) {
-        return axios.get(API_URL + 'test/' + username, { headers: authHeader() });
+        return axios.get(API_URL + 'test/' + username, {headers: authHeader()});
     }
 
     uploadAttachment(file, fileName, isDicom, UID, onUploadProgress) {
-        console.log("Got file to upload");
-        console.log(UID);
         let formData = new FormData();
 
         if (isDicom) {
             formData.append("file", new Blob([file]), fileName);
         } else {
             formData.append("file", file);
-            UID = "";
+            UID = null;
         }
         console.log(file)
         const user = JSON.parse(localStorage.getItem('user'));
@@ -33,6 +31,32 @@ class AttachmentService {
         return axios.post(API_URL + "upload/" + UID, formData, {
             headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token},
             onUploadProgress,
+        });
+    }
+
+    deleteAttachment(fileId) {
+        console.log('deleting...');
+        console.log(fileId);
+        const user = JSON.parse(localStorage.getItem('user'));
+        let token = '';
+        if (user && user.token) {
+            token = user.token;
+        }
+        axios.delete(API_URL + 'delete/' + fileId, {headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token}});
+        console.log('deleted');
+    }
+
+    renameAttachment(fileId, newName) {
+        let formData = new FormData();
+        formData.append("name", newName);
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        let token = '';
+        if (user && user.token) {
+            token = user.token;
+        }
+        return axios.post(API_URL + "rename/" + fileId, formData, {
+            headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token}
         });
     }
 
