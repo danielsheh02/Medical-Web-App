@@ -13,6 +13,11 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import {Link} from "react-router-dom";
+import {AddCircle, AddCircleSharp} from "@material-ui/icons";
+import ListItemButton from "@mui/material/ListItemButton";
+import Dropup from "./DropupOnRecordCard";
+import BasicSelect from "./DropupOnRecordCard";
+import TemporaryDrawer from "./DropupOnRecordCard";
 
 const useStyles = theme => ({
     button: {
@@ -30,13 +35,15 @@ const useStyles = theme => ({
             width: 238,
             height: 42,
             padding: '2px 4px',
-            alignItems: 'center'
+            alignItems: 'center',
+
         },
         [theme.breakpoints.between("sm", "md")]:{
-            width: 400,
+            width: 650,
             height: 42,
             padding: '2px 4px',
-            alignItems: 'center'
+            alignItems: 'flex-end',
+
         },
         "@media (min-width : 1280px)":{
             width: 800,
@@ -50,9 +57,8 @@ const useStyles = theme => ({
         marginLeft: theme.spacing(1),
         flex: 1,
         [theme.breakpoints.between("sm", "md")]:{
-            width: 350,
+          width: 600
         },
-
     },
     iconButton: {
         [theme.breakpoints.down("xs")]: {
@@ -67,12 +73,11 @@ const useStyles = theme => ({
         "& .MuiFormLabel-root": {
             margin: 0
         },
-        [theme.breakpoints.down("xs")]:{
+        [theme.breakpoints.down("xs")]: {
             width: 238,
         },
-
         [theme.breakpoints.between("sm", "md")]:{
-            width: 400,
+            width: 650
         },
         "@media (min-width : 1280px)":{
             width: 800,
@@ -98,7 +103,7 @@ const useStyles = theme => ({
             minWidth: 200,
         },
         [theme.breakpoints.between("sm", "md")]:{
-            mindWidth:500
+            mindWidth:500,
         },
         "@media (min-width : 1280px)":{
             minWidth: 1000.
@@ -106,11 +111,13 @@ const useStyles = theme => ({
     },
     paper2: {
         margin: theme.spacing(3),
+        marginLeft: theme.spacing(0),
         padding: theme.spacing(3),
         color: "black",
     },
     firstGrid: {
         marginTop: theme.spacing(3),
+        alignItems: "center",
     },
     grid: {
         margin: theme.spacing(1),
@@ -121,6 +128,11 @@ const useStyles = theme => ({
     record: {
         minWidth: 1000
     },
+    Drawer:{
+        position: "fixed",
+        top:"92%",
+        left:"85%"
+    }
 })
 
 const ITEM_HEIGHT = 48;
@@ -134,7 +146,48 @@ const MenuProps = {
     },
 };
 
+const DrawRightSide = (props) =>{
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const classes = props.classes;
+    React.useEffect(() => {
+        const handleResizeWindow = () => setWidth(window.innerWidth);
+        // subscribe to window resize event "onComponentDidMount"
+        window.addEventListener("resize", handleResizeWindow);
+        return () => {
+            // unsubscribe "onComponentDestroy"
+            window.removeEventListener("resize", handleResizeWindow);
+        };
+    }, []);
+    if(width > 768){
+        return (<Grid xs={4} item>
+                <Card className={classes.paper2}>
+                    <Grid className={classes.grid}>
+                        <Link to={"/records/create"} style={{textDecoration: 'none'}}>
+                            <Button className={classes.button}>
+                                Создать пост
+                            </Button>
+                        </Link>
+                        <Link to={"/topics/create"} style={{textDecoration: 'none'}}>
+                            <Button className={classes.button}>
+                                Страница тэгов
+                            </Button>
+                        </Link>
+                    </Grid>
+                </Card>
+            </Grid>);
+        }
+    else{
+        return(
+        <div className={classes.Drawer}>
+        <TemporaryDrawer/>
+        </div>);
+    }
+
+}
+
+
 class ViewRecordsList extends Component {
+
     constructor(props) {
         super(props);
 
@@ -146,7 +199,6 @@ class ViewRecordsList extends Component {
         this.handlePageSizeChange = this.handlePageSizeChange.bind(this);
         // this.onTopicsDropdownSelected = this.onTopicsDropdownSelected.bind(this);
         this.handleTopics = this.handleTopics.bind(this);
-
 
         this.state = {
             records: [],
@@ -280,8 +332,8 @@ class ViewRecordsList extends Component {
         const {classes} = this.props;
         return (
             <Grid item className={classes.mainGrid}>
-                <Grid xs={12} className={classes.firstGrid}>
-                    <Grid xs={8} item>
+                <Grid item xs={12} className={classes.firstGrid}>
+                    <Grid item xs={8} >
                         {/*<input
                             type="text"
                             className="form-control"
@@ -306,7 +358,8 @@ class ViewRecordsList extends Component {
                                 placeholder="Поиск"
                                 // inputProps={{ 'aria-label': 'search google maps' }}
                             />
-                            <IconButton type="button"  onClick={this.getRecords} className={classes.iconButton} aria-label="search">
+                            <IconButton type="button" onClick={this.getRecords} className={classes.iconButton} aria-label="search"
+                            >
                                 <SearchIcon />
                             </IconButton>
                         </Paper>
@@ -342,13 +395,13 @@ class ViewRecordsList extends Component {
 
                     <div className="mt-3">
                         <div className="row">
-                            <div style={{marginLeft: "17px", marginTop: "5px", width: 225}}>{"Количество постов на странице: "}</div>
+                            <div style={{marginLeft: "17px", marginTop: "5px", width: 180}}>{"Количество постов на странице: "}</div>
                             <SelectReact className="col-2"
-                                         onChange={this.handlePageSizeChange}
-                                         options={this.pageSizes}
-                                         autoFocus={true}
-                                         defaultValue={this.pageSizes[2]}
-                                         styles={stylesForSmallSelectBox}
+                                    onChange={this.handlePageSizeChange}
+                                    options={this.pageSizes}
+                                    autoFocus={true}
+                                    defaultValue={this.pageSizes[2]}
+                                    styles={stylesForSmallSelectBox}
                             />
                         </div>
 
@@ -361,41 +414,26 @@ class ViewRecordsList extends Component {
                             variant="outlined"
                             shape="rounded"
                             onChange={this.handlePageChange}
+                            style={{ display: "flex", justifyContent: "center" }}
                         />
                     </div>
 
 
-                    <Grid container spacing={2} direction={"column"}>
+                    <Grid container spacing={1} direction={"column"}>
                         {this.state.records &&
                         this.state.records.map((record, index) => (
                             <Grid item
-                                  style={{listStyleType: "none"}}
-                                  key={index}
+                                style={{listStyleType: "none",padding: 0}}
+                                key={index}
                                 // onClick={() => this.displayRecordThread(record)}
                             >
-                                <RecordCard record={record} isPreview={true} isReply={false}/>
+                                <RecordCard record={record} isPreview={true} isReply={false} />
                             </Grid>
                         ))}
+
                     </Grid>
                 </Grid>
-                <Grid xs={4} item>
-                    <Card className={classes.paper2}>
-                        <Grid className={classes.grid}>
-                            {/*TODO сделать на onClick проверку на зарегистрированность и ссылку на логин*/}
-                            <Link to={"/records/create"} style={{textDecoration: 'none'}}>
-                                <Button className={classes.button}>
-                                    Создать пост
-                                </Button>
-                            </Link>
-                            {/*TODO создание тэгов только для админов*/}
-                            <Link to={"/topics/create"} style={{textDecoration: 'none'}}>
-                                <Button className={classes.button}>
-                                    Страница тэгов
-                                </Button>
-                            </Link>
-                        </Grid>
-                    </Card>
-                </Grid>
+                <DrawRightSide classes = {classes}/>
 
                 {/*<div className="col-sm-2">
                     <Button variant="contained" href="/records/create" className={classes.button}>
@@ -464,10 +502,10 @@ const stylesForSmallSelectBox = {
         minHeight: '30px',
         height: '30px',
         width: 70,
-        textAlign: "center",
-        "@media (max-width : 480px)":{
-            marginLeft: 74,
+        "@media (max-width : 394px)":{
+            //marginLeft: 75
         },
+
         boxShadow: state.isFocused ? null : null,
     }),
 
@@ -475,21 +513,24 @@ const stylesForSmallSelectBox = {
         ...provided,
         height: '30px',
         padding: '0 6px',
-        "@media (max-width : 400px)":{
-            width: 50
+        "@media (max-width : 394px)":{
+            width: 50,
         },
     }),
 
     input: (provided, state) => ({
         ...provided,
-        margin: '0px',
+
+
     }),
     indicatorSeparator: state => ({
         display: 'none',
+
     }),
     indicatorsContainer: (provided, state) => ({
         ...provided,
         height: '30px',
+
     }),
 };
 

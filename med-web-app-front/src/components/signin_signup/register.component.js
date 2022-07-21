@@ -47,7 +47,16 @@ const useStyles = theme => ({
     paper: {
         marginTop: theme.spacing(5),
         marginBottom: theme.spacing(3),
-        minWidth: 200,
+        //minWidth: 200,
+        "@media (max-width: 365px)":{
+            width: 260,
+        },
+        "@media (min-width: 350 px)":{
+            width: 300,
+        },
+        "@media (min-width: 425px)":{
+            width: "90%"
+        },
     },
     form: {
         width: '100%',
