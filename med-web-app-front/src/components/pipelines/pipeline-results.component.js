@@ -145,9 +145,9 @@ class PipelineResultsComponent extends Component {
         const {classes} = this.props
         return (
             <div>
-                <Grid xs={12} item className={classes.mainGrid}>
+                <Grid item xs={12}  className={classes.mainGrid}>
                     <Grid item xs/>
-                    <Grid xs={7} item>
+                    <Grid item xs={7} >
                         <Card className={classes.paper}>
                             <div className="row">
                                 <div className=" col-sm-12 align-content-center top-buffer-10">
@@ -213,7 +213,7 @@ class PipelineResultsComponent extends Component {
                             </div>
                         </Card>
                     </Grid>
-                    <Grid xs={4} item>
+                    <Grid item xs={4} >
                         <Card className={classes.paper2}>
                             <Grid className={classes.grid}>
                                 <Button href={"/pipelines/create"} className={classes.button}>

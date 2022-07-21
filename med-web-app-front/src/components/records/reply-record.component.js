@@ -17,10 +17,11 @@ const useStyles = theme => ({
             marginTop: theme.spacing(6),
             marginBottom: theme.spacing(6),
             padding: theme.spacing(3),
+            width: 238
         },
     },
     filesWidth: {
-        width: 600,
+        width: 238,
         margin: theme.spacing(1,1,1,1)
     },
     grid: {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {Switch, Route, Link, Redirect} from "react-router-dom"
+import {Switch, Route, Link, Redirect, NavLink} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
@@ -50,6 +50,10 @@ import {over} from "stompjs"
 import UserService from "./services/user.service"
 import ChatService from "./services/chat.service"
 import ListItemButton from "@mui/material/ListItemButton";
+import Button from "@material-ui/core/Button";
+import {lightBlue} from "@material-ui/core/colors";
+import {Logout, LogoutSharp} from "@mui/icons-material";
+import {RemoveRedEye} from "@material-ui/icons";
 
 const drawerWidth = 240
 
@@ -61,15 +65,12 @@ const useStyles = theme => ({
         whiteSpace: 'nowrap',
         [theme.breakpoints.down("xs")]: {
             width: 210,
-            marginRight: theme.spacing(0),
         },
         [theme.breakpoints.between("sm", "md")]: {
-            width: theme.spacing(25),
-            marginRight: theme.spacing(0)
+            width: theme.spacing(26),
         },
         "@media (min-width: 1280px)": {
             width: theme.spacing(32),
-            marginRight: theme.spacing(5)
         },
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -78,6 +79,7 @@ const useStyles = theme => ({
         height: "100%",
     },
     drawerPaperClose: {
+        overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -91,7 +93,7 @@ const useStyles = theme => ({
     },
     leftIndent: {
         [theme.breakpoints.down("xs")]: {
-            width: 40,
+            width: 25,
             marginRight: theme.spacing(0)
         },
         width: 60,
@@ -114,6 +116,7 @@ const useStyles = theme => ({
     title: {
         flexGrow: 1,
         margin:'auto',
+        color: '#FFFFFF',
         [theme.breakpoints.down("xs")]: {
             width: 100,
         },
@@ -123,7 +126,7 @@ const useStyles = theme => ({
         },
         "@media (min-width: 1280px)": {
             width: 700,
-            paddingRight: "70%",
+            //marginRight: "70%",
         },
 
     },
@@ -140,7 +143,7 @@ const useStyles = theme => ({
         }),
     },
     appBarShift: {
-        // marginLeft: drawerWidth,
+        marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -196,6 +199,16 @@ const useStyles = theme => ({
     regAndLogbuttons: {
         padding: 0,
         margin: 'auto'
+    },
+    button: {
+        flexGrow: 1,
+        margin:'auto',
+        [theme.breakpoints.down("xs")]:{
+            margin: 0,
+            padding: theme.spacing(0),
+        },
+
+
     }
 })
 let stompClient = null;
@@ -385,6 +398,41 @@ function App(props) {
         setNumberOfUnRead(prev => (prev - num))
     }
 
+    function LeftButtonComponentRender(item){
+        if(item.text === 'DICOM Viewer'){
+            return  (<ListItemButton
+                key={item.text}
+                component="a" href={item.href} target={"_blank"}
+            >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text}/>
+                <ListItemText primary={item.numberMsg}/>
+            </ListItemButton>);
+        }
+        else if (item.text === 'Выход'){
+            return (<ListItemButton
+                key={item.text}
+                component={Link} to={item.path}
+                onClick={logOut}
+
+            >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text}/>
+                <ListItemText primary={item.numberMsg}/>
+            </ListItemButton>);
+        }
+        else{
+            return (<ListItemButton
+                key={item.text}
+                component={Link} to={item.path}
+
+            >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text}/>
+                <ListItemText primary={item.numberMsg}/>
+            </ListItemButton>);
+        }
+    }
 
     const menuItemsForUnregisteredUsers = [
         {
@@ -431,6 +479,17 @@ function App(props) {
                 (numberOfUnRead !== 0 && numberOfUnRead >= 999 && "999+")}
             </Paper>,
         },
+        {
+            text: 'DICOM Viewer',
+            icon : <RemoveRedEye style={{color: '#f50057'}}/>,
+            href: "http://localhost:3000/local",
+        },
+        {
+            text : 'Выход',
+            icon : <Logout style={{color: '#f50057'}} />,
+            path : '/login',
+        },
+
     ]
 
 
@@ -454,7 +513,7 @@ function App(props) {
                         <ListItemButton
                             sx = {{paddingTop : 0, paddingBottom : 0}}
                             component={Link} to={"/login"}>
-                            <ListItemText primary={"Войти"}/>
+                            <ListItemText primary={"Войти"} />
                         </ListItemButton>
                     </Grid>
                     <Grid item>
@@ -525,21 +584,21 @@ function App(props) {
                     </ListItem>
                 </Grid>
 
-                <Grid item width={'90px'}>
+                {/*<Grid item width={'90px'}>
                     <ListItem
                         button
                         component={Link} to={"/login"}
                         onClick={logOut}>
                         <ListItemText primary={"Выйти"}/>
                     </ListItem>
-                </Grid>
+                </Grid>*/}
             </Grid>);
         }
         else {
             return(
                 <Grid container alignItems={"center"} justifyContent={"flex-start"}
                       direction={"row"} >
-                    <Grid item width={'25px'} alignContent={"stretch"}  >
+                    <Grid item width={'25px'} >
                         <IconButton color="inherit" >
                             <Badge badgeContent={4} color="secondary">
                                 <NotificationsIcon />
@@ -549,21 +608,20 @@ function App(props) {
                     <Grid container xs={5} direction={"column"} justifyContent={"center"} alignItems={"flex-start"}>
                         <Grid item width={'100px'}>
                             <ListItemButton
-                                sx = {{paddingRight : 0,paddingBottom: 0}}
                                 component={Link} to={getPathForProfile()}>
                                 <AccountCircleRoundedIcon/>
                                 <ListItemText primary={username}/>
                             </ListItemButton>
                         </Grid>
 
-                        <Grid item width={'100px'} >
+                        {/*<Grid item width={'100px'} >
                             <ListItemButton
                                 sx = {{paddingRight: 0, paddingTop : 0,paddingBottom : 0}}
                                 component={Link} to={"/login"}
                                 onClick={logOut}>
                                 <ListItemText primary={"Выйти"}/>
                             </ListItemButton>
-                        </Grid>
+                        </Grid>*/}
                     </Grid>
                 </Grid>
             );
@@ -627,6 +685,8 @@ function App(props) {
                     paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
                 }}
                 open={open}
+                onClick={handleDrawerChange}
+
             >
                 {open && (<div className={classes.toolbarIcon}>
                     <IconButton onClick={handleDrawerClose}>
@@ -643,15 +703,7 @@ function App(props) {
                 <List>
                     {currentUser && (
                         menuItemsForRegisteredUsers.map((item) => (
-                            <ListItem
-                                button
-                                key={item.text}
-                                component={Link} to={item.path}
-                            >
-                                <ListItemIcon>{item.icon}</ListItemIcon>
-                                <ListItemText primary={item.text}/>
-                                <ListItemText primary={item.numberMsg}/>
-                            </ListItem>
+                           LeftButtonComponentRender(item)
                         )))
                     }
                     {!currentUser && (
@@ -677,7 +729,8 @@ function App(props) {
                     paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
                 }}
                 open={open}
-            >
+                onClick={open && handleDrawerChange}
+           >
                 {open && (<div className={classes.toolbarIcon}>
                     <IconButton onClick={handleDrawerClose}>
                         <ChevronLeftIcon/>
@@ -693,15 +746,7 @@ function App(props) {
                 <List>
                     {currentUser && (
                         menuItemsForRegisteredUsers.map((item) => (
-                            <ListItem
-                                button
-                                key={item.text}
-                                component={Link} to={item.path}
-                            >
-                                <ListItemIcon>{item.icon}</ListItemIcon>
-                                <ListItemText primary={item.text}/>
-                                <ListItemText primary={item.numberMsg}/>
-                            </ListItem>
+                            LeftButtonComponentRender(item)
                         )))
                     }
                     {!currentUser && (
@@ -721,6 +766,17 @@ function App(props) {
     }
     }
 
+    function ExitOrNot(text){
+        if(text === 'Выход'){
+            return logOut;
+        }
+    }
+
+    function DicomViewerInternetPath(text){
+        if(text ==='DICOM Viewer'){
+            return "http://localhost:3000/local";
+        }
+    }
 
     return (
         <div className={classes.root}>
@@ -737,10 +793,13 @@ function App(props) {
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                    <ListItemButton component={Link} to={"/home"} variant={"text"} className={classes.button} color={"inherit"}
+                    disableGutters>
+                        <Typography component="h1" variant="h6" color="inherit" noWrap
+                                className={classes.title}>
                         Medical web app
                     </Typography>
-
+                    </ListItemButton>
                     {currentUser && (
                         <IconsForRegistredUsers username = {currentUser.username}/>
                     )}
