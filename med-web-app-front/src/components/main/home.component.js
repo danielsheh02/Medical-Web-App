@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     paper: {
+        textAlign: "center",
         [theme.breakpoints.down("xs")]:{
             margin: theme.spacing(0),
             width: 230,
@@ -67,7 +68,6 @@ const useStyles = theme => ({
 
 const GreetingWords = (props) =>{
     const [width, setWidth] = React.useState(window.innerWidth);
-    const breakpoint_1 = 1280;
     const breakpoint_2 = 700;
     React.useEffect(() => {
         const handleResizeWindow = () => setWidth(window.innerWidth);
@@ -79,7 +79,7 @@ const GreetingWords = (props) =>{
         };
     }, []);
 
-    if(width > breakpoint_1){
+    if(width > breakpoint_2){
         return (<Typography variant="subtitle1" className={props.className}>
             Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
             <br/> <br/>
@@ -92,22 +92,8 @@ const GreetingWords = (props) =>{
             – консультация специалиста узкого профиля <br/> <br/>
         </Typography>);
     }
-    else if(width > breakpoint_2){
-        return ( <Typography variant="subtitle4" className={props.className}>
-            Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
-            <br/> <br/>
-            В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
-            ПЭТ: <br/><br/>
-            – подтверждение необходимости хирургического вмешательства<br/><br/>
-            – подтверждение онкологического или редкого заболевания<br/><br/>
-            – проверка эффективности назначенной терапии<br/><br/>
-            – сомнения пациента относительно корректности поставленного диагноза<br/><br/>
-            – консультация специалиста узкого профиля <br/> <br/>
-        </Typography>);
-    }
-
     else {
-        return( <Typography variant="subtitle6" className={props.className}>
+        return( <Typography variant="subtitle2" className={props.className}>
             Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
             <br/> <br/>
             В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
@@ -193,7 +179,7 @@ class Home extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Grid>
+            <Grid container justifyContent={"center"}>
                 <div className={classes.div}>
                     <Paper className={classes.paper}>
                         <GreetingTitle  className = {classes.typography}/>

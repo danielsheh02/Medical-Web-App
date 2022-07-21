@@ -28,9 +28,7 @@ const useStyles = theme => ({
         "& .MuiTypography-root": {
             color: "black",
         },
-        "@media (max-width: 470px)":{
-          width: 200
-        },
+
     },
     grid: {
         "& .MuiTypography-root": {
@@ -45,7 +43,7 @@ const useStyles = theme => ({
     gridContent: {
         margin: theme.spacing(1),
         [theme.breakpoints.down("xs")]:{
-            Width: 200,
+            Width: 209,
         },
         [theme.breakpoints.between("sm", "md")]:{
             Width:500
@@ -56,15 +54,15 @@ const useStyles = theme => ({
     },
     paper: {
         padding: theme.spacing(2),
-        margin: 0,
+        marginLeft: theme.spacing(1),
         // maxWidth: 700,
         borderColor: "#e9e9e9",
         borderRadius: 10,
         [theme.breakpoints.down("xs")]:{
-            width: 230,
+            width: 270,
         },
         [theme.breakpoints.between("sm", "md")]:{
-            width:500
+            width:650
         },
         "@media (min-width : 1280px)":{
             width: 800,
@@ -80,10 +78,10 @@ const useStyles = theme => ({
         whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
         [theme.breakpoints.down("xs")]:{
-            width: 200,
+            width: 240,
         },
         [theme.breakpoints.between("sm", "md")]:{
-            width:470
+            width:620
         },
         "@media (min-width : 1280px)":{
             width: 770,

@@ -97,12 +97,12 @@ class ViewAttachmentsComponent extends Component {
 
                             {this.state.userFilesInfo.map(el => (
                                 <Grid key={el.id} className={classes.grid2}>
-                                    <Grid xs={5}>
+                                    <Grid item xs={5}>
                                         <Typography variant={"subtitle1"}>
                                             {this.getName(el.initialName)}
                                         </Typography>
                                     </Grid>
-                                    <Grid xs={4}>
+                                    <Grid item xs={4}>
                                         <Typography variant={"subtitle1"}>
                                             {new Date(el.creationTime).toLocaleDateString()}
                                         </Typography>
