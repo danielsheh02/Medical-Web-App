@@ -140,6 +140,15 @@ function Chat(props) {
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
     const [contentCorrect, setContentCorrect] = useState("")
+
+    const [searchContent, setSearchContent] = useState("")
+    const [searchContentPresence, setSearchContentPresence] = useState(false)
+    const [searchContentCorrect, setSearchContentCorrect] = useState("")
+
+    const [searchContacts, setSearchContacts] = useState("")
+    const [searchContactsPresence, setSearchContactsPresence] = useState(false)
+    const [searchContactsCorrect, setSearchContactsCorrect] = useState("")
+
     const [selectedUser, setSelectedUser] = useState(null)
     const [refresh, setRefresh] = useState({})
     const [selectedFiles, setSelectedFiles] = useState(null)
@@ -234,6 +243,35 @@ function Chat(props) {
             setContent(e.target.value)
             setContentCorrect(str)
             setContentPresence(false)
+        }
+    }
+
+    function onChangeSearchContent(e) {
+        let str = e.target.value
+        str = str.replace(/ {2,}/g, ' ').trim()
+        str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r')
+        if (str.charCodeAt(0) > 32) {
+            setSearchContent(e.target.value)
+            setSearchContentCorrect(str)
+            setSearchContentPresence(true)
+        } else {
+            setSearchContent(e.target.value)
+            setSearchContentCorrect(str)
+            setSearchContentPresence(false)
+        }
+    }
+    function onChangeSearchContacts(e) {
+        let str = e.target.value
+        str = str.replace(/ {2,}/g, ' ').trim()
+        str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r')
+        if (str.charCodeAt(0) > 32) {
+            setSearchContacts(e.target.value)
+            setSearchContactsCorrect(str)
+            setSearchContactsPresence(true)
+        } else {
+            setSearchContacts(e.target.value)
+            setSearchContactsCorrect(str)
+            setSearchContactsPresence(false)
         }
     }
 
@@ -419,7 +457,12 @@ function Chat(props) {
             }
             return 0
         })
-        return (sortedContacts.map((userAndLastMsg, index) => (
+        return (sortedContacts
+            .filter((userAndLastMsg, index) => {
+                const nameAndSurname = userAndLastMsg.first.initials.split(" ")
+                return (nameAndSurname[0] + " " + nameAndSurname[1]).includes(searchContacts)
+            })
+            .map((userAndLastMsg, index) => (
             <Grid key={index}>
                 <Link onClick={() => selectUser(userAndLastMsg.first)}
                       to={"/msg/" + userAndLastMsg.first.username}
@@ -533,10 +576,25 @@ function Chat(props) {
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
                 <Card className={classes.paper}>
-                    <List className={classes.itemButton}>
+                    <TextField
+                        fullWidth
+                        className={classes.root}
+                        multiline
+                        minRows={1}
+                        maxRows={6}
+                        variant="outlined"
+                        size="small"
 
-                        {usersWithLastMsg && sortContacts()
-                        }
+                        id="searchContacts"
+                        label="Поиск по контактам..."
+                        name="searchContacts"
+                        autoComplete="off"
+                        value={searchContacts}
+                        onChange={(searchContacts) => onChangeSearchContacts(searchContacts)}
+                        // onKeyPress={(key) => checkKey(key)}
+                    />
+                    <List className={classes.itemButton}>
+                        {usersWithLastMsg && sortContacts()}
                     </List>
                 </Card>
             </Grid>
@@ -544,13 +602,28 @@ function Chat(props) {
             <Grid xs={9} item>
                 <Card className={classes.paper2}>
                     <Grid>
+                        <TextField
+                            className={classes.root}
+                            multiline
+                            minRows={1}
+                            maxRows={6}
+                            variant="outlined"
+
+                            id="searchContent"
+                            label="Поиск по сообщениям..."
+                            name="searchContent"
+                            autoComplete="off"
+                            value={searchContent}
+                            onChange={(searchContent) => onChangeSearchContent(searchContent)}
+                            onKeyPress={(key) => checkKey(key)}
+                        />
                         <Paper
 
                             className={classes.messageGrid}>
 
                             <Grid>
 
-                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].map((msg, index) => (
+                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].filter((msg)=>msg.content.includes(searchContent)).map((msg, index) => (
 
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
                                         (

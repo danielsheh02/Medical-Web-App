@@ -13,11 +13,13 @@ import com.app.medicalwebapp.utils.FileFormatResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -140,6 +142,19 @@ public class ChatMessageService {
 
     public Optional<ChatMessage> findFirstByChatIdOrderBySendDateDesc(String chatId) {
         return chatMessageRepository.findFirstByChatIdOrderByIdDesc(chatId);
+    }
+    public List<ChatMessage> findMessagesByKeywords(String senderUsername, String recipientUsername, String keywordsString) throws Exception {
+        String[] keywords = keywordsString.split(" ");
+        var allMessages = this.findMessages(senderUsername, recipientUsername);
+        var foundMessages = new ArrayList<ChatMessage>();
+        for (String keyword: keywords) {
+            foundMessages.addAll(allMessages
+                    .stream()
+                    .filter(msg -> msg.getContent().contains(keyword))
+                    .collect(Collectors.toList())
+            );
+        }
+        return foundMessages;
     }
 }
 
