@@ -386,12 +386,14 @@ function Register(props) {
                                                   control={<Radio color="primary"/>}
                                                   value="Пользователь"
                                                   label="Пользователь"
+                                                  title={"Пользователь"}
                                 />
                                 <FormControlLabel className={classes.formControlLab}
                                                   control={<Radio color="primary"/>}
                                                   value="Врач"
                                                   label="Врач"
                                                   labelPlacement='end'
+                                                  title={"Врач"}
                                 />
                             </RadioGroup>
                         </FormControl>
@@ -402,6 +404,7 @@ function Register(props) {
                             color="primary"
                             // onClick={handleRegister}
                             className={classes.submit}
+                            title = {"Зарегистрироваться"}
                         >
                             Зарегистрироваться
                         </Button>

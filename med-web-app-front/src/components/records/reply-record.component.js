@@ -58,7 +58,7 @@ const useStyles = theme => ({
         }
     },
     typography: {
-        width: 635,
+        width: 680,
         marginRight: theme.spacing(1),
         "& .MuiFormLabel-root": {
             margin: 0,
@@ -221,6 +221,7 @@ class ReplyRecordForm extends Component {
                         onClick={this.handleSubmitReply}
                         className={classes.submit}
                         disabled={!this.state.contentPresence}
+                        title={"Опубликовать"}
                     >
                         <DoneOutlineIcon/>
                     </Button>
@@ -239,6 +240,32 @@ class ReplyRecordForm extends Component {
                         </div>
                     </Grid>
                 )}
+                {/*<FormControl className={classes.formControl}>
+                    <InputLabel id="selected-files" className={classes.filesWidth}>Прикрепить:</InputLabel>
+                    <Select
+                        className={classes.root}
+                        multiple
+                        labelId="selected-files"
+                        value={this.state.selectedFilesValue}
+                        onChange={this.handleFiles}
+                        input={<Input id="select-multiple-chip-for-files"/>}
+                        renderValue={(selected) => (
+                            <div className={classes.chips}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={value} className={classes.chip}/>
+                                ))}
+                            </div>
+                        )}
+                        MenuProps={MenuProps}
+                    >
+
+                        {this.state.availableFiles.map(x => (
+                            <MenuItem key={x.value} value={x.label} id={x.value}>
+                                {x.label}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>*/}
             </div>
         )
     }

@@ -24,6 +24,8 @@ const useStyles = theme => ({
         },
         display: "center",
         justifyContent: "flex-end",
+       display: "center",
+        justifyContent:"flex-start",
         alignSelf: "center"
     },
     paper2: {
@@ -39,7 +41,7 @@ const useStyles = theme => ({
     },
     paper: {
         marginTop: theme.spacing(3),
-        marginLeft: theme.spacing(1),
+        marginLeft: theme.spacing(0),
         marginRight: "auto",
         padding: theme.spacing(1),
         color: "black",
@@ -165,18 +167,17 @@ class RecordThreadComponent extends Component {
         return (
             <Grid item xs={12} className={classes.Grid}>
                 <div className={classes.divAddButtonStyle}>
-                    <DropUpOnRecordThread/>
+                {/*<DropUpOnRecordThread/>*/}
                 </div>
                 <div className={classes.divBackButtonStyle}>
-                    <ListItemButton component={Link} to={"/records/view"} style={{
-                        padding: 0,
-                        margin: 0, height: 10, width: 10
-                    }}>
+                    <ListItemButton component={Link} to={"/records/view"} style={{padding : 0,
+                        margin : 0}} title={"Назад к постам"}>
                         <ArrowBack color={"secondary"} fontSize={"large"}/>
                     </ListItemButton>
                 </div>
                 <Grid item xs={8} style={{justifyContent: "center", alignItems: "center"}}>
                     <Grid className={classes.mainGrid}>
+
                         {this.state.record &&
                         (<RecordCard record={this.state.record} isPreview={false} isReply={false}/>)
                         }

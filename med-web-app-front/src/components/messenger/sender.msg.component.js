@@ -193,11 +193,12 @@ function SenderMsg(props) {
                             </Link>
                         </Grid>
                         <Grid>
-                            <Collapse in={checked}>
+                            <Collapse in={checked} title={"Удалить"}>
                                 {/*<KeyboardArrowDownIcon onClick={(e => handleClick(e))} ref={KeyboardArrowDownIconRef}*/}
                                 {/*                       className={classes.collapsed}/>*/}
                                 <DeleteIcon onClick={(e => deleteMsg(e))} ref={KeyboardArrowDownIconRef}
-                                            className={classes.collapsed}/>
+                                            className={classes.collapsed}
+                                />
                             </Collapse>
                             <Dialog
                                 open={openDialog}
@@ -211,11 +212,13 @@ function SenderMsg(props) {
                                     <DialogActions>
                                         <Button
                                             className={classes.button}
-                                            onClick={disagreeToDelete}>
+                                            onClick={disagreeToDelete}
+                                        title = {"Нет"}>
                                             Нет
                                         </Button>
                                         <Button className={classes.button}
-                                                onClick={agreeToDelete}>
+                                                onClick={agreeToDelete}
+                                        title={"Да"}>
                                             Да
                                         </Button>
                                     </DialogActions>

@@ -234,7 +234,7 @@ class Search extends Component {
                                     {/*    /!*<i className="fa fa-search" aria-hidden="true"/>*!/*/}
                                     {/*    <SearchIcon style={{color: "white"}}/>*/}
                                     {/*</Button>*/}
-                                    <IconButton onClick={this.getUsers}>
+                                    <IconButton onClick={this.getUsers} title={"Найти"}>
                                         <SearchIcon/>
                                     </IconButton>
                                 </InputAdornment>

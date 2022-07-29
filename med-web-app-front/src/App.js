@@ -54,6 +54,7 @@ import Button from "@material-ui/core/Button";
 import {lightBlue} from "@material-ui/core/colors";
 import {Logout, LogoutSharp} from "@mui/icons-material";
 import {RemoveRedEye} from "@material-ui/icons";
+import {SwipeableDrawer} from "@mui/material";
 
 const drawerWidth = 240
 
@@ -72,16 +73,25 @@ const useStyles = theme => ({
         "@media (min-width: 1280px)": {
             width: theme.spacing(32),
         },
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
+        transitions: {
+            easing: {
+                easeOut: 'cubic-bezier(0.0, 0, 0.2, 1)',
+                easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+            },
+            duration: {
+                enteringScreen: 225,
+                leavingScreen: 195,
+            },
+            backgroundColor: "#808080"
+
+        },
         height: "100%",
+        zIndex: theme.zIndex.drawer-100,
     },
     drawerPaperClose: {
-        overflowX: 'hidden',
+        //overflowX: 'scroll',
         transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
+            easing: theme.transitions.easing.easeIn,
             duration: theme.transitions.duration.leavingScreen,
         }),
         // maxWidth: 60,
@@ -97,6 +107,7 @@ const useStyles = theme => ({
             marginRight: theme.spacing(0)
         },
         width: 60,
+        //zIndex: theme.zIndex.drawer+1,
     },
     leftIndentOpen: {
         [theme.breakpoints.down("xs")]: {
@@ -108,6 +119,7 @@ const useStyles = theme => ({
         "@media (min-width: 1280px)": {
             width: 200
         },
+        // zIndex: theme.zIndex.drawer+1,
 
     },
     active: {
@@ -136,15 +148,15 @@ const useStyles = theme => ({
         minWidth: 600,
         minHeigft: 64,
         maxHeight: 64,
-        zIndex: theme.zIndex.drawer + 1,
+        zIndex: theme.zIndex.drawer+2,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
     },
     appBarShift: {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
+        //marginLeft: drawerWidth,
+        //width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -174,20 +186,22 @@ const useStyles = theme => ({
     toolbarIcon: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         padding: '0 8px',
+        background: "#3f51b5",
         ...theme.mixins.toolbar,
+
     },
     content: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        // marginLeft: drawerWidth,
+         //width: `calc(100% - ${drawerWidth}px)`,
+         //marginLeft: drawerWidth,
     },
     contentClose: {
         // width: '100%',
         //marginLeft: '100px'
     },
     contentOpen : {
-        marginLeft: '250px',
+        // marginLeft: '250px',
     },
     noticeMsg: {
         backgroundColor: '#FF0040',
@@ -207,9 +221,7 @@ const useStyles = theme => ({
             margin: 0,
             padding: theme.spacing(0),
         },
-
-
-    }
+    },
 })
 let stompClient = null;
 
@@ -403,6 +415,7 @@ function App(props) {
             return  (<ListItemButton
                 key={item.text}
                 component="a" href={item.href} target={"_blank"}
+                title ={item.text}
             >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text}/>
@@ -414,7 +427,7 @@ function App(props) {
                 key={item.text}
                 component={Link} to={item.path}
                 onClick={logOut}
-
+                title={item.text}
             >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text}/>
@@ -425,7 +438,7 @@ function App(props) {
             return (<ListItemButton
                 key={item.text}
                 component={Link} to={item.path}
-
+                title ={item.text}
             >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text}/>
@@ -511,16 +524,25 @@ function App(props) {
                     <Grid item xs/>
                     <Grid item >
                         <ListItemButton
-                            sx = {{paddingTop : 0, paddingBottom : 0}}
-                            component={Link} to={"/login"}>
+                            sx = {{paddingTop : 0, paddingBottom : 0,'&:hover':{
+                                color: "#ffffff",
+                            }}}
+                            component={Link} to={"/login"}
+                        title={"Войти"}
+                        >
                             <ListItemText primary={"Войти"} />
                         </ListItemButton>
                     </Grid>
                     <Grid item>
                         <ListItemButton
-                            sx = {{paddingTop : 0, paddingBottom : 0}}
-                            component={Link} to={"/register"}>
-                            <ListItemText primary={"Регистрация"}/>
+                            sx = {{paddingTop : 0, paddingBottom : 0,'&:hover':{
+                                    color: "#ffffff",
+                                }}}
+                            component={Link} to={"/register"}
+                        title = {"Регистрация"}
+                        >
+                            <ListItemText primary={"Регистрация"}
+                            />
                         </ListItemButton>
                     </Grid>
                 </Grid>
@@ -531,7 +553,9 @@ function App(props) {
                 <Grid container alignItems={"flex-start"} direction={'column'}>
                     <Grid >
                         <ListItemButton
-                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            sx = {{paddingTop : 0, paddingBottom : 0,'&:hover':{
+                                    color: "#ffffff",
+                                }}}
                             component={Link} to={"/login"}
                         >
                             <ListItemText primary={"Войти"}/>
@@ -539,7 +563,9 @@ function App(props) {
                     </Grid>
                     <Grid >
                         <ListItemButton
-                            sx = {{paddingTop : 0, paddingBottom : 0}}
+                            sx = {{paddingTop : 0, paddingBottom : 0,'&:hover':{
+                                    color: "#ffffff",
+                                }}}
                             component={Link} to={"/register"}>
 
                             <ListItemText primary={"Регистрация"}/>
@@ -569,19 +595,21 @@ function App(props) {
             return (<Grid container>
                 <Grid item xs/>
                 <Grid item width={'50px'}>
-                    <IconButton color="inherit">
+                    <IconButton color="inherit" title={"Уведомления"}>
                         <Badge badgeContent={4} color="secondary">
                             <NotificationsIcon/>
                         </Badge>
                     </IconButton>
                 </Grid>
                 <Grid item width={'130px'}>
-                    <ListItem
-                        button
-                        component={Link} to={getPathForProfile()}>
-                        <AccountCircleRoundedIcon/>
+                    <ListItemButton
+                        component={Link} to={getPathForProfile()}
+                        title={"Профиль"}
+                        sx = {{'&:hover': {color : "#ffffff"}}}
+                    >
+                        <AccountCircleRoundedIcon />
                         <ListItemText primary={username}/>
-                    </ListItem>
+                    </ListItemButton>
                 </Grid>
 
                 {/*<Grid item width={'90px'}>
@@ -608,8 +636,9 @@ function App(props) {
                     <Grid container xs={5} direction={"column"} justifyContent={"center"} alignItems={"flex-start"}>
                         <Grid item width={'100px'}>
                             <ListItemButton
-                                component={Link} to={getPathForProfile()}>
-                                <AccountCircleRoundedIcon/>
+                                component={Link} to={getPathForProfile()}
+                            >
+                                <AccountCircleRoundedIcon сolor = "inherit"/>
                                 <ListItemText primary={username}/>
                             </ListItemButton>
                         </Grid>
@@ -680,22 +709,23 @@ function App(props) {
         return (
             <Drawer
                 height="100%"
-                variant= "persistent"
+                // variant={"persistent"}
                 classes={{
                     paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
                 }}
                 open={open}
                 onClick={handleDrawerChange}
-
             >
                 {open && (<div className={classes.toolbarIcon}>
                     <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon/>
+                        <Typography component="h2" variant={"h5"} noWrap style={{color: "white"}}>Med-Web-App</Typography>
+                        <ChevronLeftIcon style={{color: "#ffffff"}}/>
                     </IconButton>
                 </div>)}
                 {!open && (<div className={classes.toolbarIcon}>
                     <IconButton onClick={handleDrawerOpen}>
-                        <ChevronRightRoundedIcon/>
+                        <Typography component="h2" variant={"h5"} noWrap style={{color: "white"}}>Med-Web-App</Typography>
+                        <ChevronLeftIcon style={{color: "#ffffff"}}/>
                     </IconButton>
                 </div>)}
                 <Divider/>
@@ -712,24 +742,29 @@ function App(props) {
                                 key={item.text}
                                 //onClick={() => this.displayPageContent(item.path)}
                                 component={Link} to={item.path}
+                                title = {item.text}
                             >
                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                 <ListItemText primary={item.text}/>
+
                             </ListItemButton>
                         )))
                     }
                 </List>
-            </Drawer>);
+            </Drawer>
+
+        );
     }
     else{
-           return(<Drawer
+           return(
+               <Drawer
                 height="100%"
                 variant= "permanent"
                 classes={{
                     paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
                 }}
                 open={open}
-                onClick={open && handleDrawerChange}
+                onClick={handleDrawerChange}
            >
                 {open && (<div className={classes.toolbarIcon}>
                     <IconButton onClick={handleDrawerClose}>
@@ -755,6 +790,7 @@ function App(props) {
                                 key={item.text}
                                 //onClick={() => this.displayPageContent(item.path)}
                                 component={Link} to={item.path}
+                                title={item.text}
                             >
                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                 <ListItemText primary={item.text}/>
@@ -790,11 +826,12 @@ function App(props) {
                         aria-label="open drawer"
                         onClick={handleDrawerChange}
                         className={clsx(classes.menuButton, false && classes.menuButtonHidden)}
+                        title={"Меню"}
                     >
                         <MenuIcon/>
                     </IconButton>
                     <ListItemButton component={Link} to={"/home"} variant={"text"} className={classes.button} color={"inherit"}
-                    disableGutters>
+                    disableGutters title={"На главную страницу"}>
                         <Typography component="h1" variant="h6" color="inherit" noWrap
                                 className={classes.title}>
                         Medical web app
@@ -811,14 +848,20 @@ function App(props) {
                 </Toolbar>
             </AppBar>
 
-            <Grid container >
+            <Grid container>
                 <Grid item className={clsx(classes.leftIndent, open && classes.leftIndentOpen)}>
                   <MyDrawer open = {open} classes = {classes}/>
                 </Grid>
                 <Grid item xs className={clsx(classes.content, open && classes.contentOpen)}>
                     <div className={classes.appBarSpacer}/>
                     <div className={classes.appBarSpacer2}/>
-                    <div className={ContainerBorder()} >
+                    <div className={ContainerBorder()} style={(open && {
+                        justifyContent : "center",
+                        marginLeft: 0
+                    }) || (!open && {
+                        justifyContent:"center"
+                    })
+                    }>
                         <Switch>
                             <Route exact path={["/", "/home"]} component={Home}/>
                             <Route exact path="/home/patient" component={HomePatient}/>

@@ -470,6 +470,7 @@ function Chat(props) {
                     <ListItemButton
                         value={userAndLastMsg.first}
                         selected={selectedUser && selectedUser.username === userAndLastMsg.first.username}
+                        title={userAndLastMsg.first.lastname + " " + userAndLastMsg.first.firstname}
                     >
                         <Grid className={classes.flex} xs={12} item>
                             <Grid xs={2} item>
@@ -654,9 +655,10 @@ function Chat(props) {
                                         color="primary"
                                         onClick={selectFile}
                                         disabled={(!selectedUser)}
+                                        title = {"Прикрепить файл"}
                                 >
-                                    <AttachFileIcon>
-                                    </AttachFileIcon>
+                                    <AttachFileIcon />
+
                                 </Button>
                             </Grid>
                             <Grid>
@@ -683,6 +685,7 @@ function Chat(props) {
                                     color="primary"
                                     onClick={sendMessage}
                                     disabled={disableButton()}
+                                    title={"Отправить"}
                                 >
                                     <SendIcon/>
                                 </Button>

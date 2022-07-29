@@ -27,6 +27,7 @@ const useStyles = theme => ({
     },
     paper: {
         margin: theme.spacing(3),
+        marginLeft : theme.spacing(1),
         borderRadius: 20,
         backgroundColor: "#eeeeee"
     },
@@ -102,9 +103,8 @@ class ReviewCard extends Component {
                             </Avatar>
                         </Grid>
                         <Grid className={classes.grid}>
-                            <Grid className={classes.grid}>
-                                <Link to={"/profile/" + this.review.creator.username}
-                                      style={{textDecoration: 'none', color: 'dark-blue'}}>
+                            <Grid className={classes.grid} title={this.review.creator.username}>
+                                <Link to={"/profile/" + this.review.creator.username} style={{ textDecoration: 'none', color: 'dark-blue'}}>
                                     <h6 className={classes.hMargin}> {this.review.creator.username}</h6>
                                 </Link>
                             </Grid>
@@ -113,7 +113,7 @@ class ReviewCard extends Component {
                                     (((new Date(this.creationTime).getHours() < 10 && "0" + new Date(this.creationTime).getHours())
                                             || (new Date(this.creationTime).getHours() >= 10 && new Date(this.creationTime).getHours())) + ":"
                                         + ((new Date(this.creationTime).getMinutes() < 10 && "0" + new Date(this.creationTime).getMinutes())
-                                            || (new Date(this.creationTime).getMinutes() > 10 && new Date(this.creationTime).getMinutes())
+                                            || (new Date(this.creationTime).getMinutes() >= 10 && new Date(this.creationTime).getMinutes())
                                         )) + "    " + (
                                         ((new Date(this.creationTime).getDate() < 10 && "0" + new Date(this.creationTime).getDate()) || (new Date(this.creationTime).getDate() >= 10 && new Date(this.creationTime).getDate()))
                                         + "."
@@ -121,9 +121,6 @@ class ReviewCard extends Component {
                                         + "." + new Date(this.creationTime).getFullYear()
                                     )}</h6>
                             </Grid>
-                            {/*<Grid className={classes.grid}>*/}
-                            {/*    <h6 className={classes.hMargin}>{this.creationTime}</h6>*/}
-                            {/*</Grid>*/}
                         </Grid>
                     </Grid>
                     <Grid className={classes.gridContent}>
