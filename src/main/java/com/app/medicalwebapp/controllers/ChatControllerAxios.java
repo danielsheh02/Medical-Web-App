@@ -81,4 +81,18 @@ public class ChatControllerAxios {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("find/messages")
+    public ResponseEntity<?> getMessagesByKeywords(
+            @RequestParam String senderUsername,
+            @RequestParam String recipientUsername,
+            @RequestParam String keywordsString
+    ) {
+        try {
+            var foundMessages = chatMessageService.findMessagesByKeywords(senderUsername, recipientUsername, keywordsString);
+            return ResponseEntity.ok().body(foundMessages);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

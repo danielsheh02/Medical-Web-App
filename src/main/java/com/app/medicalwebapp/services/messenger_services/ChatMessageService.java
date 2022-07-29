@@ -13,6 +13,7 @@ import com.app.medicalwebapp.utils.FileFormatResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -148,6 +149,19 @@ public class ChatMessageService {
 
     public Optional<ChatMessage> findFirstByChatIdOrderBySendDateDesc(String chatId) {
         return chatMessageRepository.findFirstByChatIdAndDeleted_IsFalseOrderByIdDesc(chatId);
+    }
+    public List<ChatMessage> findMessagesByKeywords(String senderUsername, String recipientUsername, String keywordsString) throws Exception {
+        String[] keywords = keywordsString.split(" ");
+        var allMessages = this.findMessages(senderUsername, recipientUsername);
+        var foundMessages = new ArrayList<ChatMessage>();
+        for (String keyword: keywords) {
+            foundMessages.addAll(allMessages
+                    .stream()
+                    .filter(msg -> msg.getContent().contains(keyword))
+                    .collect(Collectors.toList())
+            );
+        }
+        return foundMessages;
     }
 }
 
