@@ -146,6 +146,7 @@ class Login extends Component {
                                 variant="contained"
                                 color="primary"
                                 className={classes.submit}
+                                title = {"Войти"}
                             >
                                 Войти
                             </Button>

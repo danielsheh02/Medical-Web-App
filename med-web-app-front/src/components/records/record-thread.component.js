@@ -23,7 +23,7 @@ const useStyles = theme => ({
             width: 800,
         },
        display: "center",
-        justifyContent:"flex-end",
+        justifyContent:"flex-start",
         alignSelf: "center"
     },
     paper2: {
@@ -39,7 +39,7 @@ const useStyles = theme => ({
     },
     paper: {
         marginTop: theme.spacing(3),
-        marginLeft: theme.spacing(1),
+        marginLeft: theme.spacing(0),
         marginRight: "auto",
         padding: theme.spacing(1),
         color: "black",
@@ -166,11 +166,11 @@ class RecordThreadComponent extends Component {
         return (
             <Grid item xs={12}  className={classes.Grid}>
                 <div className={classes.divAddButtonStyle}>
-                <DropUpOnRecordThread/>
+                {/*<DropUpOnRecordThread/>*/}
                 </div>
                 <div className={classes.divBackButtonStyle}>
                     <ListItemButton component={Link} to={"/records/view"} style={{padding : 0,
-                        margin : 0,height : 10, width: 10}}>
+                        margin : 0}} title={"Назад к постам"}>
                         <ArrowBack color={"secondary"} fontSize={"large"}/>
                     </ListItemButton>
                 </div>

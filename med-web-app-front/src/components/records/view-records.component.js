@@ -5,7 +5,7 @@ import SelectReact from 'react-select';
 import RecordCard from "./record-card.component";
 // import Topic from "./topic.component"
 import TopicService from "../../services/topic.service";
-import {Card, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
+import {Card, Divider, Grid, IconButton, InputBase, Paper, Select, withStyles} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 import Input from "@material-ui/core/Input";
@@ -31,15 +31,17 @@ const useStyles = theme => ({
         }
     },
     paper: {
+        justifyContent:"center",
+        marginLeft: theme.spacing(1),
         [theme.breakpoints.down("xs")]:{
-            width: 238,
+            width: 270,
             height: 42,
             padding: '2px 4px',
             alignItems: 'center',
 
         },
         [theme.breakpoints.between("sm", "md")]:{
-            width: 650,
+            width: 600,
             height: 42,
             padding: '2px 4px',
             alignItems: 'flex-end',
@@ -55,10 +57,12 @@ const useStyles = theme => ({
     },
     input: {
         marginLeft: theme.spacing(1),
-        flex: 1,
-        [theme.breakpoints.between("sm", "md")]:{
+        //flex: 1,
+        flexGrow:1,
+        width: "85%",
+        /*[theme.breakpoints.between("sm", "md")]:{
           width: 600
-        },
+        },*/
     },
     iconButton: {
         [theme.breakpoints.down("xs")]: {
@@ -74,7 +78,8 @@ const useStyles = theme => ({
             margin: 0
         },
         [theme.breakpoints.down("xs")]: {
-            width: 238,
+            marginLeft:theme.spacing(1),
+            width: 270,
         },
         [theme.breakpoints.between("sm", "md")]:{
             width: 650
@@ -111,19 +116,24 @@ const useStyles = theme => ({
     },
     paper2: {
         margin: theme.spacing(3),
-        marginLeft: theme.spacing(0),
         padding: theme.spacing(3),
         color: "black",
+        //position:"fixed",
+        "@media (min-width: 980px)":{
+            left: "70%"
+        }
     },
     firstGrid: {
         marginTop: theme.spacing(3),
         alignItems: "center",
+        justifyContent:"flex-end"
     },
     grid: {
         margin: theme.spacing(1),
         alignItems: 'center',
         flexDirection: 'column',
         display: 'flex',
+        justifyContent:"flex-end"
     },
     record: {
         minWidth: 1000
@@ -132,7 +142,22 @@ const useStyles = theme => ({
         position: "fixed",
         top:"92%",
         left:"85%"
+    },
+    pageCounter:{
+
+    },
+    RecordsContainer:{
+        display:"flex",
+        "@media (max-width: 376px)":{
+            alignItems:"flex-start",
+            marginLeft: theme.spacing(1)
+        },
+        alignItems:"center",
+        "@media (min-width: 768px)":{
+            marginLeft:theme.spacing(0),
+        }
     }
+
 })
 
 const ITEM_HEIGHT = 48;
@@ -158,17 +183,17 @@ const DrawRightSide = (props) =>{
             window.removeEventListener("resize", handleResizeWindow);
         };
     }, []);
-    if(width > 768){
+    if(width > 980){
         return (<Grid xs={4} item>
-                <Card className={classes.paper2}>
+                <Card className={classes.paper2} >
                     <Grid className={classes.grid}>
                         <Link to={"/records/create"} style={{textDecoration: 'none'}}>
-                            <Button className={classes.button}>
+                            <Button className={classes.button} title={"Создать пост"}>
                                 Создать пост
                             </Button>
                         </Link>
                         <Link to={"/topics/create"} style={{textDecoration: 'none'}}>
-                            <Button className={classes.button}>
+                            <Button className={classes.button} title={"Страница тэгов"}>
                                 Страница тэгов
                             </Button>
                         </Link>
@@ -358,7 +383,7 @@ class ViewRecordsList extends Component {
                                 // inputProps={{ 'aria-label': 'search google maps' }}
                             />
                             <IconButton type="button" onClick={this.getRecords} className={classes.iconButton} aria-label="search"
-                            >
+                            title={"Поиск"}>
                                 <SearchIcon />
                             </IconButton>
                         </Paper>
@@ -368,6 +393,7 @@ class ViewRecordsList extends Component {
                                 className={classes.root}
                                 labelId="selected-topics"
                                 // variant="outlined"
+                                title={"Выбрать тэги"}
                                 value={this.state.selectedTopicValue}
                                 onChange={this.handleTopics}
                                 input={<Input id="select-multiple-chip-for-topics"/>}
@@ -394,7 +420,9 @@ class ViewRecordsList extends Component {
 
                     <div className="mt-3">
                         <div className="row">
-                            <div style={{marginLeft: "17px", marginTop: "5px", width: 180}}>{"Количество постов на странице: "}</div>
+                            <div style={{marginLeft: 23, marginTop: "5px", width: 180}}
+
+                            >{"Количество постов на странице: "}</div>
                             <SelectReact className="col-2"
                                     onChange={this.handlePageSizeChange}
                                     options={this.pageSizes}
@@ -418,16 +446,18 @@ class ViewRecordsList extends Component {
                     </div>
 
 
-                    <Grid container spacing={1} direction={"column"}>
+                    <Grid container direction={"column"} className={classes.RecordsContainer} >
                         {this.state.records &&
                         this.state.records.map((record, index) => (
                             <Grid item
-                                style={{listStyleType: "none",padding: 0}}
+                                style={{listStyleType: "none",padding: 0,width:"70%",marginBottom:"10px"}}
                                 key={index}
                                 // onClick={() => this.displayRecordThread(record)}
                             >
                                 <RecordCard record={record} isPreview={true} isReply={false} />
+                                <Divider/>
                             </Grid>
+
                         ))}
 
                     </Grid>
