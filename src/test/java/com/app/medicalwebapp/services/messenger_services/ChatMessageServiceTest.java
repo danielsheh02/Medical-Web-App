@@ -106,7 +106,11 @@ class ChatMessageServiceTest {
     @Test
     void deleteMessage() {
         ChatMessage chatMessage = new ChatMessage();
-        chatMessageService.deleteMessage(chatMessage);
+        try {
+            chatMessageService.deleteMessage(chatMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Mockito.verify(chatMessageRepository, Mockito.times(1))
                 .delete(chatMessage);
     }

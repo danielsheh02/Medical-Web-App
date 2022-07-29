@@ -167,8 +167,19 @@ function Chat(props) {
                     const blob = await base64Response.blob()
                     user.avatar = URL.createObjectURL(blob)
                 }
-                let userWithLastMsg = {first: user, second: null}
-                setUsersWithLastMsg(prev => prev.set(user.username, userWithLastMsg))
+                // let userWithLastMsg = {first: user, second: null}
+                // setUsersWithLastMsg(prev => prev.set(user.username, userWithLastMsg))
+                // selectUser(user)
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+    }
+
+    function selectNotInContactsUser() {
+        UserService.getUserByUsername(selected)
+            .then(async (response) => {
+                let user = response.data
                 selectUser(user)
             })
             .catch((e) => {
@@ -219,7 +230,8 @@ function Chat(props) {
                 })
                 const user = userWithLastMsgArray.find(user => user.first.username === selected)
                 if (selected && !user) {
-                    updateContacts();
+                    // updateContacts();
+                    selectNotInContactsUser()
                 } else if (selected && user) {
                     selectUser(user.first)
                 }
@@ -334,7 +346,9 @@ function Chat(props) {
                 timeZone: timeZone,
                 uid: uid
             }
+            var isFirstMessage = true;
             if (allMessages.get(selectedUser.username)) {
+                isFirstMessage = false;
                 let msg = allMessages.get(selectedUser.username).messages
                 msg.push(message)
                 const valueMap = {unRead: 0, messages: msg}
@@ -351,6 +365,8 @@ function Chat(props) {
             setContent("")
             setContentCorrect("")
             setContentPresence(false)
+            if (isFirstMessage)
+                updateContacts();
         }
     }
 
@@ -579,7 +595,6 @@ function Chat(props) {
                     <TextField
                         fullWidth
                         className={classes.root}
-                        multiline
                         minRows={1}
                         maxRows={6}
                         variant="outlined"
@@ -601,29 +616,30 @@ function Chat(props) {
 
             <Grid xs={9} item>
                 <Card className={classes.paper2}>
-                    <Grid>
-                        <TextField
-                            className={classes.root}
-                            multiline
-                            minRows={1}
-                            maxRows={6}
-                            variant="outlined"
+                    {selectedUser && <Grid>
+                        <Grid container>
+                            <Grid xs={2}><UserCardMessage user={selectedUser}/></Grid>
 
-                            id="searchContent"
-                            label="Поиск по сообщениям..."
-                            name="searchContent"
-                            autoComplete="off"
-                            value={searchContent}
-                            onChange={(searchContent) => onChangeSearchContent(searchContent)}
-                            onKeyPress={(key) => checkKey(key)}
-                        />
+                            <Grid xs={10}><TextField size="small"
+                                             fullWidth
+                                             className={classes.root}
+                                             variant="outlined"
+                                             id="searchContent"
+                                             label="Поиск по сообщениям..."
+                                             name="searchContent"
+                                             autoComplete="off"
+                                             value={searchContent}
+                                             onChange={(searchContent) => onChangeSearchContent(searchContent)}
+                                             onKeyPress={(key) => checkKey(key)}
+                            /></Grid>
+                        </Grid>
                         <Paper
 
                             className={classes.messageGrid}>
 
                             <Grid>
 
-                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].filter((msg)=>msg.content.includes(searchContent)).map((msg, index) => (
+                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].filter((msg) => msg.content.includes(searchContent)).map((msg, index) => (
 
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
                                         (
@@ -691,8 +707,7 @@ function Chat(props) {
                                 {selectedFiles && createFilesArray().map((file) => (file.name))}
                             </Grid>
                         </Grid>
-
-                    </Grid>
+                    </Grid>}
                 </Card>
             </Grid>
 
