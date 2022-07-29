@@ -200,8 +200,6 @@ const useStyles = theme => ({
 })
 let stompClient = null;
 
-
-
 function App(props) {
 
 
@@ -327,6 +325,7 @@ function App(props) {
     function connectToChat() {
         let Sock = new SockJS('/api/ws')
         stompClient = over(Sock)
+        stompClient.debug= null
         stompClient.connect({}, onConnected, onError)
     }
 

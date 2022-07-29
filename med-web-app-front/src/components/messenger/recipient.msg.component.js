@@ -3,6 +3,9 @@ import '../../styles/Search.css'
 import {ImageList, ImageListItem, Paper, Tooltip, withStyles} from "@material-ui/core";
 import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
+import AttachmentService from "../../services/attachment.service";
+import ChatService from "../../services/chat.service";
+import Button from "@material-ui/core/Button";
 
 const useStyles = theme => ({
 
@@ -38,7 +41,8 @@ function RecipientMsg(props) {
     const {msg} = props;
     const {updateStatusMsg} = props
     const {initialsSender} = props
-    const {scrollToBottom} = props;
+    const {scrollToBottom} = props
+    const [images, setImages] = useState([])
     const [files, setFiles] = useState([])
     const [timeMsgCurrentTimeZone, setTimeMsgCurrentTimeZone] = useState([])
     useEffect(async () => {
@@ -68,46 +72,52 @@ function RecipientMsg(props) {
     }
 
     async function getFiles() {
+        setImages([])
         setFiles([])
-        let preview = [];
-        if (msg.attachmentsBlobForImageClient && msg.attachmentsBlobForImageClient.length > 0) {
-            for (let i = 0; i < msg.attachmentsBlobForImageClient.length; i++) {
-                if (msg.attachmentsBlobForImageClient[i].name.endsWith(".jpg") ||
-                    msg.attachmentsBlobForImageClient[i].name.endsWith(".png") ||
-                    msg.attachmentsBlobForImageClient[i].name.endsWith(".dcm")
-                ) {
-                    console.log(msg.attachmentsBlobForImageClient[i])
-                    preview.push({
-                        id: msg.localFiles[i].id,
-                        image: URL.createObjectURL(msg.attachmentsBlobForImageClient[i])
+        let imagesPreview = [];
+        let filesPreview = [];
+        if (msg.images && msg.images.length > 0) {
+            for (let i = 0; i < msg.images.length; i++) {
+                const base64Data = msg.images[i]
+                if (msg.uidFilesDicom[i]) {
+                    imagesPreview.push({
+                        image: `data:application/json;base64,${base64Data}`,
+                        uid: msg.uidFilesDicom[i]
+                    })
+                } else {
+                    imagesPreview.push({
+                        image: `data:application/json;base64,${base64Data}`,
                     })
                 }
             }
-        } else if (msg.localFiles && msg.localFiles.length > 0) {
-            for (let i = 0; i < msg.localFiles.length; i++) {
-                if (msg.localFiles[i].fileName.endsWith(".jpg") ||
-                    msg.localFiles[i].fileName.endsWith(".png")) {
-                    const base64Data = msg.localFiles[i].fileContent
-                    const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
-                    const blob = await base64Response.blob()
-                    preview.push({id: msg.localFiles[i].id, image: URL.createObjectURL(blob)})
+        } else if (msg.attachments && msg.attachments.length > 0) {
+            for (let i = 0; i < msg.attachments.length; i++) {
+                if (!(msg.attachments[i].initialName.endsWith(".jpg") ||
+                    msg.attachments[i].initialName.endsWith(".png") ||
+                    msg.attachments[i].initialName.endsWith(".dcm"))
+                ) {
+                    filesPreview.push(
+                        msg.attachments[i]
+                    )
                 }
             }
-        } else if (msg.dataFilesDicom && msg.dataFilesDicom.length > 0) {
-            for (let i = 0; i < msg.dataFilesDicom.length; i++) {
-                const base64Data = msg.dataFilesDicom[i]
-                const base64Response = await fetch(`data:application/json;base64,${base64Data}`)
-                const blob = await base64Response.blob()
-                preview.push({id: msg.attachments[i].id, image: URL.createObjectURL(blob), uid: msg.uidFilesDicom[i]})
-            }
         }
-        setFiles(preview)
+        setImages(imagesPreview)
+        setFiles(filesPreview)
     }
 
     function openDicomViewer(uid) {
         const url = window.location.href
         const num = url.indexOf(":7999")
         window.open(url.slice(0, num + 1) + "3000/viewer/" + uid, '_blank')
+    }
+
+    function download(file) {
+        if (file.id) {
+            AttachmentService.downloadAttachment(file.id, file.initialName);
+        } else {
+            ChatService.downloadAttachmentByMsgSendDate(msg.sendDate, msg.senderName, msg.recipientName, file.initialName)
+        }
     }
 
     return (
@@ -120,17 +130,16 @@ function RecipientMsg(props) {
                 </Grid>
                 <Grid>
                     <Grid>{msg.content}</Grid>
-                    {files &&
+                    {images &&
                     <Grid>
                         <ImageList cols={1} rowHeight={200} gap={3}>
-                            {files.map((file, index) =>
+                            {images.map((image, index) =>
                                 <ImageListItem key={index}>
-                                    {file.uid ?
+                                    {image.uid ?
                                         <Tooltip title="Открыть в DICOM Viewer">
-                                            <img onClick={() => openDicomViewer(file.uid)}
-                                                 src={file.image}
-                                                 srcSet={file.image}
-                                                 alt={file.id}
+                                            <img onClick={() => openDicomViewer(image.uid)}
+                                                 src={image.image}
+                                                 alt={"Перезагрузите страницу!"}
                                                  loading="lazy"
                                                  style={{cursor: 'pointer'}}
                                             >
@@ -138,15 +147,35 @@ function RecipientMsg(props) {
                                         </Tooltip>
                                         :
                                         <img
-                                            src={file.image}
-                                            srcSet={file.image}
-                                            alt={file.id}
+                                            src={image.image}
+                                            alt={"Перезагрузите страницу!"}
                                             loading="lazy"
                                         />
                                     }
                                 </ImageListItem>
                             )}
                         </ImageList>
+                    </Grid>
+                    }
+                    {files &&
+                    <Grid>
+                        {files.map((file, index) =>
+                            <Grid key={index}>
+                                {file.uid ?
+                                    <Button
+                                        key={index}
+                                        onClick={() => openDicomViewer(file.uid)}>
+                                        <i className="fa fa-folder-open"> Открыть {file.initialName}</i>
+                                    </Button>
+                                    :
+                                    <Button
+                                        key={index}
+                                        onClick={() => download(file)}>
+                                        <i className="fa fa-download"> Скачать {file.initialName}</i>
+                                    </Button>
+                                }
+                            </Grid>
+                        )}
                     </Grid>
                     }
                 </Grid>

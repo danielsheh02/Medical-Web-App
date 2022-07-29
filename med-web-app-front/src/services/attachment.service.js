@@ -22,7 +22,6 @@ class AttachmentService {
             formData.append("file", file);
             UID = null;
         }
-        console.log(file)
         const user = JSON.parse(localStorage.getItem('user'));
         let token = '';
         if (user && user.token) {
@@ -42,7 +41,12 @@ class AttachmentService {
         if (user && user.token) {
             token = user.token;
         }
-        axios.delete(API_URL + 'delete/' + fileId, {headers: {'Content-Type': 'multipart/form-data', 'Authorization': 'Bearer ' + token}});
+        axios.delete(API_URL + 'delete/' + fileId, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + token
+            }
+        });
         console.log('deleted');
     }
 
