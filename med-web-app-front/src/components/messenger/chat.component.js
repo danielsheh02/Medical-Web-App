@@ -595,7 +595,6 @@ function Chat(props) {
                     <TextField
                         fullWidth
                         className={classes.root}
-                        fullWidth
                         minRows={1}
                         maxRows={6}
                         variant="outlined"
