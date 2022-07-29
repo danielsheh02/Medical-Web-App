@@ -218,9 +218,11 @@ class RecordCardNew extends Component {
                                         + ((new Date(this.creationTime).getMinutes() < 10 && "0" + new Date(this.creationTime).getMinutes())
                                             || (new Date(this.creationTime).getMinutes() > 10 && new Date(this.creationTime).getMinutes())
                                         )) + "    " + (
-                                        ((new Date(this.creationTime).getDate() < 10 && "0" + new Date(this.creationTime).getDate()) || (new Date(this.creationTime).getDate() >= 10 && new Date(this.creationTime).getDate()))
+                                        ((new Date(this.creationTime).getDate() < 10 && "0" + new Date(this.creationTime).getDate()) ||
+                                            (new Date(this.creationTime).getDate() >= 10 && new Date(this.creationTime).getDate()))
                                         + "."
-                                        + (((new Date(this.creationTime).getMonth() + 1) < 10 && "0" + (new Date(this.creationTime).getMonth() + 1)) || (((new Date(this.creationTime).getMonth() + 1) >= 10 && (new Date(this.creationTime).getMonth() + 1))))
+                                        + (((new Date(this.creationTime).getMonth() + 1) < 10 && "0" +
+                                            (new Date(this.creationTime).getMonth() + 1)) || (((new Date(this.creationTime).getMonth() + 1) >= 10 && (new Date(this.creationTime).getMonth() + 1))))
                                         + "." + new Date(this.creationTime).getFullYear()
                                     )}
                             </Typography>

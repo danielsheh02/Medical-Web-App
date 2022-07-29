@@ -44,7 +44,6 @@ class ChatMessageServiceTest {
             chatMessage.setChatId("DoeJohn");
             chatMessage.setStatusMessage(StatusMessage.UNREAD);
             chatMessage.setAttachments(new ArrayList<>());
-            chatMessage.setLocalFiles(new ArrayList<>());
             Mockito.doReturn(chatMessage)
                     .when(chatMessageRepository)
                     .save(chatMessage);

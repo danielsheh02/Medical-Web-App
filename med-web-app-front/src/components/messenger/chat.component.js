@@ -315,6 +315,7 @@ function Chat(props) {
                             reader.readAsDataURL(blobDicom);
                         })
                         const fileStringBase64 = await readerPromise;
+                        selectedFiles[i] = {name: selectedFiles[i].name, uid: uid}
                         pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
                     } else {
                         let readerPromise = new Promise((resolve, reject) => {
