@@ -10,8 +10,17 @@ import {Link} from "react-router-dom";
 const useStyles = theme => ({
     paper: {
         marginTop: theme.spacing(3),
-        padding: theme.spacing(1),
-        // display: 'flex',
+        //padding: theme.spacing(1),
+        //display: 'flex',
+        flexGrow:1,
+        [theme.breakpoints.down("xs")]: {
+            width: "250px",
+            marginLeft: "5%",
+        },
+        "@media (min-width: 424px)":{
+            width:"80%",
+            marginLeft: theme.spacing(5)
+        }
     },
     paper2: {
         margin: theme.spacing(3),
@@ -71,11 +80,73 @@ const useStyles = theme => ({
     },
     CenterContainer:{
         spacing : theme.spacing(3),
-        paddingLeft : theme.spacing(4)
+        justifyContent: "center",
+        // paddingLeft : theme.spacing(4),
+        "@media (max-width: 768px)":{
+            justifyContent: "flex-start"
+        },
+
     }
 })
 
+function rightSideRender(classes){
+    if(innerWidth >=958){
+        return (<Grid item xs={4}>
+            <Paper className={classes.paper2}>
+                <Grid className={classes.grid}>
+                    <Link to={"/files/view"} style={{textDecoration: 'none'}}>
+                        <Button className={classes.buttons} title={"Мои файлы"}>
+                            Мои файлы
+                        </Button>
+                    </Link>
+
+                    <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
+                        <Button className={classes.buttons} title={"Загрузить файл"}>
+                            Загрузить файл
+                        </Button>
+                    </Link>
+
+                    <Link to={"/pipelines/results"} style={{textDecoration: 'none'}}>
+                        <Button className={classes.buttons} title ={"Результаты"}>
+                            Результаты
+                        </Button>
+                    </Link>
+
+                    <a href={"http://localhost:3000/local"} target="_blank"
+                       style={{textDecoration: 'none'}}>
+                        <Button className={classes.buttons} title={"Открыть DICOM-файл"}>
+                            Открыть DICOM-файл
+                        </Button>
+                    </a>
+
+
+                    {/*For admin board:
+                                <a href={"http://localhost:3000"} target="_blank"
+                                   style={{textDecoration: 'none'}}>
+                                    <Button className={classes.buttons}>
+                                        Все файлы в OHIF
+                                    </Button>
+                                </a>
+
+                                For admin board:
+                                {this.state.currentUser !== null && this.state.currentUser.username === "admin" &&
+                                (<Link to={"/pipelines/save"} style={{textDecoration: 'none'}}>
+                                    <Button className={classes.buttons}>
+                                        Сохранить конфигурацию
+                                    </Button>
+                                </Link>)
+
+                                }*/}
+                </Grid>
+            </Paper>
+        </Grid>);
+    }
+}
+
+
 class PipelinesComponent extends Component {
+
+
     constructor(props) {
         super(props);
 
@@ -169,16 +240,18 @@ class PipelinesComponent extends Component {
         this.setState({submitted: true});
     }
 
+
+
     render() {
         const {pipelines, files, selectedFile, selectedPipeline, submitted} = this.state;
         const {classes} = this.props;
 
         return (
             <Grid className={classes.mainGrid}>
-                <Grid container className={classes.CenterContainer} justifyContent={"flex-start"}>
+                <Grid container className={classes.CenterContainer}>
                     <Grid item xs={6}>
                         <Paper className={classes.paper}>
-                            <Typography className={classes.title} variant="h5">
+                            <Typography className={classes.title} variant="h5" >
                                 Автоматический анализ снимка
                             </Typography>
                             <Divider/>
@@ -187,7 +260,7 @@ class PipelinesComponent extends Component {
                                   onSubmit={this.submitPipeline}
                             >
                                 <FormControl className={classes.formControl}>
-                                    <Typography variant="h6" className={classes.content} color="inherit" noWrap>
+                                    <Typography variant="h7" className={classes.content} color="inherit" noWrap>
                                         Проанализировать снимок на
                                     </Typography>
                                     <Select className="col-9 col-offset-4"
@@ -197,7 +270,7 @@ class PipelinesComponent extends Component {
                                     />
                                 </FormControl>
                                 <FormControl className={classes.formControl}>
-                                    <Typography variant="h6" className={classes.content} color="inherit" noWrap>
+                                    <Typography variant="h7" className={classes.content} color="inherit" noWrap>
                                         Выберите файл
                                     </Typography>
                                     <Select className="col-9 col-offset-4"
@@ -212,6 +285,7 @@ class PipelinesComponent extends Component {
                                     color="primary"
                                     disabled={selectedFile == null || selectedPipeline == null || submitted}
                                     className={classes.button}
+                                    title ={"Запустить"}
                                 >
                                     Запустить
                                 </Button>
@@ -232,55 +306,8 @@ class PipelinesComponent extends Component {
                         </Paper>
                     </Grid>
 
-                    <Grid item xs={4}>
-                        <Paper className={classes.paper2}>
-                            <Grid className={classes.grid}>
-                                <Link to={"/files/view"} style={{textDecoration: 'none'}}>
-                                    <Button className={classes.buttons}>
-                                        Мои файлы
-                                    </Button>
-                                </Link>
+                    <rightSideRender classes = {classes}/>
 
-                                <Link to={"/files/upload"} style={{textDecoration: 'none'}}>
-                                    <Button className={classes.buttons}>
-                                        Загрузить файл
-                                    </Button>
-                                </Link>
-
-                                <Link to={"/pipelines/results"} style={{textDecoration: 'none'}}>
-                                    <Button className={classes.buttons}>
-                                        Результаты
-                                    </Button>
-                                </Link>
-
-                                <a href={"http://localhost:3000/local"} target="_blank"
-                                      style={{textDecoration: 'none'}}>
-                                    <Button className={classes.buttons}>
-                                        Открыть DICOM-файл
-                                    </Button>
-                                </a>
-
-
-                                {/*For admin board:*/}
-                                {/*<a href={"http://localhost:3000"} target="_blank"*/}
-                                {/*   style={{textDecoration: 'none'}}>*/}
-                                {/*    <Button className={classes.buttons}>*/}
-                                {/*        Все файлы в OHIF*/}
-                                {/*    </Button>*/}
-                                {/*</a>*/}
-
-                                {/*For admin board:*/}
-                                {this.state.currentUser !== null && this.state.currentUser.username === "admin" &&
-                                (<Link to={"/pipelines/save"} style={{textDecoration: 'none'}}>
-                                    <Button className={classes.buttons}>
-                                        Сохранить конфигурацию
-                                    </Button>
-                                </Link>)
-
-                                }
-                            </Grid>
-                        </Paper>
-                    </Grid>
                 </Grid>
             </Grid>
         )

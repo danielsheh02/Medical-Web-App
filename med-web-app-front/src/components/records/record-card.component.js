@@ -39,25 +39,28 @@ const useStyles = theme => ({
     ggrid: {
         margin: theme.spacing(0, 0, 0, 1),
         display: 'flex',
+
     },
     gridContent: {
         margin: theme.spacing(1),
         [theme.breakpoints.down("xs")]:{
-            Width: 209,
+            width: 209,
         },
         [theme.breakpoints.between("sm", "md")]:{
-            Width:500
+            width:620
         },
         "@media (min-width : 1280px)":{
-           Width: 1000,
+           width: 1000,
         },
     },
     paper: {
         padding: theme.spacing(2),
-        marginLeft: theme.spacing(1),
+        //marginLeft: theme.spacing(1),
         // maxWidth: 700,
         borderColor: "#e9e9e9",
         borderRadius: 10,
+        /*alignItems:"center",
+        display:"flex",*/
         [theme.breakpoints.down("xs")]:{
             width: 270,
         },
@@ -191,7 +194,7 @@ class RecordCardNew extends Component {
             <Paper className={classes.paper} variant="outlined">
                 <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>
                     <Grid container item className={classes.ggrid} xs direction={"row"} spacing={1}>
-                        <Grid className={classes.gridCreatorName}>
+                        <Grid className={classes.gridCreatorName} title ={this.record.creator.username}>
                             <Link style={{color: "black"}} to={"/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
                             </Link>
@@ -209,7 +212,7 @@ class RecordCardNew extends Component {
                     </Grid>
                     <Grid className={classes.grid}>
                         {this.isPreview ? (
-                            <Typography variant="h6">{/*gutterBottom*/}
+                            <Typography variant="h6" title={this.record.title}>{/*gutterBottom*/}
                                 <Link style={{color: "black"}} to={"/records/thread/" + this.record.id}>
                                     {this.record.title}
                                 </Link>

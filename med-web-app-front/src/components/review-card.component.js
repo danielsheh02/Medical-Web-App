@@ -27,6 +27,7 @@ const useStyles = theme => ({
     },
     paper:{
         margin: theme.spacing(3),
+        marginLeft : theme.spacing(1),
         borderRadius: 20,
         backgroundColor: "#eeeeee"
     },
@@ -95,7 +96,7 @@ class ReviewCard extends Component {
                             </Avatar>
                         </Grid>
                         <Grid className={classes.grid}>
-                            <Grid className={classes.grid}>
+                            <Grid className={classes.grid} title={this.review.creator.username}>
                                 <Link to={"/profile/" + this.review.creator.username} style={{ textDecoration: 'none', color: 'dark-blue'}}>
                                     <h6 className={classes.hMargin}> {this.review.creator.username}</h6>
                                 </Link>

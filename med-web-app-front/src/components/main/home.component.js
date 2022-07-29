@@ -15,7 +15,7 @@ const useStyles = theme => ({
         [theme.breakpoints.between("sm", "md")]: {
             margin: "auto",
             width: 550,
-            padding: theme.spacing(2)
+            padding: theme.spacing(2),
 
         },
         "@media (min-width: 1280px)": {
@@ -57,6 +57,7 @@ const useStyles = theme => ({
     },
     div: {
         margin: theme.spacing(3, 0, 1, 0),
+
     },
     button: {
         marginRight: theme.spacing(1),
@@ -64,6 +65,13 @@ const useStyles = theme => ({
             marginBottom: theme.spacing(1)
         },
     },
+    HomeContainer:{
+        justifyContent:"center",
+        "@media (max-width: 425px)":{
+            paddingRight: theme.spacing(1)
+        },
+
+    }
 })
 
 const GreetingWords = (props) =>{
@@ -179,7 +187,7 @@ class Home extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Grid container justifyContent={"center"}>
+            <Grid container className={classes.HomeContainer}>
                 <div className={classes.div}>
                     <Paper className={classes.paper}>
                         <GreetingTitle  className = {classes.typography}/>
@@ -197,42 +205,46 @@ class Home extends Component {
                         <Link to={"/home/patient"} style={{textDecoration: 'none'}}>
                             <Button variant="contained"
                                     color="secondary"
-                                    className={classes.button}>
+                                    className={classes.button}
+                                    title = {"К страница пациента"}
+                            >
                                 <Typography variant="h6">
                                     Я пациент
                                 </Typography>
                             </Button>
                         </Link>
-                        {/*<Button*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="secondary"*/}
-                        {/*    className={classes.button}*/}
-                        {/*    href="home/patient"*/}
-                        {/*>*/}
-                        {/*    <Typography variant="h6">*/}
-                        {/*        Я пациент*/}
-                        {/*    </Typography>*/}
-                        {/*</Button>*/}
+                        {/*<Button
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            href="home/patient"
+                        >
+                            <Typography variant="h6">
+                                Я пациент
+                            </Typography>
+                        </Button>*/}
                         <Link to={"/home/doctor"} style={{textDecoration: 'none'}}>
                             <Button variant="contained"
                                     color="secondary"
-                                    className={classes.button}>
+                                    className={classes.button}
+                                    title = {"К странице врача"}
+                            >
                                 <Typography variant="h6">
                                     Я врач
                                 </Typography>
                             </Button>
                         </Link>
-                        {/*<Button*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="secondary"*/}
-                        {/*    className={classes.button}*/}
-                        {/*    href="home/doctor"*/}
+                        {/*<Button
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            href="home/doctor"
 
-                        {/*    >*/}
-                        {/*        <Typography variant="h6">*/}
-                        {/*            Я врач*/}
-                        {/*        </Typography>*/}
-                        {/*    </Button>*/}
+                            >
+                                <Typography variant="h6">
+                                    Я врач
+                                </Typography>
+                            </Button>*/}
                     </Grid>
                 </Paper>
             </Grid>
