@@ -132,7 +132,7 @@ public class ChatMessageService {
         }
     }
 
-    public void deleteMessage(ChatMessage message) {
+    public void deleteMessage(ChatMessage message) throws Exception {
         this.delete(message);
     }
 

@@ -4,6 +4,7 @@ import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeleti
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeletionRequest;
 import com.app.medicalwebapp.controllers.requestbody.messenger.MessagesRequest;
 import com.app.medicalwebapp.services.messenger_services.ChatMessageService;
+import com.app.medicalwebapp.services.messenger_services.ContactsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ public class ChatControllerAxios {
 
     @Autowired
     private ChatMessageService chatMessageService;
+
+    @Autowired
+    private ContactsService contactsService;
 
     @GetMapping("/all/messages")
     public ResponseEntity<?> getMessages(
@@ -64,6 +68,9 @@ public class ChatControllerAxios {
     ) {
         try {
             chatMessageService.deleteMessage(request.getMessage());
+            if (chatMessageService.findMessages(request.getMessage().getSenderName(), request.getMessage().getRecipientName()).isEmpty()) {
+                contactsService.deleteUsersFromEachOthersContacts(request.getMessage().getSenderName(), request.getMessage().getRecipientName());
+            }
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
