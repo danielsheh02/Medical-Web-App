@@ -90,7 +90,7 @@ const useStyles = theme => ({
 })
 
 function rightSideRender(classes){
-    if(innerWidth >=958){
+    if(window.innerWidth >=958){
         return (<Grid item xs={4}>
             <Paper className={classes.paper2}>
                 <Grid className={classes.grid}>
@@ -306,7 +306,7 @@ class PipelinesComponent extends Component {
                         </Paper>
                     </Grid>
 
-                    <rightSideRender classes = {classes}/>
+                    {rightSideRender(classes)}
 
                 </Grid>
             </Grid>

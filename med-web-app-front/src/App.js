@@ -55,6 +55,7 @@ import {lightBlue} from "@material-ui/core/colors";
 import {Logout, LogoutSharp} from "@mui/icons-material";
 import {RemoveRedEye} from "@material-ui/icons";
 import {SwipeableDrawer} from "@mui/material";
+import NewHomeComponent from "./components/main/newHome.component";
 
 const drawerWidth = 240
 
@@ -463,7 +464,7 @@ function App(props) {
         {
             text: 'Главная',
             icon: <HomeIcon color="secondary"/>,
-            path: '/home'
+            path: '/newHome'
         },
         {
             text: 'Анализ снимков',
@@ -830,7 +831,7 @@ function App(props) {
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <ListItemButton component={Link} to={"/home"} variant={"text"} className={classes.button} color={"inherit"}
+                    <ListItemButton component={Link} to={"/newHome"} variant={"text"} className={classes.button} color={"inherit"}
                     disableGutters title={"На главную страницу"}>
                         <Typography component="h1" variant="h6" color="inherit" noWrap
                                 className={classes.title}>
@@ -863,7 +864,7 @@ function App(props) {
                     })
                     }>
                         <Switch>
-                            <Route exact path={["/", "/home"]} component={Home}/>
+                            <Route exact path="/newHome" component={NewHomeComponent}/>
                             <Route exact path="/home/patient" component={HomePatient}/>
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
