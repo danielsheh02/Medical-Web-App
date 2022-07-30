@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 
 const useStyles = theme => ({
     paper: {
+        textAlign: "center",
         [theme.breakpoints.down("xs")]:{
             margin: theme.spacing(0),
             width: 230,
@@ -14,7 +15,7 @@ const useStyles = theme => ({
         [theme.breakpoints.between("sm", "md")]: {
             margin: "auto",
             width: 550,
-            padding: theme.spacing(2)
+            padding: theme.spacing(2),
 
         },
         "@media (min-width: 1280px)": {
@@ -56,6 +57,7 @@ const useStyles = theme => ({
     },
     div: {
         margin: theme.spacing(3, 0, 1, 0),
+
     },
     button: {
         marginRight: theme.spacing(1),
@@ -63,11 +65,17 @@ const useStyles = theme => ({
             marginBottom: theme.spacing(1)
         },
     },
+    HomeContainer:{
+        justifyContent:"center",
+        "@media (max-width: 425px)":{
+            paddingRight: theme.spacing(1)
+        },
+
+    }
 })
 
 const GreetingWords = (props) =>{
     const [width, setWidth] = React.useState(window.innerWidth);
-    const breakpoint_1 = 1280;
     const breakpoint_2 = 700;
     React.useEffect(() => {
         const handleResizeWindow = () => setWidth(window.innerWidth);
@@ -79,7 +87,7 @@ const GreetingWords = (props) =>{
         };
     }, []);
 
-    if(width > breakpoint_1){
+    if(width > breakpoint_2){
         return (<Typography variant="subtitle1" className={props.className}>
             Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
             <br/> <br/>
@@ -92,22 +100,8 @@ const GreetingWords = (props) =>{
             – консультация специалиста узкого профиля <br/> <br/>
         </Typography>);
     }
-    else if(width > breakpoint_2){
-        return ( <Typography variant="subtitle4" className={props.className}>
-            Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
-            <br/> <br/>
-            В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
-            ПЭТ: <br/><br/>
-            – подтверждение необходимости хирургического вмешательства<br/><br/>
-            – подтверждение онкологического или редкого заболевания<br/><br/>
-            – проверка эффективности назначенной терапии<br/><br/>
-            – сомнения пациента относительно корректности поставленного диагноза<br/><br/>
-            – консультация специалиста узкого профиля <br/> <br/>
-        </Typography>);
-    }
-
     else {
-        return( <Typography variant="subtitle6" className={props.className}>
+        return( <Typography variant="subtitle2" className={props.className}>
             Medical web app — сервис для получения второго мнения по результатам КТ, МРТ и ПЭТ исследований.
             <br/> <br/>
             В каких случаях может понадобиться повторный анализ и расшифровка результатов КТ, МРТ и
@@ -193,7 +187,7 @@ class Home extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Grid>
+            <Grid container className={classes.HomeContainer}>
                 <div className={classes.div}>
                     <Paper className={classes.paper}>
                         <GreetingTitle  className = {classes.typography}/>
@@ -211,42 +205,46 @@ class Home extends Component {
                         <Link to={"/home/patient"} style={{textDecoration: 'none'}}>
                             <Button variant="contained"
                                     color="secondary"
-                                    className={classes.button}>
+                                    className={classes.button}
+                                    title = {"К страница пациента"}
+                            >
                                 <Typography variant="h6">
                                     Я пациент
                                 </Typography>
                             </Button>
                         </Link>
-                        {/*<Button*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="secondary"*/}
-                        {/*    className={classes.button}*/}
-                        {/*    href="home/patient"*/}
-                        {/*>*/}
-                        {/*    <Typography variant="h6">*/}
-                        {/*        Я пациент*/}
-                        {/*    </Typography>*/}
-                        {/*</Button>*/}
+                        {/*<Button
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            href="home/patient"
+                        >
+                            <Typography variant="h6">
+                                Я пациент
+                            </Typography>
+                        </Button>*/}
                         <Link to={"/home/doctor"} style={{textDecoration: 'none'}}>
                             <Button variant="contained"
                                     color="secondary"
-                                    className={classes.button}>
+                                    className={classes.button}
+                                    title = {"К странице врача"}
+                            >
                                 <Typography variant="h6">
                                     Я врач
                                 </Typography>
                             </Button>
                         </Link>
-                        {/*<Button*/}
-                        {/*    variant="contained"*/}
-                        {/*    color="secondary"*/}
-                        {/*    className={classes.button}*/}
-                        {/*    href="home/doctor"*/}
+                        {/*<Button
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            href="home/doctor"
 
-                        {/*    >*/}
-                        {/*        <Typography variant="h6">*/}
-                        {/*            Я врач*/}
-                        {/*        </Typography>*/}
-                        {/*    </Button>*/}
+                            >
+                                <Typography variant="h6">
+                                    Я врач
+                                </Typography>
+                            </Button>*/}
                     </Grid>
                 </Paper>
             </Grid>

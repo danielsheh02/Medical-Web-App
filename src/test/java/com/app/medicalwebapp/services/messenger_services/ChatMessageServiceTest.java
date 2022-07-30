@@ -44,7 +44,6 @@ class ChatMessageServiceTest {
             chatMessage.setChatId("DoeJohn");
             chatMessage.setStatusMessage(StatusMessage.UNREAD);
             chatMessage.setAttachments(new ArrayList<>());
-            chatMessage.setLocalFiles(new ArrayList<>());
             Mockito.doReturn(chatMessage)
                     .when(chatMessageRepository)
                     .save(chatMessage);
@@ -106,7 +105,11 @@ class ChatMessageServiceTest {
     @Test
     void deleteMessage() {
         ChatMessage chatMessage = new ChatMessage();
-        chatMessageService.deleteMessage(chatMessage);
+        try {
+            chatMessageService.deleteMessage(chatMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Mockito.verify(chatMessageRepository, Mockito.times(1))
                 .delete(chatMessage);
     }

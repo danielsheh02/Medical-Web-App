@@ -1,4 +1,4 @@
-import {Card, Divider, List, Paper, TextField, withStyles} from "@material-ui/core"
+import {Card, Divider, List, Paper, TextField, Typography, withStyles} from "@material-ui/core"
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react"
 import UserService from "../../services/user.service"
@@ -140,6 +140,15 @@ function Chat(props) {
     const [content, setContent] = useState("")
     const [contentPresence, setContentPresence] = useState(false)
     const [contentCorrect, setContentCorrect] = useState("")
+
+    const [searchContent, setSearchContent] = useState("")
+    const [searchContentPresence, setSearchContentPresence] = useState(false)
+    const [searchContentCorrect, setSearchContentCorrect] = useState("")
+
+    const [searchContacts, setSearchContacts] = useState("")
+    const [searchContactsPresence, setSearchContactsPresence] = useState(false)
+    const [searchContactsCorrect, setSearchContactsCorrect] = useState("")
+
     const [selectedUser, setSelectedUser] = useState(null)
     const [refresh, setRefresh] = useState({})
     const [selectedFiles, setSelectedFiles] = useState(null)
@@ -158,8 +167,19 @@ function Chat(props) {
                     const blob = await base64Response.blob()
                     user.avatar = URL.createObjectURL(blob)
                 }
-                let userWithLastMsg = {first: user, second: null}
-                setUsersWithLastMsg(prev => prev.set(user.username, userWithLastMsg))
+                // let userWithLastMsg = {first: user, second: null}
+                // setUsersWithLastMsg(prev => prev.set(user.username, userWithLastMsg))
+                // selectUser(user)
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+    }
+
+    function selectNotInContactsUser() {
+        UserService.getUserByUsername(selected)
+            .then(async (response) => {
+                let user = response.data
                 selectUser(user)
             })
             .catch((e) => {
@@ -210,7 +230,8 @@ function Chat(props) {
                 })
                 const user = userWithLastMsgArray.find(user => user.first.username === selected)
                 if (selected && !user) {
-                    updateContacts();
+                    // updateContacts();
+                    selectNotInContactsUser()
                 } else if (selected && user) {
                     selectUser(user.first)
                 }
@@ -234,6 +255,35 @@ function Chat(props) {
             setContent(e.target.value)
             setContentCorrect(str)
             setContentPresence(false)
+        }
+    }
+
+    function onChangeSearchContent(e) {
+        let str = e.target.value
+        str = str.replace(/ {2,}/g, ' ').trim()
+        str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r')
+        if (str.charCodeAt(0) > 32) {
+            setSearchContent(e.target.value)
+            setSearchContentCorrect(str)
+            setSearchContentPresence(true)
+        } else {
+            setSearchContent(e.target.value)
+            setSearchContentCorrect(str)
+            setSearchContentPresence(false)
+        }
+    }
+    function onChangeSearchContacts(e) {
+        let str = e.target.value
+        str = str.replace(/ {2,}/g, ' ').trim()
+        str = str.replace(/[\n\r ]{3,}/g, '\n\r\n\r')
+        if (str.charCodeAt(0) > 32) {
+            setSearchContacts(e.target.value)
+            setSearchContactsCorrect(str)
+            setSearchContactsPresence(true)
+        } else {
+            setSearchContacts(e.target.value)
+            setSearchContactsCorrect(str)
+            setSearchContactsPresence(false)
         }
     }
 
@@ -265,6 +315,7 @@ function Chat(props) {
                             reader.readAsDataURL(blobDicom);
                         })
                         const fileStringBase64 = await readerPromise;
+                        selectedFiles[i] = {name: selectedFiles[i].name, uid: uid}
                         pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
                     } else {
                         let readerPromise = new Promise((resolve, reject) => {
@@ -296,7 +347,9 @@ function Chat(props) {
                 timeZone: timeZone,
                 uid: uid
             }
+            var isFirstMessage = true;
             if (allMessages.get(selectedUser.username)) {
+                isFirstMessage = false;
                 let msg = allMessages.get(selectedUser.username).messages
                 msg.push(message)
                 const valueMap = {unRead: 0, messages: msg}
@@ -313,6 +366,8 @@ function Chat(props) {
             setContent("")
             setContentCorrect("")
             setContentPresence(false)
+            if (isFirstMessage)
+                updateContacts();
         }
     }
 
@@ -419,7 +474,12 @@ function Chat(props) {
             }
             return 0
         })
-        return (sortedContacts.map((userAndLastMsg, index) => (
+        return (sortedContacts
+            .filter((userAndLastMsg, index) => {
+                const nameAndSurname = userAndLastMsg.first.initials.split(" ")
+                return (nameAndSurname[0] + " " + nameAndSurname[1]).includes(searchContacts)
+            })
+            .map((userAndLastMsg, index) => (
             <Grid key={index}>
                 <Link onClick={() => selectUser(userAndLastMsg.first)}
                       to={"/msg/" + userAndLastMsg.first.username}
@@ -427,6 +487,7 @@ function Chat(props) {
                     <ListItemButton
                         value={userAndLastMsg.first}
                         selected={selectedUser && selectedUser.username === userAndLastMsg.first.username}
+                        title={userAndLastMsg.first.lastname + " " + userAndLastMsg.first.firstname}
                     >
                         <Grid className={classes.flex} xs={12} item>
                             <Grid xs={2} item>
@@ -452,8 +513,12 @@ function Chat(props) {
                                 </Grid>
                                 <Grid className={classes.flex} xs={12} item>
                                     <Grid xs={10} item
-                                          className={classes.lastMsgTextContent}>{(userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...") ||
-                                    (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length < 25 && userAndLastMsg.second.content)}
+                                          className={classes.lastMsgTextContent}>{
+                                        (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length < 25 && userAndLastMsg.second.content.length > 0 && userAndLastMsg.second.content)
+                                        || (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...")
+                                        || (userAndLastMsg.second && userAndLastMsg.second.content !== null &&
+                                            <Typography style={{fontSize: 14, color: '#227ba2'}}>Файл</Typography>)
+                                    }
                                     </Grid>
                                     {allMessages.get(userAndLastMsg.first.username) && (allMessages.get(userAndLastMsg.first.username).unRead > 0)
                                     && <Grid>
@@ -533,24 +598,54 @@ function Chat(props) {
         <Grid xs={12} item className={classes.mainGrid}>
             <Grid xs={3} item>
                 <Card className={classes.paper}>
-                    <List className={classes.itemButton}>
+                    <TextField
+                        fullWidth
+                        className={classes.root}
+                        minRows={1}
+                        maxRows={6}
+                        variant="outlined"
+                        size="small"
 
-                        {usersWithLastMsg && sortContacts()
-                        }
+                        id="searchContacts"
+                        label="Поиск по контактам..."
+                        name="searchContacts"
+                        autoComplete="off"
+                        value={searchContacts}
+                        onChange={(searchContacts) => onChangeSearchContacts(searchContacts)}
+                        // onKeyPress={(key) => checkKey(key)}
+                    />
+                    <List className={classes.itemButton}>
+                        {usersWithLastMsg && sortContacts()}
                     </List>
                 </Card>
             </Grid>
 
             <Grid xs={9} item>
                 <Card className={classes.paper2}>
-                    <Grid>
+                    {selectedUser && <Grid>
+                        <Grid container>
+                            <Grid xs={2}><UserCardMessage user={selectedUser}/></Grid>
+
+                            <Grid xs={10}><TextField size="small"
+                                             fullWidth
+                                             className={classes.root}
+                                             variant="outlined"
+                                             id="searchContent"
+                                             label="Поиск по сообщениям..."
+                                             name="searchContent"
+                                             autoComplete="off"
+                                             value={searchContent}
+                                             onChange={(searchContent) => onChangeSearchContent(searchContent)}
+                                             onKeyPress={(key) => checkKey(key)}
+                            /></Grid>
+                        </Grid>
                         <Paper
 
                             className={classes.messageGrid}>
 
                             <Grid>
 
-                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].map((msg, index) => (
+                                {selectedUser && (allMessages.get(selectedUser.username)) && ([...allMessages.get(selectedUser.username).messages].filter((msg) => msg.content.includes(searchContent)).map((msg, index) => (
 
                                     ((((msg.senderName !== selectedUser.username) || (msg.senderName === msg.recipientName)) &&
                                         (
@@ -581,9 +676,10 @@ function Chat(props) {
                                         color="primary"
                                         onClick={selectFile}
                                         disabled={(!selectedUser)}
+                                        title = {"Прикрепить файл"}
                                 >
-                                    <AttachFileIcon>
-                                    </AttachFileIcon>
+                                    <AttachFileIcon />
+
                                 </Button>
                             </Grid>
                             <Grid>
@@ -610,6 +706,7 @@ function Chat(props) {
                                     color="primary"
                                     onClick={sendMessage}
                                     disabled={disableButton()}
+                                    title={"Отправить"}
                                 >
                                     <SendIcon/>
                                 </Button>
@@ -618,8 +715,7 @@ function Chat(props) {
                                 {selectedFiles && createFilesArray().map((file) => (file.name))}
                             </Grid>
                         </Grid>
-
-                    </Grid>
+                    </Grid>}
                 </Card>
             </Grid>
 

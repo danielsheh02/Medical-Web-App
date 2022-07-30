@@ -1,15 +1,22 @@
 package com.app.medicalwebapp.controllers;
 
-import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeletionTimeChatIdRequest;
+import com.app.medicalwebapp.controllers.requestbody.MessageResponse;
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageDeletionRequest;
+import com.app.medicalwebapp.controllers.requestbody.messenger.EntityByTimeChatIdRequest;
 import com.app.medicalwebapp.controllers.requestbody.messenger.MessagesRequest;
+import com.app.medicalwebapp.services.FileService;
 import com.app.medicalwebapp.services.messenger_services.ChatMessageService;
+import com.app.medicalwebapp.services.messenger_services.ContactsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 604800)
 @RestController
@@ -18,6 +25,12 @@ public class ChatControllerAxios {
 
     @Autowired
     private ChatMessageService chatMessageService;
+
+    @Autowired
+    private ContactsService contactsService;
+
+    @Autowired
+    FileService fileService;
 
     @GetMapping("/all/messages")
     public ResponseEntity<?> getMessages(
@@ -64,6 +77,9 @@ public class ChatControllerAxios {
     ) {
         try {
             chatMessageService.deleteMessage(request.getMessage());
+            if (chatMessageService.findMessages(request.getMessage().getSenderName(), request.getMessage().getRecipientName()).isEmpty()) {
+                contactsService.deleteUsersFromEachOthersContacts(request.getMessage().getSenderName(), request.getMessage().getRecipientName());
+            }
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +88,7 @@ public class ChatControllerAxios {
     }
 
     @PostMapping("/delete/by/time/chatid")
-    public ResponseEntity<?> deleteMsgByTimeAndChatId(@Valid @RequestBody ChatMessageDeletionTimeChatIdRequest request) {
+    public ResponseEntity<?> deleteMsgByTimeAndChatId(@Valid @RequestBody EntityByTimeChatIdRequest request) {
         try {
             chatMessageService.deleteMsgByTimeAndChatId(request.getTime(), request.getSenderName(), request.getRecipientName());
             return ResponseEntity.ok().build();
@@ -81,4 +97,46 @@ public class ChatControllerAxios {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("find/messages")
+    public ResponseEntity<?> getMessagesByKeywords(
+            @RequestParam String senderUsername,
+            @RequestParam String recipientUsername,
+            @RequestParam String keywordsString
+    ) {
+        try {
+            var foundMessages = chatMessageService.findMessagesByKeywords(senderUsername, recipientUsername, keywordsString);
+            return ResponseEntity.ok().body(foundMessages);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("download/by/send/date/{time}/{senderName}/{recipientName}/{fileName}")
+    public ResponseEntity<?> downloadFileBySendDateMsg(
+            @PathVariable String time, @PathVariable String senderName,
+            @PathVariable String recipientName, @PathVariable String fileName) {
+        try {
+            var sendDate = LocalDateTime.parse(time);
+            var msg = chatMessageService.getMsgByTimeAndChatId(sendDate, senderName, recipientName);
+            var fileObjects = msg.getAttachments();
+            for (var fileObject : fileObjects) {
+                if (Objects.equals(fileObject.getInitialName(), fileName)) {
+                    byte[] fileContent = fileService.extractFile(fileObject);
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileObject.getInitialName() + "\"")
+                            .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+                            .body(fileContent);
+                }
+            }
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при скачивании файла"));
+        } catch (AuthorizationServiceException ex) {
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Нет прав доступа к этому контенту"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.badRequest().body(new MessageResponse("Ошибка при скачивании файла"));
+        }
+    }
+
 }

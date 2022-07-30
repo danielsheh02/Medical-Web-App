@@ -62,16 +62,8 @@ public class ChatMessage {
     )
     private List<FileObject> attachments;
 
-    @ManyToMany
-    @JoinTable(
-            name = "chatmessages_chatfiles",
-            joinColumns = @JoinColumn(name = "chatmessage_id"),
-            inverseJoinColumns = @JoinColumn(name = "chatfile_id")
-    )
-    private List<ChatFile> localFiles;
-
     @ElementCollection
-    private List<byte[]> dataFilesDicom;
+    private List<byte[]> images;
 
     @ElementCollection
     private List<String> uidFilesDicom;

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AuthService from "../../services/auth.service";
 import AttachmentService from "../../services/attachment.service";
 import '../../styles/Record.css'
-import {Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
+import {Button, Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {purple} from "@material-ui/core/colors";
 import {Link} from "react-router-dom";
@@ -28,9 +28,7 @@ const useStyles = theme => ({
         "& .MuiTypography-root": {
             color: "black",
         },
-        "@media (max-width: 470px)":{
-          width: 200
-        },
+
     },
     grid: {
         "& .MuiTypography-root": {
@@ -41,32 +39,35 @@ const useStyles = theme => ({
     ggrid: {
         margin: theme.spacing(0, 0, 0, 1),
         display: 'flex',
+
     },
     gridContent: {
         margin: theme.spacing(1),
-        [theme.breakpoints.down("xs")]:{
-            Width: 200,
+        [theme.breakpoints.down("xs")]: {
+            width: 209,
         },
-        [theme.breakpoints.between("sm", "md")]:{
-            Width:500
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 620
         },
-        "@media (min-width : 1280px)":{
-           Width: 1000,
+        "@media (min-width : 1280px)": {
+            width: 1000,
         },
     },
     paper: {
         padding: theme.spacing(2),
-        margin: 0,
+        //marginLeft: theme.spacing(1),
         // maxWidth: 700,
         borderColor: "#e9e9e9",
         borderRadius: 10,
-        [theme.breakpoints.down("xs")]:{
-            width: 230,
+        /*alignItems:"center",
+        display:"flex",*/
+        [theme.breakpoints.down("xs")]: {
+            width: 270,
         },
-        [theme.breakpoints.between("sm", "md")]:{
-            width:500
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 650
         },
-        "@media (min-width : 1280px)":{
+        "@media (min-width : 1280px)": {
             width: 800,
         },
     },
@@ -79,13 +80,13 @@ const useStyles = theme => ({
     content: {
         whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
-        [theme.breakpoints.down("xs")]:{
-            width: 200,
+        [theme.breakpoints.down("xs")]: {
+            width: 240,
         },
-        [theme.breakpoints.between("sm", "md")]:{
-            width:470
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 620
         },
-        "@media (min-width : 1280px)":{
+        "@media (min-width : 1280px)": {
             width: 770,
         },
     },
@@ -204,7 +205,7 @@ class RecordCardNew extends Component {
             <Paper className={classes.paper} variant="outlined">
                 <Grid container item xs={12} sm direction={"column"} className={classes.mainGrid}>
                     <Grid container item className={classes.ggrid} xs direction={"row"} spacing={1}>
-                        <Grid className={classes.gridCreatorName}>
+                        <Grid className={classes.gridCreatorName} title ={this.record.creator.username}>
                             <Link style={{color: "black"}} to={"/profile/" + this.record.creator.username}>
                                 {this.record.creator.username}
                             </Link>
@@ -215,11 +216,13 @@ class RecordCardNew extends Component {
                                     (((new Date(this.creationTime).getHours() < 10 && "0" + new Date(this.creationTime).getHours())
                                             || (new Date(this.creationTime).getHours() >= 10 && new Date(this.creationTime).getHours())) + ":"
                                         + ((new Date(this.creationTime).getMinutes() < 10 && "0" + new Date(this.creationTime).getMinutes())
-                                            || (new Date(this.creationTime).getMinutes() > 10 && new Date(this.creationTime).getMinutes())
+                                            || (new Date(this.creationTime).getMinutes() >= 10 && new Date(this.creationTime).getMinutes())
                                         )) + "    " + (
-                                        ((new Date(this.creationTime).getDate() < 10 && "0" + new Date(this.creationTime).getDate()) || (new Date(this.creationTime).getDate() >= 10 && new Date(this.creationTime).getDate()))
+                                        ((new Date(this.creationTime).getDate() < 10 && "0" + new Date(this.creationTime).getDate()) ||
+                                            (new Date(this.creationTime).getDate() >= 10 && new Date(this.creationTime).getDate()))
                                         + "."
-                                        + (((new Date(this.creationTime).getMonth() + 1) < 10 && "0" + (new Date(this.creationTime).getMonth() + 1)) || (((new Date(this.creationTime).getMonth() + 1) >= 10 && (new Date(this.creationTime).getMonth() + 1))))
+                                        + (((new Date(this.creationTime).getMonth() + 1) < 10 && "0" +
+                                            (new Date(this.creationTime).getMonth() + 1)) || (((new Date(this.creationTime).getMonth() + 1) >= 10 && (new Date(this.creationTime).getMonth() + 1))))
                                         + "." + new Date(this.creationTime).getFullYear()
                                     )}
                             </Typography>
@@ -227,7 +230,7 @@ class RecordCardNew extends Component {
                     </Grid>
                     <Grid className={classes.grid}>
                         {this.isPreview ? (
-                            <Typography variant="h6">{/*gutterBottom*/}
+                            <Typography variant="h6" title={this.record.title}>{/*gutterBottom*/}
                                 <Link style={{color: "black"}} to={"/records/thread/" + this.record.id}>
                                     {this.record.title}
                                 </Link>

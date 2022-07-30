@@ -4,20 +4,16 @@ import com.app.medicalwebapp.controllers.requestbody.messenger.ChatFileRequest;
 import com.app.medicalwebapp.controllers.requestbody.messenger.ChatMessageRequest;
 import com.app.medicalwebapp.model.FileObject;
 import com.app.medicalwebapp.model.FileObjectFormat;
-import com.app.medicalwebapp.model.messenger_models.ChatFile;
 import com.app.medicalwebapp.model.messenger_models.ChatMessage;
 import com.app.medicalwebapp.model.messenger_models.StatusMessage;
 import com.app.medicalwebapp.repositories.messenger_repositories.ChatMessageRepository;
 import com.app.medicalwebapp.services.FileService;
-import com.app.medicalwebapp.utils.FileFormatResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -39,23 +35,12 @@ public class ChatMessageService {
 
     public ChatMessage save(ChatMessageRequest msg) throws Exception {
         List<FileObject> files = new ArrayList<>();
-        List<ChatFile> localFiles = new ArrayList<>();
         if (msg.getLocalFiles() != null) {
             for (ChatFileRequest file : msg.getLocalFiles()) {
-                FileObjectFormat fileFormat = FileFormatResolver.resolveFormat(file.getFileName());
                 Base64.Decoder decoder = Base64.getDecoder();
                 String fileBase64 = file.getFileContent().split(",")[1];
                 byte[] decodedFileByte = decoder.decode(fileBase64);
-                if (fileFormat == FileObjectFormat.DICOM) {
-                    files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId(), msg.getUid()));
-                } else {
-                    ChatFile localFile = new ChatFile();
-                    localFile.setFileName(file.getFileName());
-                    localFile.setFileContent(decodedFileByte);
-                    localFile.setFormat(fileFormat);
-                    var fl = chatFileService.save(localFile);
-                    localFiles.add(fl);
-                }
+                files.add(fileService.saveFile(file.getFileName(), decodedFileByte, msg.getSenderId(), msg.getUid()));
             }
         }
         String chatId;
@@ -75,9 +60,10 @@ public class ChatMessageService {
         chatMessage.setSendDate(msg.getSendDate());
         chatMessage.setTimeZone(msg.getTimeZone());
         chatMessage.setAttachments(files);
-        chatMessage.setLocalFiles(localFiles);
         chatMessage.setDeleted(false);
-        return chatMessageRepository.save(chatMessage);
+        var message = chatMessageRepository.save(chatMessage);
+        getImages(List.of(message));
+        return message;
     }
 
     public List<ChatMessage> findMessages(String senderUsername, String recipientUsername) throws Exception {
@@ -102,13 +88,20 @@ public class ChatMessageService {
         for (ChatMessage message : messages) {
             if (message.getAttachments().size() > 0) {
                 ArrayList<byte[]> data = new ArrayList<>();
-                message.setDataFilesDicom(data);
+                message.setImages(data);
+                ArrayList<String> uid = new ArrayList<>();
+                message.setUidFilesDicom(uid);
                 for (int j = 0; j < message.getAttachments().size(); j++) {
-                    if (message.getAttachments().get(j).getFormat() == FileObjectFormat.DICOM) {
+                    var format = message.getAttachments().get(j).getFormat();
+                    if (format == FileObjectFormat.DICOM ||
+                            format == FileObjectFormat.JPEG ||
+                            format == FileObjectFormat.PNG) {
                         FileObject fileObject = message.getAttachments().get(j);
                         byte[] fileContent = fileService.previewFile(fileObject);
-                        message.getDataFilesDicom().add(fileContent);
-                        message.getUidFilesDicom().add(message.getAttachments().get(j).getUID());
+                        message.getImages().add(fileContent);
+                        if (format == FileObjectFormat.DICOM) {
+                            message.getUidFilesDicom().add(message.getAttachments().get(j).getUID());
+                        }
                     }
                 }
             }
@@ -131,7 +124,7 @@ public class ChatMessageService {
         }
     }
 
-    public void deleteMessage(ChatMessage message) {
+    public void deleteMessage(ChatMessage message) throws Exception {
         this.delete(message);
     }
 
@@ -148,6 +141,35 @@ public class ChatMessageService {
 
     public Optional<ChatMessage> findFirstByChatIdOrderBySendDateDesc(String chatId) {
         return chatMessageRepository.findFirstByChatIdAndDeleted_IsFalseOrderByIdDesc(chatId);
+    }
+    public List<ChatMessage> findMessagesByKeywords(String senderUsername, String recipientUsername, String keywordsString) throws Exception {
+        String[] keywords = keywordsString.split(" ");
+        var allMessages = this.findMessages(senderUsername, recipientUsername);
+        var foundMessages = new ArrayList<ChatMessage>();
+        for (String keyword: keywords) {
+            foundMessages.addAll(allMessages
+                    .stream()
+                    .filter(msg -> msg.getContent().contains(keyword))
+                    .collect(Collectors.toList())
+            );
+        }
+        return foundMessages;
+    }
+
+    public ChatMessage getMsgByTimeAndChatId(LocalDateTime time, String senderName, String recipientName) {
+        String chatId;
+        if (senderName.compareTo(recipientName) < 0) {
+            chatId = (senderName + recipientName);
+        } else {
+            chatId = (recipientName + senderName);
+        }
+        var count = 0;
+        ChatMessage message = chatMessageRepository.findBySendDateAndChatId(time, chatId);
+        while (message == null && count <= 1000) {
+            message = chatMessageRepository.findBySendDateAndChatId(time, chatId);
+            count++;
+        }
+        return message;
     }
 }
 

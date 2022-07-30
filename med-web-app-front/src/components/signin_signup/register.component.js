@@ -47,7 +47,16 @@ const useStyles = theme => ({
     paper: {
         marginTop: theme.spacing(5),
         marginBottom: theme.spacing(3),
-        minWidth: 200,
+        //minWidth: 200,
+        "@media (max-width: 365px)":{
+            width: 260,
+        },
+        "@media (min-width: 350 px)":{
+            width: 300,
+        },
+        "@media (min-width: 425px)":{
+            width: "90%"
+        },
     },
     form: {
         width: '100%',
@@ -377,12 +386,14 @@ function Register(props) {
                                                   control={<Radio color="primary"/>}
                                                   value="Пользователь"
                                                   label="Пользователь"
+                                                  title={"Пользователь"}
                                 />
                                 <FormControlLabel className={classes.formControlLab}
                                                   control={<Radio color="primary"/>}
                                                   value="Врач"
                                                   label="Врач"
                                                   labelPlacement='end'
+                                                  title={"Врач"}
                                 />
                             </RadioGroup>
                         </FormControl>
@@ -393,6 +404,7 @@ function Register(props) {
                             color="primary"
                             // onClick={handleRegister}
                             className={classes.submit}
+                            title = {"Зарегистрироваться"}
                         >
                             Зарегистрироваться
                         </Button>
