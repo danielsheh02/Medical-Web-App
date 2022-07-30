@@ -21,11 +21,20 @@ const useStyles = theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+
     },
     paper: {
         marginTop: theme.spacing(8),
-        // width: 500,
-        minWidth: 300,
+        "@media (max-width: 365px)":{
+            width: 260,
+        },
+        "@media (min-width: 350 px)":{
+            width: 300,
+        },
+        "@media (min-width: 425px)":{
+            width: "90%"
+        },
+        //minWidth: 280,
         minHeight: 300
     },
     form: {

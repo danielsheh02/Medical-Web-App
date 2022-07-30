@@ -275,6 +275,7 @@ class CreateRecordComponent extends Component {
                                 <Select
                                     className={classes.root}
                                     multiple
+                                    title={"Прикрепить тэги"}
                                     labelId="selected-topics"
                                     //variant="outlined"
                                     value={this.state.selectedTopicsValue}
@@ -305,6 +306,7 @@ class CreateRecordComponent extends Component {
                                     labelId="selected-files"
                                     //variant="outlined"
                                     value={this.state.selectedFilesValue}
+                                    title={"Прикрепить файлы"}
                                     onChange={this.handleFiles}
                                     input={<Input id="select-multiple-chip-for-files"/>}
                                     renderValue={(selected) => (
@@ -339,6 +341,7 @@ class CreateRecordComponent extends Component {
                                 color="primary"
                                 className={classes.button}
                                 disabled={!this.state.contentPresence}
+                                title = {"Опубликовать"}
                             >
                                 Опубликовать
                             </Button>
