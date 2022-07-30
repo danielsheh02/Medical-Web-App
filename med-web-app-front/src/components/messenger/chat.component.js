@@ -1,4 +1,4 @@
-import {Card, Divider, List, Paper, TextField, withStyles} from "@material-ui/core"
+import {Card, Divider, List, Paper, TextField, Typography, withStyles} from "@material-ui/core"
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react"
 import UserService from "../../services/user.service"
@@ -513,8 +513,12 @@ function Chat(props) {
                                 </Grid>
                                 <Grid className={classes.flex} xs={12} item>
                                     <Grid xs={10} item
-                                          className={classes.lastMsgTextContent}>{(userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...") ||
-                                    (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length < 25 && userAndLastMsg.second.content)}
+                                          className={classes.lastMsgTextContent}>{
+                                        (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length < 25 && userAndLastMsg.second.content.length > 0 && userAndLastMsg.second.content)
+                                        || (userAndLastMsg.second && userAndLastMsg.second.content && userAndLastMsg.second.content.length > 25 && userAndLastMsg.second.content.slice(0, 25) + "...")
+                                        || (userAndLastMsg.second && userAndLastMsg.second.content !== null &&
+                                            <Typography style={{fontSize: 14, color: '#227ba2'}}>Файл</Typography>)
+                                    }
                                     </Grid>
                                     {allMessages.get(userAndLastMsg.first.username) && (allMessages.get(userAndLastMsg.first.username).unRead > 0)
                                     && <Grid>
