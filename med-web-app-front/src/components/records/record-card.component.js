@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import AuthService from "../../services/auth.service";
 import AttachmentService from "../../services/attachment.service";
 import '../../styles/Record.css'
-import {Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
+import {Button, Grid, Paper, Tooltip, withStyles} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {purple} from "@material-ui/core/colors";
 import {Link} from "react-router-dom";
@@ -43,14 +43,14 @@ const useStyles = theme => ({
     },
     gridContent: {
         margin: theme.spacing(1),
-        [theme.breakpoints.down("xs")]:{
+        [theme.breakpoints.down("xs")]: {
             width: 209,
         },
-        [theme.breakpoints.between("sm", "md")]:{
-            width:620
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 620
         },
-        "@media (min-width : 1280px)":{
-           width: 1000,
+        "@media (min-width : 1280px)": {
+            width: 1000,
         },
     },
     paper: {
@@ -61,13 +61,13 @@ const useStyles = theme => ({
         borderRadius: 10,
         /*alignItems:"center",
         display:"flex",*/
-        [theme.breakpoints.down("xs")]:{
+        [theme.breakpoints.down("xs")]: {
             width: 270,
         },
-        [theme.breakpoints.between("sm", "md")]:{
-            width:650
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 650
         },
-        "@media (min-width : 1280px)":{
+        "@media (min-width : 1280px)": {
             width: 800,
         },
     },
@@ -80,13 +80,13 @@ const useStyles = theme => ({
     content: {
         whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
-        [theme.breakpoints.down("xs")]:{
+        [theme.breakpoints.down("xs")]: {
             width: 240,
         },
-        [theme.breakpoints.between("sm", "md")]:{
-            width:620
+        [theme.breakpoints.between("sm", "md")]: {
+            width: 620
         },
-        "@media (min-width : 1280px)":{
+        "@media (min-width : 1280px)": {
             width: 770,
         },
     },
@@ -216,7 +216,7 @@ class RecordCardNew extends Component {
                                     (((new Date(this.creationTime).getHours() < 10 && "0" + new Date(this.creationTime).getHours())
                                             || (new Date(this.creationTime).getHours() >= 10 && new Date(this.creationTime).getHours())) + ":"
                                         + ((new Date(this.creationTime).getMinutes() < 10 && "0" + new Date(this.creationTime).getMinutes())
-                                            || (new Date(this.creationTime).getMinutes() > 10 && new Date(this.creationTime).getMinutes())
+                                            || (new Date(this.creationTime).getMinutes() >= 10 && new Date(this.creationTime).getMinutes())
                                         )) + "    " + (
                                         ((new Date(this.creationTime).getDate() < 10 && "0" + new Date(this.creationTime).getDate()) ||
                                             (new Date(this.creationTime).getDate() >= 10 && new Date(this.creationTime).getDate()))

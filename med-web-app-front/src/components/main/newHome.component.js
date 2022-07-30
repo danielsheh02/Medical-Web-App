@@ -73,7 +73,7 @@ const useStyles = theme => ({
         left: "131px",
         top: "320.13px",
 
-        background: "#FFFFFF",
+        background: "#f8f9fa",
         transform: "rotate(-48.5deg)",
     },
     rightBrain:{
@@ -91,7 +91,7 @@ const useStyles = theme => ({
         left: "1060.74px",
         top: "350px",
 
-        background: "#FFFFFF",
+        background: "#f8f9fa",
         transform: "rotate(31deg)",
     },
     leftBox:{

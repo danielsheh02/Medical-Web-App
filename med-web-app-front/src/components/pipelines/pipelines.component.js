@@ -112,12 +112,12 @@ function rightSideRender(classes){
                         </Button>
                     </Link>
 
-                    <a href={"http://localhost:3000/local"} target="_blank"
-                       style={{textDecoration: 'none'}}>
-                        <Button className={classes.buttons} title={"Открыть DICOM-файл"}>
-                            Открыть DICOM-файл
+                    <Link to={"/pipelines/save"} style={{textDecoration: 'none'}}>
+                        <Button className={classes.buttons}>
+                            Сохранить конфигурацию
                         </Button>
-                    </a>
+                    </Link>
+
 
 
                     {/*For admin board:
@@ -306,6 +306,7 @@ class PipelinesComponent extends Component {
                         </Paper>
                     </Grid>
 
+                    {/*<rightSideRender classes = {classes}/>*/}
                     {rightSideRender(classes)}
 
                     {/*<Grid item xs={4}>*/}

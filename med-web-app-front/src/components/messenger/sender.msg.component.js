@@ -310,7 +310,7 @@ function SenderMsg(props) {
                             (((new Date(timeMsgCurrentTimeZone).getHours() < 10 && "0" + new Date(timeMsgCurrentTimeZone).getHours())
                                     || (new Date(timeMsgCurrentTimeZone).getHours() >= 10 && new Date(timeMsgCurrentTimeZone).getHours())) + ":"
                                 + ((new Date(timeMsgCurrentTimeZone).getMinutes() < 10 && "0" + new Date(timeMsgCurrentTimeZone).getMinutes())
-                                    || (new Date(timeMsgCurrentTimeZone).getMinutes() > 10 && new Date(timeMsgCurrentTimeZone).getMinutes())
+                                    || (new Date(timeMsgCurrentTimeZone).getMinutes() >= 10 && new Date(timeMsgCurrentTimeZone).getMinutes())
                                 )) + "    "
                             + (
                                 ((new Date(timeMsgCurrentTimeZone).getDate() < 10 && "0" + new Date(timeMsgCurrentTimeZone).getDate())

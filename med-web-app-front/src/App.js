@@ -808,10 +808,10 @@ function App(props) {
         }
     }
 
-    function DicomViewerInternetPath(text){
-        if(text ==='DICOM Viewer'){
-            return "http://localhost:3000/local";
-        }
+    function DicomViewerInternetPath(){
+        const url = window.location.href
+        const num = url.indexOf(":7999")
+        return url.slice(0, num + 1) + "3000/local/";
     }
 
     return (
@@ -863,7 +863,7 @@ function App(props) {
                     })
                     }>
                         <Switch>
-                            <Route exact path="/newHome" component={NewHomeComponent}/>
+                            <Route exact path={["/","/newHome"]} component={NewHomeComponent}/>
                             <Route exact path="/home/patient" component={HomePatient}/>
                             <Route exact path="/home/doctor" component={HomeDoctor}/>
                             <Route exact path="/login" component={Login}/>
