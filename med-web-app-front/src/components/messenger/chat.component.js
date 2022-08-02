@@ -352,6 +352,7 @@ function Chat(props) {
                             reader.onerror = reject;
                             reader.readAsDataURL(blobDicom);
                         })
+                        // Для отправления файлов по websocket, необходимо перевести их в строку base64.
                         const fileStringBase64 = await readerPromise;
                         selectedFiles[i] = {name: selectedFiles[i].name, uid: uid}
                         pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
@@ -364,6 +365,7 @@ function Chat(props) {
                             reader.onerror = reject;
                             reader.readAsDataURL(selectedFiles[i]);
                         })
+                        // Для отправления файлов по websocket, необходимо перевести их в строку base64.
                         const fileStringBase64 = await readerPromise;
                         pairFileNameBase64 = {fileName: selectedFiles[i].name, fileContent: fileStringBase64}
                     }
@@ -379,8 +381,8 @@ function Chat(props) {
                 recipientName: selectedUser.username,
                 senderId: AuthService.getCurrentUser().id,
                 senderName: AuthService.getCurrentUser().username,
-                attachmentsBlobForImageClient: selectedFiles,
-                localFiles: fileNameAndStringBase64,
+                attachmentsBlobForImageClient: selectedFiles, // Переменная используется для быстрой отрисовки отправленных изображений, чтобы не делать лишних запросов к базе данных.
+                files: fileNameAndStringBase64,
                 sendDate: localISOTime,
                 timeZone: timeZone,
                 uid: uid
