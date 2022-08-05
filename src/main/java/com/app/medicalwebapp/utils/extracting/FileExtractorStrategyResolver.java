@@ -19,7 +19,7 @@ public class FileExtractorStrategyResolver {
 
     /**
      * Определение способа получения файла, из orthanc или из sftp, зависит от формата файла.
-     * Возвращает класс PacsExtractStrategy (для .dcm файлов) или SftpExtractStrategy (для остальных файлов).
+     * Возвращает класс PacsExtractorStrategy (для .dcm файлов) или SftpExtractorStrategy (для остальных файлов).
      */
     public FileExtractorStrategy getFileExtractor(FileObjectFormat fileFormat) {
         return strategies.stream()
