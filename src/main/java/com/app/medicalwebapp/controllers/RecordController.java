@@ -78,6 +78,17 @@ public class RecordController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/delete/{recordId}")
+    public ResponseEntity<?> deleteRecord(@PathVariable Long recordId) {
+        try {
+            recordService.delete(recordId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.ok().build();
+    }
+
 
     private Long getAuthenticatedUserId() {
         UserDetailsImpl principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

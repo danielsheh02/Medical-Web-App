@@ -118,6 +118,10 @@ public class RecordService {
         recordRepository.save(record);
     }
 
+    public void delete(Long recordId) {
+        recordRepository.deleteById(recordId);
+    }
+
     private RecordsPageResponse getRecordsResponse(Page recordsPage, int pageNumber) {
         return RecordsPageResponse.builder()
                 .records(recordsPage.getContent())
