@@ -25,15 +25,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecordService {
+    private final RecordRepository recordRepository;
+    private final TopicRepository topicRepository;
+    private final FileObjectRepository fileObjectRepository;
 
     @Autowired
-    RecordRepository recordRepository;
+    public RecordService(RecordRepository recordRepository, TopicRepository topicRepository, FileObjectRepository fileObjectRepository) {
+        this.recordRepository = recordRepository;
+        this.topicRepository = topicRepository;
+        this.fileObjectRepository = fileObjectRepository;
+    }
 
-    @Autowired
-    TopicRepository topicRepository;
-
-    @Autowired
-    FileObjectRepository fileObjectRepository;
 
     public RecordsPageResponse getRecordsPage(Integer pageNumber, Integer sizeOfPage, String partOfTitle) {
         Pageable pageable = PageRequest.of(pageNumber, sizeOfPage);
