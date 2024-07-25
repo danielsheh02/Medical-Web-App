@@ -1,4 +1,4 @@
-FROM postgres
+FROM postgres:16.3-bookworm
 ENV POSTGRES_PASSWORD secretpassword
 ENV POSTGRES_DB medwebappdb
 ENV POSTGRES_PORT 5555
